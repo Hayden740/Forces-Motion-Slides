@@ -360,7 +360,7 @@ const cornersUI = `<div class="grid2 fill" style="grid-template-columns:1fr 1.2f
 const cmapUI = `<div class="grid2 fill" style="grid-template-columns:1.6fr 1fr"><div style="display:grid;place-items:center" id="cmSvg"></div><div style="display:flex;flex-direction:column;gap:1cqw"><p>Before each click, ask the class: <b>how are these two linked?</b></p><div class="box" id="cmLabel" style="min-height:8cqw"></div><div class="row"><button class="btn primary" id="cmNext">Next link</button><button class="btn" id="cmAll">Show all</button><button class="btn" id="cmReset">Reset</button></div><p class="small" id="cmCount"></p></div></div>`;
 const tugUI = `<div class="sim"><div class="simview" id="tugView"></div><div class="simctl"><label>Left force <span class="v" id="tugLv"></span><input type="range" id="tugL" min="0" max="100" step="10"></label><label>Right force <span class="v" id="tugRv"></span><input type="range" id="tugR" min="0" max="100" step="10"></label><div class="row"><button class="btn primary" id="tugGo">Let go</button><button class="btn" id="tugReset">Reset</button></div><div class="verdict" id="tugOut"></div></div></div>`;
 const scaleUI = `<div class="sim"><div class="simview" id="scView"></div><div class="simctl"><div id="scPlanets"></div><div class="row"><button class="btn primary" data-add="100">Hang 100 g</button><button class="btn" data-add="50">Hang 50 g</button><button class="btn" id="scClear">Remove all</button></div><div class="row"><button class="btn" id="scHide" aria-pressed="false">Cover the reading</button></div><div class="box"><div class="readout" id="scMass"></div><div class="readout" id="scRead"></div></div></div></div>`;
-const rampUI = `<div class="sim"><div style="display:flex;flex-direction:column;gap:1cqw;min-width:0"><div class="simview" id="rpView" style="flex:1;height:auto"></div><div class="tablewrap"><table class="mini" id="rpTable"></table></div></div><div class="simctl"><label>Surface<select id="rpSurf"></select></label><label>Ramp height <span class="v" id="rpHv"></span><input type="range" id="rpH" min="10" max="30" step="5" value="20"></label><div class="row"><button class="btn primary" id="rpGo">Release car</button><button class="btn" id="rpClear">Clear results</button></div><div class="box"><div class="readout" id="rpOut">0 cm<small>distance travelled past the end of the ramp</small></div></div></div></div>`;
+const rampUI = `<div class="sim"><div style="display:flex;flex-direction:column;gap:1cqw;min-width:0"><div class="simview" id="rpView" style="flex:1;height:auto"></div><div class="tablewrap"><table class="mini" id="rpTable"></table></div></div><div class="simctl"><label>Washers added<select id="rpSurf"></select></label><label>Ramp height <span class="v" id="rpHv"></span><input type="range" id="rpH" min="10" max="30" step="5" value="15"></label><div class="row"><button class="btn primary" id="rpGo">Release car</button><button class="btn" id="rpClear">Clear results</button></div><div class="box"><div class="readout" id="rpOut">0 cm<small>stopping distance from the bottom of the ramp</small></div></div></div></div>`;
 const chuteUI = `<div class="sim" style="grid-template-columns:1fr 1.4fr"><div class="simview" id="chView"></div><div class="simctl"><label>Canopy size (square) <span class="v" id="chSv"></span><input type="range" id="chS" min="0" max="60" step="10" value="30"></label><label>Canopy material<select id="chM"></select></label><label>String length<select id="chL"><option value="15">15 cm</option><option value="30" selected>30 cm</option><option value="45">45 cm</option></select></label><label>Load <span class="v" id="chPv"></span><input type="range" id="chP" min="1" max="8" step="1" value="3"></label><div class="row"><button class="btn primary" id="chGo">Drop from 2 m</button><button class="btn" id="chClear">Clear</button></div><div class="readout" id="chOut">0.00 s<small>fall time</small></div><div class="tablewrap"><table class="mini" id="chTable"></table></div></div></div>`;
 const fdUI = `<div class="sim"><div class="simview" id="fdView"></div><div class="simctl"><div class="fpick" id="fdPick"></div><div class="row"><button class="btn primary" id="fdNext">Next arrow</button><button class="btn" id="fdAll">All arrows</button><button class="btn" id="fdAsk">Balanced or unbalanced?</button></div><div class="verdict" id="fdOut" hidden></div><p class="small" id="fdHint"></p></div></div>`;
 const magUI = `<div class="sim"><div class="simview" id="mgView"></div><div class="simctl"><div class="row"><button class="btn" id="mgFlipA">Flip left magnet</button><button class="btn" id="mgFlipB">Flip right magnet</button></div><div class="row"><button class="btn primary" id="mgGo">Let go</button><button class="btn" id="mgReset">Reset</button></div><div class="verdict" id="mgOut"><p class="small">Predict first: will they attract or repel?</p></div></div></div>`;
@@ -542,34 +542,36 @@ const INIT = {
     draw();
   },
 
-  /* toy car ramp simulator */
+  /* toy car ramp simulator: mass and stopping distance */
   ramp(s){
-    const SURF=[["Smooth tiles",.05,"#c9d6de"],["Cardboard",.07,"#c99e6a"],["Carpet",.14,"#8a6fb0"],["Towel",.2,"#6fa7b0"],["Sandpaper",.26,"#a8854f"]];
-    const res={};const sel=$("#rpSurf"),H=$("#rpH");sel.innerHTML=SURF.map((x,i)=>`<option value="${i}">${x[0]}</option>`).join("");
+    /* car 30 g, each washer about 5 g. Rolling friction grows with weight, but axle friction and air
+       resistance do not, so a heavier car slows a little less and rolls slightly further. */
+    const CAR=30,WASH=5,MASS=[0,1,2,3,4].map(n=>[n,CAR+n*WASH]);
+    const res={};const sel=$("#rpSurf"),H=$("#rpH");sel.innerHTML=MASS.map((x,i)=>`<option value="${i}">${x[0]} (total ${x[1]} g)</option>`).join("");
     const px=1.15,x0=150,yF=200;
-    const scene=(dist,carX,carY,ang)=>{const sf=SURF[+sel.value],h=+H.value,yT=yF-h*4.2;
-      $("#rpView").innerHTML=`<svg viewBox="0 0 640 260" role="img" aria-label="Toy car on a ramp rolling onto ${sf[0]}">
-        <rect x="${x0}" y="${yF}" width="${640-x0}" height="16" fill="${sf[2]}"/><rect x="0" y="${yF+16}" width="640" height="44" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))"/>
+    const scene=(dist,carX,carY,ang)=>{const n=MASS[+sel.value][0],h=+H.value,yT=yF-h*4.2;
+      $("#rpView").innerHTML=`<svg viewBox="0 0 640 260" role="img" aria-label="Toy car carrying ${n} washers on a ramp ${h} cm high">
+        <rect x="${x0}" y="${yF}" width="${640-x0}" height="16" fill="#c9d6de"/><rect x="0" y="${yF+16}" width="640" height="44" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))"/>
         <polygon points="10,${yF} ${x0},${yF} 10,${yT}" fill="color-mix(in srgb,var(--fric) 30%,var(--surface))" stroke="var(--ink)" stroke-width="2"/>
         <text x="16" y="${yT-8}" font-size="13" fill="var(--muted)">${h} cm</text>
         ${Array.from({length:9},(_,i)=>`<line x1="${x0+i*50*px}" x2="${x0+i*50*px}" y1="${yF+16}" y2="${yF+28}" stroke="var(--muted)"/><text x="${x0+i*50*px}" y="${yF+44}" text-anchor="middle" font-size="12" fill="var(--muted)">${i*50}</text>`).join("")}
         <text x="${x0-12}" y="${yF+44}" text-anchor="end" font-size="12" fill="var(--muted)">cm</text>
-        ${dist!=null?`<line x1="${x0}" x2="${x0+dist*px}" y1="${yF-30}" y2="${yF-30}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+dist*px/2}" y="${yF-36}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">${dist} cm</text>`:""}
-        <g transform="translate(${carX} ${carY}) rotate(${ang})"><rect x="-22" y="-18" width="44" height="13" rx="4" fill="var(--bad)"/><rect x="-11" y="-26" width="20" height="9" rx="3" fill="var(--bad)" opacity=".8"/><circle cx="-12" cy="-4" r="5" fill="var(--ink)"/><circle cx="12" cy="-4" r="5" fill="var(--ink)"/></g></svg>`};
-    const top=()=>{const h=+H.value,yT=yF-h*4.2,ang=Math.atan2(yF-yT,x0-10)*180/Math.PI;return [10+20,yT+20*(yF-yT)/(x0-10),ang]};
-    const table=()=>{const rows=SURF.filter((x,i)=>res[i]);$("#rpTable").innerHTML=rows.length?`<thead><tr><th>Surface (height ${H.value} cm)</th><th>Trial 1</th><th>Trial 2</th><th>Trial 3</th><th>Average</th></tr></thead><tbody>${SURF.map((x,i)=>{const r=res[i];if(!r)return"";const a=r.length?Math.round(r.reduce((p,q)=>p+q,0)/r.length):"";return `<tr><td>${x[0]}</td>${[0,1,2].map(k=>`<td>${r[k]??""}</td>`).join("")}<td><b>${r.length===3?a:""}</b></td></tr>`}).join("")}</tbody>`:`<tbody><tr><td class="small">Results appear here. Run 3 trials for each surface.</td></tr></tbody>`};
+        ${dist!=null?`<line x1="${x0}" x2="${x0+dist*px}" y1="${yF-38}" y2="${yF-38}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+dist*px/2}" y="${yF-44}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">${dist} cm</text>`:""}
+        <g transform="translate(${carX} ${carY}) rotate(${ang})"><g transform="translate(-22 0)"><rect x="-22" y="-18" width="44" height="13" rx="4" fill="var(--bad)"/><rect x="-11" y="-26" width="20" height="9" rx="3" fill="var(--bad)" opacity=".8"/>${Array.from({length:n},(_,k)=>`<rect x="-9" y="${-31-k*4}" width="16" height="3.4" rx="1.5" fill="var(--muted)" stroke="var(--ink)" stroke-width=".6"/>`).join("")}<circle cx="-12" cy="-4" r="5" fill="var(--ink)"/><circle cx="12" cy="-4" r="5" fill="var(--ink)"/></g></g></svg>`};
+    const top=()=>{const h=+H.value,yT=yF-h*4.2,ang=Math.atan2(yF-yT,x0-10)*180/Math.PI;return [10+44,yT+44*(yF-yT)/(x0-10),ang]};
+    const table=()=>{const any=MASS.some((x,i)=>res[i]);$("#rpTable").innerHTML=any?`<thead><tr><th>Washers</th><th>Mass (g)</th><th>Trial 1</th><th>Trial 2</th><th>Trial 3</th><th>Average</th></tr></thead><tbody>${MASS.map((x,i)=>{const r=res[i];if(!r)return"";const a=r.length?Math.round(r.reduce((p,q)=>p+q,0)/r.length):"";return `<tr><td>${x[0]}</td><td>${x[1]}</td>${[0,1,2].map(k=>`<td>${r[k]??""}</td>`).join("")}<td><b>${r.length===3?a:""}</b></td></tr>`}).join("")}</tbody>`:`<tbody><tr><td class="small">Results appear here (cm). Run 3 trials for each mass.</td></tr></tbody>`};
     const idle=()=>{stopAnim();const [x,y,a]=top();scene(null,x,y,a);table()};
     sel.onchange=idle; H.oninput=()=>{$("#rpHv").textContent=`${H.value} cm`;Object.keys(res).forEach(k=>delete res[k]);idle()};
     $("#rpHv").textContent=`${H.value} cm`;
-    $("#rpGo").onclick=()=>{stopAnim();const i=+sel.value,mu=SURF[i][1],h=+H.value;const d=Math.min(440,Math.round(h/mu*0.6*rnd(.07)));
+    $("#rpGo").onclick=()=>{stopAnim();const i=+sel.value,m=MASS[i][1],h=+H.value;const d=Math.min(440,Math.round(0.8*h/(0.05+0.9/m)*rnd(.05)));
       const [sx,sy,ang]=top();const T1=600,T2=500+d*7;let t0=null;$("#rpGo").disabled=true;
       const step=ts=>{if(!t0)t0=ts;const t=ts-t0;
         if(t<T1){const f=(t/T1)**2;scene(null,sx+(x0-sx)*f,sy+(yF-sy)*f,ang)}
-        else{const f=Math.min(1,(t-T1)/T2),e=1-(1-f)**2,cur=Math.round(d*e);scene(cur,x0+d*px*e,yF,0);$("#rpOut").innerHTML=`${cur} cm<small>distance travelled past the end of the ramp</small>`;
+        else{const f=Math.min(1,(t-T1)/T2),e=1-(1-f)**2,cur=Math.round(d*e);scene(cur,x0+d*px*e,yF,0);$("#rpOut").innerHTML=`${cur} cm<small>stopping distance from the bottom of the ramp</small>`;
           if(f>=1){(res[i]=res[i]||[]);if(res[i].length>=3)res[i]=[];res[i].push(d);table();$("#rpGo").disabled=false;RAF=null;return}}
         RAF=requestAnimationFrame(step)};
       RAF=requestAnimationFrame(step)};
-    $("#rpClear").onclick=()=>{Object.keys(res).forEach(k=>delete res[k]);$("#rpOut").innerHTML=`0 cm<small>distance travelled past the end of the ramp</small>`;idle()};
+    $("#rpClear").onclick=()=>{Object.keys(res).forEach(k=>delete res[k]);$("#rpOut").innerHTML=`0 cm<small>stopping distance from the bottom of the ramp</small>`;idle()};
     idle();
   },
 
@@ -958,8 +960,8 @@ LESSONS.push(
 
 { n:7, title:"Friction",
   li:"Understand friction as a force that opposes movement.",
-  sc:["I can explain what friction is and what affects it.","I can give examples of useful and unwanted friction.","I can predict which surfaces will slow a toy car the most."],
-  prep:"A book, a ramp or board, and surface samples: carpet, towel, sandpaper, cardboard, tiles. A toy car.",
+  sc:["I can explain what friction is and what affects it.","I can give examples of useful and unwanted friction.","I can predict how the mass of a toy car affects its stopping distance."],
+  prep:"A book, and samples of carpet and tiles (or a smooth floor) for the demo. A ramp, a Hot Wheels car and a few washers with Blu Tack to show next week's practical.",
   slides:[
   {mode:"check", h:"Retrieval: mass and weight",
    html:`<div class="grid3">${[["Mass is measured in ___. Weight in ___.","Kilograms (kg). Newtons (N)."],["What is the weight of a 10 kg dog on Earth?","10 &times; 9.8 = 98 N"],["Does mass change on Mars?","No. Only weight changes."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
@@ -984,15 +986,15 @@ LESSONS.push(
   {mode:"talk", timer:4, h:"More friction or less?",
    html:`<div class="grid2">${[["Ways to increase friction","Rough surfaces, grip pads, tyre treads, sand on icy paths, chalk on a gymnast's hands, pushing surfaces together harder."],["Ways to decrease friction","Oil and grease, wheels and ball bearings, smooth or polished surfaces, wax on skis, ice."]].map(c=>rv(c[0],c[1],"Brainstorm in pairs, then click")).join("")}</div>`,
    notes:"Pairs list as many as they can in 2 minutes before revealing."},
-  {mode:"group", timer:5, h:"Prediction task: which surface slows a car most?",
-   html:`<div class="grid2 fill"><div class="box"><h3>Next week's practical</h3><p>A toy car rolls down a ramp onto different surfaces. We measure <b>how far</b> it travels.</p><div class="row">${["Smooth tiles","Cardboard","Carpet","Towel","Sandpaper"].map(t=>`<span class="chip" style="--sc:var(--fric)">${t}</span>`).join("")}</div></div>
-   <div class="box"><h3>In your book</h3>${steps(["Rank the surfaces from <b>furthest</b> to <b>shortest</b> distance.","Explain your ranking in one sentence using the word <b>friction</b>.","Write how confident you are: 1 (guess) to 5 (certain)."])}</div></div>`,
-   notes:"Prediction task is today's assessment. Keep it: students compare their prediction with real data in Week 3."},
-  {mode:"learn", h:"Coming up: the friction investigation",
-   html:`<div class="grid3">${[["Plan","Lesson 9: question, hypothesis and variables"],["Test","Lesson 10: real cars and ramps, 3 trials each"],["Compare and write","Lessons 11 and 12: online simulator, graph and a full report"]].map((c,i)=>`<div class="box"><span class="small" style="font-family:var(--f-mono);color:var(--accent);font-weight:700">STEP ${i+1}</span><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div><p class="lead">Practical Report 1 is worth 25% of this unit.</p>`,
+  {mode:"group", timer:5, h:"Prediction task: does a heavier car stop sooner?",
+   html:`<div class="grid2 fill"><div class="box"><h3>Next week's practical</h3><p>A Hot Wheels car rolls down a ramp and onto the floor. We add washers to make it heavier, then measure its <b>stopping distance</b>: how far it rolls from the bottom of the ramp before it stops.</p><div class="row">${["0 washers","1 washer","2 washers","3 washers","4 washers"].map(t=>`<span class="chip" style="--sc:var(--fric)">${t}</span>`).join("")}</div></div>
+   <div class="box"><h3>In your book</h3>${steps(["Predict: as the car gets <b>heavier</b>, will it stop <b>sooner</b>, roll <b>further</b>, or make <b>no difference</b>?","Explain your prediction in one sentence using the words <b>mass</b> and <b>friction</b>.","Write how confident you are: 1 (guess) to 5 (certain)."])}</div></div>`,
+   notes:"Prediction task is today's assessment. Expect a split class: some say heavier means more energy so it goes further, others say heavier means more friction so it stops sooner. Both have science behind them, which is what makes the practical worth doing. Keep the predictions: students compare them with real data in Week 3."},
+  {mode:"learn", h:"Coming up: the stopping distance investigation",
+   html:`<div class="grid3">${[["Plan","Lesson 9: question, hypothesis and variables"],["Test","Lesson 10: real cars, ramps and washers, 3 trials for each mass"],["Compare and write","Lessons 11 and 12: online simulator, graph and a full report"]].map((c,i)=>`<div class="box"><span class="small" style="font-family:var(--f-mono);color:var(--accent);font-weight:700">STEP ${i+1}</span><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div><p class="lead">Practical Report 1 is worth 25% of this unit.</p>`,
    notes:"Use the weighting only if your faculty uses it. Adjust the slide text if not."},
   {mode:"check", h:"Exit ticket",
-   html:`<div class="grid3">${[["Which direction does friction act?","Opposite to the direction of motion."],["Give one useful and one unwanted example of friction.","Useful: brakes, grip. Unwanted: wear on engine parts, sticky drawers."],["Why do brakes get hot?","Friction turns movement energy into heat."]].map(c=>rv(c[0],c[1])).join("")}</div>${exitFist(["I can explain what friction is and what affects it.","I can give examples of useful and unwanted friction.","I can predict which surfaces will slow a toy car the most."])}`,
+   html:`<div class="grid3">${[["Which direction does friction act?","Opposite to the direction of motion."],["Give one useful and one unwanted example of friction.","Useful: brakes, grip. Unwanted: wear on engine parts, sticky drawers."],["Why do brakes get hot?","Friction turns movement energy into heat."]].map(c=>rv(c[0],c[1])).join("")}</div>${exitFist(["I can explain what friction is and what affects it.","I can give examples of useful and unwanted friction.","I can predict how the mass of a toy car affects its stopping distance."])}`,
    notes:""}
   ]},
 
@@ -1031,29 +1033,29 @@ LESSONS.push(
    notes:"Exit ticket assessment. Sort into got it / not yet."}
   ]}
 );
-/* ---------- Week 3: Practical 1, friction investigation ---------- */
+/* ---------- Week 3: Practical 1, mass and stopping distance investigation ---------- */
 const PHET="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_en.html";
-const REPORT_PARTS=[["Aim","What are you trying to find out?","To investigate how the type of surface affects the distance a toy car travels after rolling down a ramp."],
-  ["Hypothesis","What do you think will happen and why? Use: If... then... because...","If the surface is rougher, then the car will travel a shorter distance, because rough surfaces create more friction, which slows the car down."],
-  ["Variables","Independent (what you change), dependent (what you measure), controlled (what you keep the same).","IV: type of surface. DV: distance travelled (cm). CV: same car, same ramp height, same release point, no pushing, same measuring method."],
-  ["Method","Numbered steps someone else could follow exactly. Include safety.","1. Set the ramp to 20 cm high. 2. Place the surface at the bottom. 3. Hold the car with its back wheels on the start line. 4. Let go without pushing. 5. Measure from the end of the ramp to the back of the car. 6. Repeat 3 times for each surface."],
-  ["Results","A table with units in the headings, all trials and averages, plus a graph.","Table: Surface | Trial 1 (cm) | Trial 2 (cm) | Trial 3 (cm) | Average (cm). Column graph of average distance for each surface."],
-  ["Conclusion","What do your results show? Use data. Was your hypothesis supported?","The car travelled furthest on tiles (average 238 cm) and shortest on sandpaper (47 cm). The rougher the surface, the shorter the distance. This supports my hypothesis because rougher surfaces have more friction."],
-  ["Evaluation","What went wrong or could be improved? Was it a fair test? Were results reliable?","Some trials were different because the car sometimes veered sideways. To improve, use guide rails and do 5 trials. Our results were fairly reliable because the 3 trials were close for most surfaces."]];
+const REPORT_PARTS=[["Aim","What are you trying to find out?","To investigate how the mass of a toy car affects its stopping distance after rolling down a ramp."],
+  ["Hypothesis","What do you think will happen and why? Use: If... then... because...","If the mass of the car increases, then the stopping distance will increase, because a heavier car has more kinetic energy at the bottom of the ramp, so friction takes longer to stop it."],
+  ["Variables","Independent (what you change), dependent (what you measure), controlled (what you keep the same).","IV: mass of the car (g). DV: stopping distance (cm). CV: same car, same ramp height (15 cm), same release point, no pushing, same floor, same measuring point."],
+  ["Method","Numbered steps someone else could follow exactly. Include safety.","1. Set the ramp to 15 cm high. 2. Weigh the car. 3. Hold the car with its back wheels on the start line. 4. Let go without pushing. 5. Measure from the bottom of the ramp to the front of the car. 6. Repeat 3 times. 7. Add one washer, reweigh and repeat, up to 4 washers."],
+  ["Results","A table with units in the headings, all trials and averages, plus a graph.","Table: Washers added | Total mass (g) | Trial 1 (cm) | Trial 2 (cm) | Trial 3 (cm) | Average (cm). Line graph of average stopping distance against total mass."],
+  ["Conclusion","What do your results show? Use data. Was your hypothesis supported?","As the mass increased, the stopping distance increased slightly. The 30 g car stopped after 148 cm and the 50 g car after 174 cm. The heavier car had more kinetic energy, but it also pressed down harder on the floor, so friction grew too. That is why the increase was small. My hypothesis was supported."],
+  ["Evaluation","What went wrong or could be improved? Was it a fair test? Were results reliable?","Some trials were different because the car veered sideways or a washer slipped. To improve, use tape lanes, tape the washers in the same spot every time and do 5 trials. Our results were fairly reliable because the 3 trials were close for most masses."]];
 const reportTabs = (data) => tabs(data.map(p=>[p[0],`<p class="lead">${p[1]}</p><div class="box tint push"><h3 class="ink">Example</h3><p>${p[2]}</p></div>`]));
 
 LESSONS.push(
-{ n:9, title:"Planning the friction investigation",
-  li:"Plan a fair test investigating friction.",
+{ n:9, title:"Planning the stopping distance investigation",
+  li:"Plan a fair test investigating how mass affects stopping distance.",
   sc:["I can identify the independent, dependent and controlled variables.","I can write a hypothesis using If... then... because...","I can set up a results table with units."],
-  prep:"Investigation planning sheet. Ramp, toy car and surfaces on display. Laptops for the simulator preview (optional).",
+  prep:"Practical worksheet (Mass and Stopping Distance). Ramp, Hot Wheels car, washers, Blu Tack and scales on display. Laptops for the simulator preview (optional).",
   slides:[
-  {mode:"check", h:"Retrieval: friction and air resistance",
-   html:`<div class="grid4">${[["Friction acts in which direction?","Opposite to motion."],["Rough or smooth: which has more friction?","Rough."],["What increases air resistance?","Bigger surface area, faster speed."],["Contact or non-contact: air resistance?","Contact."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+  {mode:"check", h:"Retrieval: mass, friction and air resistance",
+   html:`<div class="grid4">${[["Friction acts in which direction?","Opposite to motion."],["Mass is measured in...","Grams (g) or kilograms (kg)."],["What happens to friction when surfaces are pressed together harder?","It increases."],["What increases air resistance?","Bigger surface area, faster speed."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
    notes:""},
   {mode:"learn", h:"Our investigation question",
-   html:`<div class="box fill" style="justify-content:center;align-items:center;text-align:center"><p class="small" style="font-family:var(--f-mono);color:var(--accent);font-weight:700">PRACTICAL 1</p><p class="spot" style="font-size:4.2cqw">How does surface type affect the distance travelled by a toy car down a ramp?</p><p class="lead">Equipment: toy cars, ramps, 5 surfaces, measuring tapes, an online simulator.</p></div>`,
-   notes:"Show the actual equipment. Let students handle the surfaces and feel the difference."},
+   html:`<div class="box fill" style="justify-content:center;align-items:center;text-align:center"><p class="small" style="font-family:var(--f-mono);color:var(--accent);font-weight:700">PRACTICAL 1</p><p class="spot" style="font-size:4.2cqw">How does the mass of a toy car affect its stopping distance after rolling down a ramp?</p><p class="lead">Equipment: Hot Wheels cars, ramps, washers and Blu Tack, scales, measuring tapes, an online simulator.</p></div>`,
+   notes:"Show the actual equipment. Weigh the car in front of the class, then add a washer and weigh it again. Define stopping distance: how far the car rolls along the floor from the bottom of the ramp until it stops."},
   {mode:"watch", h:"Variables in science",
    html:vid("J9kCgWAuB0Y","Variables in Science: Independent, Dependent and Controlled!","BioMan Biology",["What is the independent variable?","What is the dependent variable?","Why do we need controlled variables?"]),
    notes:"Trick to remember: I change the Independent variable. The Dependent variable Depends on it."},
@@ -1062,20 +1064,20 @@ LESSONS.push(
    notes:"Copy into the planning sheet."},
   {mode:"whole", h:"Sort the variables for our investigation", init:"sort",
    data:{zones:[["iv","Independent","push"],["dv","Dependent","fric"],["cv","Controlled","grav"]],
-     items:[["Type of surface","iv"],["Distance the car travels (cm)","dv"],["Height of the ramp","cv"],["The same toy car","cv"],["Release point on the ramp","cv"],["Letting go without pushing","cv"],["How distance is measured","cv"],["Length of the ramp","cv"]]},
+     items:[["Mass of the car (g)","iv"],["Stopping distance (cm)","dv"],["Height of the ramp","cv"],["The same toy car","cv"],["Release point on the ramp","cv"],["Letting go without pushing","cv"],["The floor surface","cv"],["Where the distance is measured to","cv"]]},
    html:`<p class="small">Click a card, then a box. Press Check when the class agrees.</p>${sortUI}`,
-   notes:"Push for extra controlled variables: same person releasing, ramp angle, surface lying flat."},
+   notes:"Push for extra controlled variables: same person releasing, same amount of Blu Tack, washers in the same spot on the roof."},
   {mode:"write", timer:5, h:"Aim and hypothesis",
-   html:`<div class="grid2 fill"><div class="box"><h3>Aim</h3><p class="starter">To investigate how ___ affects ___.</p><h3>Hypothesis</h3><p class="starter">If the surface is ___, then the car will travel ___, because ___.</p><p class="small">Use your prediction from Lesson 7 to help you.</p></div>${rv("Example hypothesis","If the surface is rougher, then the car will travel a shorter distance, because rough surfaces create more friction, which slows the car down more quickly.")}</div>`,
-   notes:"The 'because' must use science (friction). 'Because I think so' doesn't count."},
+   html:`<div class="grid2 fill"><div class="box"><h3>Aim</h3><p class="starter">To investigate how ___ affects ___.</p><h3>Hypothesis</h3><p class="starter">If the mass of the car increases, then the stopping distance will ___, because ___.</p><p class="small">Use your prediction from Lesson 7 to help you.</p></div>${rv("Example hypothesis","If the mass of the car increases, then the stopping distance will increase, because a heavier car has more kinetic energy at the bottom of the ramp, so friction takes longer to stop it.")}</div>`,
+   notes:"The 'because' must use science (kinetic energy, friction, mass). 'Because I think so' doesn't count. A hypothesis that predicts a shorter distance (more friction) is just as valid if it is explained."},
   {mode:"learn", h:"Method",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Set the ramp to 20 cm high using a ruler.","Place the first surface flat at the bottom of the ramp.","Hold the car with its back wheels on the start line.","Let go. <b>Don't push.</b>","Measure from the end of the ramp to the <b>back</b> of the car.","Repeat 3 times. Then change surfaces."])}</div>
-   <div class="box"><h3>Safety</h3><ul><li>Keep walkways clear of ramps and tapes.</li><li>Cars stay on the floor or desk.</li><li>Sandpaper can scratch: handle by the edges.</li></ul><h3>Roles</h3><p>Launcher, measurer, recorder, checker.</p></div></div>`,
-   notes:"Students copy or glue in the method. Discuss why measuring to the back of the car matters (consistency)."},
+   html:`<div class="grid2 fill"><div class="box">${steps(["Set the ramp to 15 cm high on a smooth, flat floor.","Weigh the car and record its mass.","Hold the car with its back wheels on the start line.","Let go. <b>Don't push.</b>","Measure from the bottom of the ramp to the <b>front</b> of the car.","Repeat 3 times. Then add one washer, reweigh and repeat, up to 4 washers."])}</div>
+   <div class="box"><h3>Safety</h3><ul><li>Keep the test lane clear. Don't walk across it while a car is rolling.</li><li>Secure the ramp so it can't slide or fall.</li><li>Pick up washers straight away so nobody slips.</li></ul><h3>Roles</h3><p>Launcher, measurer, recorder, checker.</p></div></div>`,
+   notes:"Students glue in the practical worksheet. Discuss why we reweigh after every washer (the Blu Tack adds mass too) and why measuring to the front of the car every time matters (consistency)."},
   {mode:"write", timer:5, h:"Set up your results table",
-   html:`<div class="tablewrap"><table class="ctable"><thead><tr><th>Surface</th><th>Trial 1 (cm)</th><th>Trial 2 (cm)</th><th>Trial 3 (cm)</th><th>Average (cm)</th></tr></thead><tbody>${["Smooth tiles","Cardboard","Carpet","Towel","Sandpaper"].map(t=>`<tr><td>${t}</td><td></td><td></td><td></td><td></td></tr>`).join("")}</tbody></table></div>
+   html:`<div class="tablewrap"><table class="ctable"><thead><tr><th>Washers added</th><th>Total mass (g)</th><th>Trial 1 (cm)</th><th>Trial 2 (cm)</th><th>Trial 3 (cm)</th><th>Average (cm)</th></tr></thead><tbody>${["0","1","2","3","4"].map(t=>`<tr><td>${t}</td><td></td><td></td><td></td><td></td><td></td></tr>`).join("")}</tbody></table></div>
    <div class="grid3">${["Units go in the <b>headings</b>, not in every box.","The independent variable goes in the <b>first column</b>.","Leave room for an <b>average</b> column."].map(t=>`<div class="box"><p>${t}</p></div>`).join("")}</div>`,
-   notes:"Rule up with a ruler and pencil."},
+   notes:"The table is on the worksheet. Point out that the mass column is filled in on the day, after weighing."},
   {mode:"learn", h:"Preview: the online simulator",
    html:`<div class="grid2 fill"><div class="box"><h3>Two ways to test</h3><p>Next lesson we test real cars. In Lesson 11 we test the same idea on a <b>simulator</b> and compare.</p><p class="lead">Think: how could a simulation be <b>better</b> than real cars? How could it be <b>worse</b>?</p></div><div class="box"><h3>Simulators we'll use</h3><ul><li>The toy car ramp simulator built into these slides</li><li>PhET <i>Forces and Motion: Basics</i> (Friction screen)</li></ul></div></div>`,
    notes:"Seed the strengths and limitations discussion for Lesson 11."},
@@ -1084,76 +1086,76 @@ LESSONS.push(
    notes:"Investigation plan is the assessment. Collect or photograph plans to check before the practical."}
   ]},
 
-{ n:10, title:"Conducting the friction practical",
-  li:"Collect data from a physical friction investigation.",
+{ n:10, title:"Conducting the stopping distance practical",
+  li:"Collect data on how mass affects the stopping distance of a toy car.",
   sc:["I can follow a method to carry out a fair test.","I can measure accurately and record data in a table."],
-  prep:"Per group: ramp, toy car, 5 surfaces, measuring tape, books or blocks to set height, results sheet. Floor space marked out.",
+  prep:"Per group: ramp, Hot Wheels car, 4 washers (or 5c coins), Blu Tack, measuring tape, masking tape, books or blocks to set height, practical worksheet. Electronic scales shared between groups. Floor space marked out.",
   slides:[
   {mode:"check", h:"Before we start",
-   html:`<div class="grid3">${[["What is our independent variable?","Type of surface."],["What do we measure?","Distance travelled (cm) from the end of the ramp to the back of the car."],["Name two things we keep the same.","Ramp height, car, release point, no pushing."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   html:`<div class="grid3">${[["What is our independent variable?","The mass of the car (g)."],["What do we measure?","Stopping distance (cm) from the bottom of the ramp to the front of the car."],["Name two things we keep the same.","Ramp height, car, release point, no pushing, floor surface."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
    notes:""},
   {mode:"group", h:"Group roles",
-   html:`<div class="grid4">${[["Launcher","Holds the car on the start line and lets go without pushing.","push"],["Measurer","Measures to the back of the car, reads the tape at eye level.","fric"],["Recorder","Writes every result in the table straight away.","grav"],["Checker","Checks the ramp height and surface before every trial. Watches for unfair tests.","air"]].map(c=>`<div class="fcard ${c[2]}"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div><p class="lead">Swap roles after each surface so everyone has a turn.</p>`,
+   html:`<div class="grid4">${[["Launcher","Holds the car on the start line and lets go without pushing.","push"],["Measurer","Measures to the front of the car, reads the tape at eye level.","fric"],["Recorder","Writes every result in the table straight away.","grav"],["Checker","Weighs the car after each washer, checks the ramp height, watches for unfair tests.","air"]].map(c=>`<div class="fcard ${c[2]}"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div><p class="lead">Swap roles after each mass so everyone has a turn.</p>`,
    notes:"Groups of 4. Groups of 3 combine Checker and Launcher."},
   {mode:"learn", h:"Measure like a scientist",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Start the tape at the <b>end of the ramp</b>, not the start.","Measure in a straight line to the <b>back</b> of the car.","Read at eye level, to the nearest <b>centimetre</b>.","If the car hits something or goes off the surface, <b>redo</b> the trial."])}</div>
+   html:`<div class="grid2 fill"><div class="box">${steps(["Start the tape at the <b>bottom of the ramp</b>, not the start line.","Measure in a straight line to the <b>front</b> of the car.","Read at eye level, to the nearest <b>centimetre</b>.","If the car hits something, veers off course or a washer falls off, <b>redo</b> the trial."])}</div>
    <div class="box"><h3>Spot the anomaly</h3><p>If one trial is very different from the others, check what happened. Note it, then do one more trial.</p><p class="small">Example: 85 cm, 88 cm, <b>41 cm</b> (car bumped a chair leg).</p></div></div>`,
    notes:""},
   {mode:"prac", timer:30, h:"Practical time",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Set up the ramp at 20 cm.","Test each surface 3 times.","Record every result immediately.","Swap roles after each surface."])}<p class="small">Finished early? Try a 6th surface of your choice and add it to your table.</p></div>
-   <div class="box"><h3>Teacher checklist</h3><ul class="checklist"><li>Ramp height checked</li><li>Same car every trial</li><li>No pushing</li><li>Measured to back of car</li><li>Results written with units</li></ul></div></div>`,
+   html:`<div class="grid2 fill"><div class="box">${steps(["Set up the ramp at 15 cm.","Weigh the car. Test it 3 times.","Add a washer, reweigh, test 3 times. Repeat up to 4 washers.","Record every result immediately. Swap roles after each mass."])}<p class="small">Finished early? Try 6 washers and add a row to your table.</p></div>
+   <div class="box"><h3>Teacher checklist</h3><ul class="checklist"><li>Ramp height checked</li><li>Same car every trial</li><li>Car reweighed after each washer</li><li>No pushing</li><li>Measured to front of car</li><li>Results written with units</li></ul></div></div>`,
    notes:"Circulate with the checklist: this is teacher observation evidence. Photograph setups for students' method sections."},
   {mode:"whole", h:"Share results", init:"cells",
-   html:`<p>Each group reads out their average for one surface. Click to compare with a typical class.</p><div class="tablewrap"><table class="ctable"><thead><tr><th>Surface</th><th>Typical average (cm)</th><th>What we notice</th></tr></thead><tbody>${[["Smooth tiles","about 240","Furthest. Least friction."],["Cardboard","about 170","Smooth but slightly rougher."],["Carpet","about 90","Fibres catch the wheels."],["Towel","about 60","Soft, bumpy surface."],["Sandpaper","about 45","Shortest. Most friction."]].map(r=>`<tr><td><b>${r[0]}</b></td><td class="rcell">${r[1]}</td><td class="rcell">${r[2]}</td></tr>`).join("")}</tbody></table></div>`,
-   notes:"Your class data will differ (car, ramp, surfaces). The pattern is what matters. Note any groups with very different numbers for discussion."},
+   html:`<p>Each group reads out their average for one mass. Click to compare with a typical class.</p><div class="tablewrap"><table class="ctable"><thead><tr><th>Washers (total mass)</th><th>Typical average (cm)</th><th>What we notice</th></tr></thead><tbody>${[["0 (30 g)","about 150","The lightest car stops first."],["1 (35 g)","about 155","Only a little further."],["2 (40 g)","about 160","Still a small change."],["3 (45 g)","about 170","The trend keeps going up."],["4 (50 g)","about 175","Furthest, but not by much."]].map(r=>`<tr><td><b>${r[0]}</b></td><td class="rcell">${r[1]}</td><td class="rcell">${r[2]}</td></tr>`).join("")}</tbody></table></div>`,
+   notes:"Your class data will differ (car, washers, floor, ramp). Many groups see a small increase with mass, but some will see no clear pattern because the change is small compared with trial-to-trial variation. Both are valid results: ask groups to compare the size of the change with the spread of their trials. Why so small? A heavier car has more kinetic energy, but it also presses down harder, so rolling friction grows too. Only axle friction and air resistance stay about the same, so they matter a bit less for a heavier car."},
   {mode:"talk", timer:3, h:"What went wrong?",
-   html:`<div class="grid3">${[["The car veered off to the side.","Distance changes. Fix: guide rails or tape lanes."],["Someone gave the car a push.","Unfair test. Fix: one launcher, release with a ruler gate."],["Measured to the front of the car one time, the back the next.","Inconsistent. Fix: agree on one point."]].map(c=>rv(c[0],c[1],"Did this happen to you?")).join("")}</div>`,
+   html:`<div class="grid3">${[["The car veered off to the side.","Distance changes. Fix: guide rails or tape lanes."],["A washer slipped or the Blu Tack rubbed on a wheel.","Mass or friction changed mid-trial. Fix: tape washers flat in the same spot."],["Someone gave the car a push.","Unfair test. Fix: one launcher, release with a ruler gate."]].map(c=>rv(c[0],c[1],"Did this happen to you?")).join("")}</div>`,
    notes:"These become the evaluation section of the report. Students note any problems their group had."},
   {mode:"check", h:"Exit: one problem, one fix",
    html:`<div class="box fill" style="justify-content:center"><p class="lead">On a sticky note:</p><p class="def">"One thing that made our test less fair was ___. Next time we could ___."</p></div>`,
-   notes:"Raw data table is the assessment. Check every group has 3 trials for each surface before they pack up."}
+   notes:"Raw data table is the assessment. Check every group has a mass and 3 trials for each number of washers before they pack up."}
   ]},
 
 { n:11, title:"Simulator and comparing results",
-  li:"Use a simulator to model friction and compare digital and physical results.",
+  li:"Use a simulator to model stopping distance and compare digital and physical results.",
   sc:["I can collect data from a simulation.","I can compare simulated and real results.","I can describe strengths and limitations of simulations."],
   prep:"Laptops or tablets (one per pair). Raw data from Lesson 10. Graph paper.",
   slides:[
   {mode:"check", h:"Retrieval: our practical",
-   html:`<div class="grid3">${[["Which surface gave the longest distance?","Smooth tiles (in most groups)."],["Why did we do 3 trials?","Reliability. One result could be a fluke."],["What is an anomaly?","A result that doesn't fit the pattern."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   html:`<div class="grid3">${[["Which mass gave the longest stopping distance?","The heaviest car (4 washers) in most groups, but only by a little."],["Why did we do 3 trials?","Reliability. One result could be a fluke."],["What is an anomaly?","A result that doesn't fit the pattern."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
    notes:""},
   {mode:"whole", h:"Toy car ramp simulator", init:"ramp",
    html:rampUI,
-   notes:"Model one surface (3 trials) as a class. Ask: why aren't the 3 trials exactly the same? (The simulator adds small random variation like real life.) Then pairs complete all 5 surfaces on their own device."},
+   notes:"Model 0 washers (3 trials) as a class. Ask: why aren't the 3 trials exactly the same? (The simulator adds small random variation like real life.) Then pairs complete all 5 masses on their own device. The simulator car is 30 g and each washer adds 5 g."},
   {mode:"prac", timer:12, h:"Pairs: collect simulator data",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Open these slides on your device and go to Lesson 11.","Keep the ramp at <b>20 cm</b> (same as our real test).","Run 3 trials for each surface.","Copy the simulator table into your book next to your real results."])}</div>
-   <div class="box"><h3>Extension</h3><p>Change the ramp height to 30 cm. What happens to the distances? Why?</p><p class="small">Higher ramp, faster car at the bottom, so it travels further on every surface.</p></div></div>`,
+   html:`<div class="grid2 fill"><div class="box">${steps(["Open these slides on your device and go to Lesson 11.","Keep the ramp at <b>15 cm</b> (same as our real test).","Run 3 trials for 0, 1, 2, 3 and 4 washers.","Copy the simulator table onto your worksheet next to your real results."])}</div>
+   <div class="box"><h3>Extension</h3><p>Change the ramp height to 30 cm. What happens to the distances? Does mass still make only a small difference?</p><p class="small">Higher ramp, more kinetic energy at the bottom, so the car rolls further at every mass. The effect of mass stays small.</p></div></div>`,
    notes:"If devices are limited, run the simulator at the front and have the class call out results."},
   {mode:"research", h:"PhET: Forces and Motion Basics",
    html:`<div class="grid2 fill" style="grid-template-columns:1.55fr 1fr">${CAN_EMBED?`<div class="vid sim-embed"><iframe src="${PHET}" title="PhET Forces and Motion: Basics" allowfullscreen></iframe></div>`:`<a class="vidlink" href="${PHET}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span><b>PhET: Forces and Motion Basics</b><span>opens the simulation</span></a>`}
-   <div class="box"><h3>Open the Friction screen</h3>${steps(["Choose the <b>Friction</b> screen.","Tick the boxes to show forces and values.","Push the crate with the same force. Move the friction slider from none to lots.","What happens to the crate's speed?"])}<p class="small">Link: <a href="${PHET}" target="_blank" rel="noopener">phet.colorado.edu</a></p></div></div>`,
-   notes:"Free University of Colorado simulation. If the school network blocks the embed, open the link in a new tab."},
+   <div class="box"><h3>Open the Friction screen</h3>${steps(["Choose the <b>Friction</b> screen.","Tick the boxes to show forces, values and masses.","Push a light object, then a heavier one (or stack two). Watch the <b>friction</b> arrow.","What happens to friction as the mass goes up? How does this help explain our results?"])}<p class="small">Link: <a href="${PHET}" target="_blank" rel="noopener">phet.colorado.edu</a></p></div></div>`,
+   notes:"Free University of Colorado simulation. If the school network blocks the embed, open the link in a new tab. Key idea: a heavier object presses down harder, so friction is bigger. This is why adding mass to our car only made a small difference."},
   {mode:"whole", h:"Real vs simulator", init:"chart",
-   data:{type:"line",series:[{pts:[[1,238],[2,172],[3,88],[4,58],[5,47]],color:"var(--fric)"},{pts:[[1,251],[2,168],[3,84],[4,61],[5,45]],color:"var(--air)",dash:"6 5",hidden:true}],o:{label:"Example real and simulated distances",ylabel:"Average distance (cm)",xmin:.5,xmax:5.5,ymin:0,ymax:300,yticks:[0,100,200,300],xticks:[]}},
-   html:`<div class="grid2 fill" style="grid-template-columns:1.5fr 1fr"><div class="box chartbox"><div id="chart"></div><div class="row small">${["1 Tiles","2 Cardboard","3 Carpet","4 Towel","5 Sandpaper"].join(" &middot; ")}</div></div>
+   data:{type:"line",series:[{pts:[[30,148],[35,156],[40,161],[45,170],[50,174]],color:"var(--fric)"},{pts:[[30,151],[35,158],[40,166],[45,171],[50,177]],color:"var(--air)",dash:"6 5",hidden:true}],o:{label:"Example real and simulated stopping distances",ylabel:"Average stopping distance (cm)",xlabel:"Total mass of car (g)",xmin:27,xmax:53,ymin:0,ymax:200,yticks:[0,50,100,150,200],xticks:[30,35,40,45,50]}},
+   html:`<div class="grid2 fill" style="grid-template-columns:1.5fr 1fr"><div class="box chartbox"><div id="chart"></div></div>
    <div class="box"><p><span class="fbadge fric">Real class data</span><br><span class="fbadge air">Simulator</span></p><button class="btn primary" id="chartGo">Show simulator results</button><p class="lead">Do they show the same <b>pattern</b>?</p><p class="small">The numbers are never identical. Scientists look for whether the trend agrees.</p></div></div>`,
-   notes:"Example data only. Swap in your class averages if you like. Both show: rougher surface, shorter distance."},
+   notes:"Example data only. Swap in your class averages if you like. Both show: heavier car, slightly longer stopping distance. Point out how the y-axis starting at 0 shows the change is small."},
   {mode:"talk", timer:4, h:"Strengths and limitations of simulations", init:"cells",
    html:`<div class="tablewrap"><table class="ctable"><thead><tr><th>Strengths (better)</th><th>Limitations (worse)</th></tr></thead><tbody>${[["Fast: many trials in minutes","Only as good as the maths it uses"],["Perfectly controlled variables","Doesn't include real problems like a bent axle or a car veering"],["No equipment needed, nothing breaks","You don't learn hands-on measuring skills"],["Can test things that are hard to do for real","Results can look more certain than they really are"]].map(r=>`<tr><td class="rcell">${r[0]}</td><td class="rcell">${r[1]}</td></tr>`).join("")}</tbody></table></div><div class="row"><button class="btn" id="cellsAll">Reveal all</button><span class="small">Pairs list 2 of each, then click to compare.</span></div>`,
    notes:"Comparison notes are part of today's assessment."},
   {mode:"learn", h:"Which graph?",
-   html:`<div class="grid2 fill"><div class="fcard fric"><h3 style="font-size:2.6cqw">Column graph</h3><p>Use when the independent variable is in <b>categories</b> (words), like types of surface.</p><p class="lead">This is our graph.</p></div><div class="fcard push"><h3 style="font-size:2.6cqw">Line graph</h3><p>Use when the independent variable is a <b>number</b> that can change smoothly, like ramp height or canopy size.</p><p class="small">We'll use one in Week 6.</p></div></div>`,
+   html:`<div class="grid2 fill"><div class="fcard push"><h3 style="font-size:2.6cqw">Column graph</h3><p>Use when the independent variable is in <b>categories</b> (words), like types of surface or parachute material.</p></div><div class="fcard fric"><h3 style="font-size:2.6cqw">Line graph</h3><p>Use when the independent variable is a <b>number</b> that can change smoothly, like mass, ramp height or canopy size.</p><p class="lead">Mass is a number, so this is our graph.</p></div></div>`,
    notes:""},
   {mode:"write", timer:12, h:"Draw your graph",
    html:`<div class="grid2 fill"><div class="box"><h3>Graph checklist: TAILS</h3><ul class="checklist"><li><b>T</b>itle that says what was investigated</li><li><b>A</b>xes: IV across the bottom, DV up the side</li><li><b>I</b>ntervals that are even (0, 50, 100...)</li><li><b>L</b>abels with units, e.g. Distance (cm)</li><li><b>S</b>cale that uses most of the paper</li></ul></div><div class="box chartbox" id="chart"></div></div>`,
-   init:"chart", data:{type:"bar",cats:["Tiles","Cardboard","Carpet","Towel","Sandpaper"],vals:[238,172,88,58,47],o:{label:"Example column graph",ylabel:"Average distance (cm)",ymax:250,yticks:[0,50,100,150,200,250],colors:["var(--fric)","var(--fric)","var(--fric)","var(--fric)","var(--fric)"]}},
+   init:"chart", data:{type:"line",series:[{pts:[[30,148],[35,156],[40,161],[45,170],[50,174]],color:"var(--fric)"}],o:{label:"Example line graph",ylabel:"Average stopping distance (cm)",xlabel:"Total mass of car (g)",xmin:27,xmax:53,ymin:0,ymax:200,yticks:[0,50,100,150,200],xticks:[30,35,40,45,50]}},
    notes:"Graph draft is the assessment. The example uses sample data; students graph their own averages."},
   {mode:"check", h:"Exit ticket",
-   html:`<div class="grid3">${[["Did the simulator agree with our real results?","Yes, the pattern was the same: rougher surface, shorter distance."],["Give one strength of using a simulation.","Fast, controlled, can repeat many times."],["Give one limitation.","It can't include real-world problems like a car veering sideways."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   html:`<div class="grid3">${[["Did the simulator agree with our real results?","Yes, both showed the stopping distance increasing slightly as the mass increased."],["Give one strength of using a simulation.","Fast, controlled, can repeat many times."],["Give one limitation.","It can't include real-world problems like a car veering sideways."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
    notes:""}
   ]},
 
-{ n:12, title:"Friction report write-up",
+{ n:12, title:"Stopping distance report write-up",
   li:"Write a scientific report using evidence from the investigation.",
   sc:["I can write each section of a scientific report.","I can write a conclusion that uses data as evidence.","I can evaluate my investigation and suggest improvements."],
   prep:"Report template (printed or digital). Students' plans, results and graphs from Lessons 9 to 11.",
@@ -1165,18 +1167,18 @@ LESSONS.push(
    html:reportTabs(REPORT_PARTS),
    notes:"Click through the tabs. Students check their draft against each example."},
   {mode:"learn", h:"Writing a strong conclusion",
-   html:`<div class="grid2 fill"><div class="box"><h3>Four parts</h3>${steps(["<b>Pattern:</b> What happened to the DV as the IV changed?","<b>Data:</b> Quote numbers from your results.","<b>Science:</b> Explain why, using friction.","<b>Hypothesis:</b> Was it supported or not?"])}</div>
-   <div class="grid2">${[["Weak","The sandpaper was the slowest."],["Strong","As the surface got rougher, the distance travelled decreased. The car went 238 cm on tiles but only 47 cm on sandpaper. Rough surfaces create more friction, which slows the car faster. This supports my hypothesis."]].map(c=>`<div class="box ${c[0]==="Strong"?"tint push":""}"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div></div>`,
+   html:`<div class="grid2 fill"><div class="box"><h3>Four parts</h3>${steps(["<b>Pattern:</b> What happened to the DV as the IV changed?","<b>Data:</b> Quote numbers from your results.","<b>Science:</b> Explain why, using kinetic energy and friction.","<b>Hypothesis:</b> Was it supported or not?"])}</div>
+   <div class="grid2">${[["Weak","The heavy car went further."],["Strong","As the mass increased, the stopping distance increased slightly: 148 cm at 30 g, 174 cm at 50 g. The heavier car had more kinetic energy, but friction grew too, so the change was small. This supports my hypothesis."]].map(c=>`<div class="box ${c[0]==="Strong"?"tint push":""}"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div></div>`,
    notes:"Ask: what makes the strong one strong? Students highlight each of the four parts in the strong example."},
   {mode:"learn", h:"Writing an evaluation",
-   html:`<div class="grid3">${[["Fair test?","Were all controlled variables really kept the same? Which one was hardest to control?"],["Reliable?","Were your 3 trials close together? Any anomalies? What caused them?"],["Improve","Give a specific improvement and say how it would help. Not 'be more careful'."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>${rv("Example improvement","Use tape lanes on each surface so the car can't veer sideways. This would make the distances more consistent and the results more reliable.")}`,
+   html:`<div class="grid3">${[["Fair test?","Were all controlled variables really kept the same? Which one was hardest to control?"],["Reliable?","Were your 3 trials close together? Any anomalies? What caused them?"],["Improve","Give a specific improvement and say how it would help. Not 'be more careful'."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>${rv("Example improvement","Tape the washers flat in the same spot on the roof every time, so they can't slip or rub on a wheel. This would keep the friction the same and make the results more reliable.")}`,
    notes:"Ban 'human error' with no detail. They must name the error."},
   {mode:"write", timer:25, h:"Write your report",
    html:`<div class="grid2 fill"><div class="box"><h3>Work through in order</h3><ul class="checklist"><li>Aim</li><li>Hypothesis</li><li>Variables</li><li>Method (with a labelled diagram)</li><li>Results table and graph</li><li>Conclusion (pattern, data, science, hypothesis)</li><li>Evaluation (fair, reliable, improve)</li></ul></div>
    <div class="box"><h3>Teacher conferencing</h3><p>I'll come to each table. Have your <b>conclusion</b> ready to show me.</p><p class="small">Stuck? Use the examples on the tabs slide.</p></div></div>`,
    notes:"Conference with 6 to 8 students. Prioritise those who struggled with the exit tickets."},
   {mode:"check", h:"Self-check before you submit",
-   html:`<div class="grid2 fill"><ul class="checklist" style="font-size:1.8cqw"><li>Every table and graph has units.</li><li>My conclusion quotes at least two numbers.</li><li>I used the word <b>friction</b> to explain the pattern.</li><li>I said whether my hypothesis was supported.</li><li>My improvement is specific.</li></ul>${exitFist(["I can write each section of a scientific report.","I can write a conclusion that uses data as evidence.","I can evaluate my investigation and suggest improvements."])}</div>`,
+   html:`<div class="grid2 fill"><ul class="checklist" style="font-size:1.8cqw"><li>Every table and graph has units.</li><li>My conclusion quotes at least two numbers.</li><li>I used the words <b>kinetic energy</b> and <b>friction</b> to explain the pattern.</li><li>I said whether my hypothesis was supported.</li><li>My improvement is specific.</li></ul>${exitFist(["I can write each section of a scientific report.","I can write a conclusion that uses data as evidence.","I can evaluate my investigation and suggest improvements."])}</div>`,
    notes:"Practical Report 1 submission or draft. Final edits allowed in Lesson 26."}
   ]}
 );
@@ -1206,8 +1208,8 @@ LESSONS.push(
   sc:["I can draw force arrows that show direction and size.","I can label each arrow with the name of the force."],
   prep:"Mini whiteboards and markers. Rulers. Force diagram practice sheet.",
   slides:[
-  {mode:"check", h:"Retrieval: the friction investigation",
-   html:`<div class="grid3">${[["What was the independent variable?","Type of surface."],["What makes a strong conclusion?","Pattern, data, science explanation, hypothesis supported or not."],["Name one limitation of a simulation.","It can't include every real-world problem."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+  {mode:"check", h:"Retrieval: the stopping distance investigation",
+   html:`<div class="grid3">${[["What was the independent variable?","The mass of the car."],["What makes a strong conclusion?","Pattern, data, science explanation, hypothesis supported or not."],["Name one limitation of a simulation.","It can't include every real-world problem."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
    notes:"Return Report 1 drafts with brief feedback if marked."},
   {mode:"learn", h:"Forces are shown with arrows",
    html:`<div class="grid2 fill"><div class="box">${steps(["Draw the object as a simple box or shape.","Each arrow <b>starts on the object</b>.","The arrow points in the <b>direction</b> of the force.","A <b>longer</b> arrow means a <b>bigger</b> force.","<b>Label</b> every arrow with the force's name (and size in N if you know it)."])}</div>
@@ -1617,7 +1619,7 @@ LESSONS.push(
    html:`<div class="grid3">${[["D","Add <b>data</b>: quote numbers from your results."],["S","Explain the <b>science</b>: use friction or air resistance."],["H","Say whether your <b>hypothesis</b> was supported."],["U","Add <b>units</b> to your table or graph."],["I","Make your <b>improvement</b> specific."],["V","Check your <b>variables</b>: IV, DV, controlled."]].map(c=>`<div class="box"><span class="spot" style="padding:0;font-size:4cqw;text-align:left;color:var(--accent)">${c[0]}</span><p>${c[1]}</p></div>`).join("")}</div>`,
    notes:"Use these codes when marking drafts so students can act on them quickly today."},
   {mode:"write", timer:30, h:"Improve your reports",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Find every feedback code on your drafts.","Fix each one. Tick it off when done.","Re-read your conclusion out loud to yourself.","Submit your final reports."])}</div><div class="box"><h3>Catch-up options</h3><ul><li>Missed the friction practical? Use the <b>ramp simulator</b> (Lesson 11).</li><li>Missed the parachute practical? Use the <b>parachute simulator</b> (Lesson 22).</li><li>Missing a graph? Use the TAILS checklist.</li></ul></div></div>`,
+   html:`<div class="grid2 fill"><div class="box">${steps(["Find every feedback code on your drafts.","Fix each one. Tick it off when done.","Re-read your conclusion out loud to yourself.","Submit your final reports."])}</div><div class="box"><h3>Catch-up options</h3><ul><li>Missed the stopping distance practical? Use the <b>ramp simulator</b> (Lesson 11).</li><li>Missed the parachute practical? Use the <b>parachute simulator</b> (Lesson 22).</li><li>Missing a graph? Use the TAILS checklist.</li></ul></div></div>`,
    notes:"Conference rotation: start with students who have the most codes. Final report submission today if needed."},
   {mode:"whole", h:"Catch-up: ramp simulator", init:"ramp",
    html:rampUI,
@@ -1665,7 +1667,7 @@ LESSONS.push(
    html:`<div class="grid3">${[["What I learned","The three most important things I learned about forces are..."],["Which practical helped most?","The friction / parachute practical helped me most because..."],["How my thinking changed","I used to think ___, but now I know ___ because ___."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p class="starter">${c[1]}</p></div>`).join("")}</div>`,
    notes:"Reflection entry is the assessment."},
   {mode:"talk", h:"Which practical helped you most?", init:"vote",
-   data:[["Friction investigation (cars and ramps)"],["Parachute design investigation"],["The simulators"],["The demos: magnets, balloons, paper drops"]],
+   data:[["Stopping distance investigation (cars, ramps and washers)"],["Parachute design investigation"],["The simulators"],["The demos: magnets, balloons, paper drops"]],
    html:`<p>Hands up for each one. Then explain your choice to a partner.</p>${voteUI()}`,
    notes:"Quick feedback for your own planning next year."},
   {mode:"whole", h:"Forces everywhere: where to next?",
@@ -1697,7 +1699,7 @@ function bindTimer(){
 function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.18,a.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.22);o.start(a.currentTime+d);o.stop(a.currentTime+d+.25)})}catch(e){}}
 
 /* ---------- rendering ---------- */
-const WEEKS=["Introduction to forces","Gravity, friction and air resistance","Practical 1: friction investigation","Force diagrams and motion","Non-contact forces and changing motion","Practical 2: parachute investigation","Consolidation and assessment"];
+const WEEKS=["Introduction to forces","Gravity, friction and air resistance","Practical 1: mass and stopping distance","Force diagrams and motion","Non-contact forces and changing motion","Practical 2: parachute investigation","Consolidation and assessment"];
 const wk=l=>Math.ceil(LESSONS[l].n/4);
 let L=-1,S=0;
 function deck(l){return [{title:true},...LESSONS[l].slides]}
