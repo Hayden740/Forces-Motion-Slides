@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Toy Car Ramp Simulator</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#e9efed; --surface:#fbfdfc; --ink:#13221e; --muted:#566862; --line:#cad7d2;
+  --air:#2f73bb; --fric:#b0512a; --accent:#b0512a; --accent-ink:#fff; --bad:#b3372f;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --fric:#e9895a; --accent:#e9895a; --accent-ink:#1a0e08; --bad:#f08a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --fric:#e9895a; --accent:#e9895a; --accent-ink:#1a0e08; --bad:#f08a80; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
+button,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 40px;display:grid;gap:16px}
+header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;line-height:1.05;margin:0 0 6px}
+header p{margin:0;color:var(--muted);max-width:70ch}
+.eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px}
+.task ol{margin:0;padding-left:1.3em;display:grid;gap:4px}
+.task h2,.card h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:0 0 8px}
+.sim{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+.sim>*{min-width:0}
+.view{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--air) 7%,var(--surface))}
+.view svg{width:100%;height:auto;display:block}
+.ctl{display:flex;flex-direction:column;gap:14px}
+.ctl label{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.ctl .v{font-family:var(--f-mono);color:var(--accent)}
+select{padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:disabled{opacity:.5;cursor:wait}
+.readout{font-family:var(--f-mono);font-weight:700;font-size:30px;font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.readout small{display:block;font-family:var(--f-body);font-weight:400;font-size:13px;color:var(--muted)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:center}
+th{background:color-mix(in srgb,var(--ink) 6%,var(--surface));font-size:15px}
+td:first-child,th:first-child{text-align:left}
+.hint{font-size:14px;color:var(--muted);margin:8px 0 0}
+.ext{border-left:5px solid var(--accent)}
+@media (max-width:760px){.sim{grid-template-columns:1fr}.readout{font-size:24px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="eyebrow">Year 7 Science · Forces and Motion</div>
+    <h1>Toy Car Ramp Simulator</h1>
+    <p>Does the mass of a toy car change how far it rolls after it leaves a ramp? Use this simulator to collect data, then write it up on your worksheet.</p>
+  </header>
+
+  <section class="card task">
+    <h2>Your task</h2>
+    <ol>
+      <li>Keep the ramp at <b>15 cm</b>.</li>
+      <li>Choose <b>0 washers</b>. Press <b>Release car</b> 3 times.</li>
+      <li>Change to 1, 2, 3 and 4 washers. Run <b>3 trials</b> for each.</li>
+      <li>Copy every result from the table below onto your worksheet.</li>
+    </ol>
+  </section>
+
+  <section class="card sim">
+    <div>
+      <div class="view" id="rpView"></div>
+      <p class="hint">The car is 30 g. Each washer adds 5 g. Distance is measured from the bottom of the ramp to the front of the car.</p>
+    </div>
+    <div class="ctl">
+      <label>Washers added<select id="rpSurf"></select></label>
+      <label>Ramp height <span class="v" id="rpHv"></span><input type="range" id="rpH" min="10" max="30" step="5" value="15"></label>
+      <div class="row"><button class="btn primary" id="rpGo">Release car</button><button class="btn" id="rpClear">Clear results</button></div>
+      <div class="readout" id="rpOut">0 cm<small>stopping distance from the bottom of the ramp</small></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Results</h2>
+    <div class="tablewrap"><table id="rpTable"></table></div>
+    <p class="hint">Changing the ramp height clears the table, so finish all 15 trials at 15 cm first.</p>
+  </section>
+
+  <section class="card ext">
+    <h2>Extension</h2>
+    <p style="margin:0">Finished? Change the ramp height to <b>30 cm</b> and test 0 washers and 4 washers again. What happens to the distances? Does mass still make only a small difference? Answer in the extension box on your worksheet.</p>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+let RAF=null; function stopAnim(){if(RAF)cancelAnimationFrame(RAF);RAF=null}
+const rnd=pct=>1+(Math.random()*2-1)*pct;
+
+(function ramp(){
+  /* car 30 g, each washer about 5 g. Rolling friction grows with weight, but axle friction and air
+     resistance do not, so a heavier car slows a little less and rolls slightly further. */
+  const CAR=30,WASH=5,MASS=[0,1,2,3,4].map(n=>[n,CAR+n*WASH]);
+  const res={};const sel=$("#rpSurf"),H=$("#rpH");
+  sel.innerHTML=MASS.map((x,i)=>`<option value="${i}">${x[0]} (total ${x[1]} g)</option>`).join("");
+  const px=1.15,x0=150,yF=200;
+  const scene=(dist,carX,carY,ang)=>{const n=MASS[+sel.value][0],h=+H.value,yT=yF-h*4.2;
+    $("#rpView").innerHTML=`<svg viewBox="0 0 640 260" role="img" aria-label="Toy car carrying ${n} washers on a ramp ${h} cm high">
+      <rect x="${x0}" y="${yF}" width="${640-x0}" height="16" fill="#c9d6de"/><rect x="0" y="${yF+16}" width="640" height="44" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))"/>
+      <polygon points="10,${yF} ${x0},${yF} 10,${yT}" fill="color-mix(in srgb,var(--fric) 30%,var(--surface))" stroke="var(--ink)" stroke-width="2"/>
+      <text x="16" y="${yT-8}" font-size="13" fill="var(--muted)">${h} cm</text>
+      ${Array.from({length:9},(_,i)=>`<line x1="${x0+i*50*px}" x2="${x0+i*50*px}" y1="${yF+16}" y2="${yF+28}" stroke="var(--muted)"/><text x="${x0+i*50*px}" y="${yF+44}" text-anchor="middle" font-size="12" fill="var(--muted)">${i*50}</text>`).join("")}
+      <text x="${x0-12}" y="${yF+44}" text-anchor="end" font-size="12" fill="var(--muted)">cm</text>
+      ${dist!=null?`<line x1="${x0}" x2="${x0+dist*px}" y1="${yF-38}" y2="${yF-38}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+dist*px/2}" y="${yF-44}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">${dist} cm</text>`:""}
+      <g transform="translate(${carX} ${carY}) rotate(${ang})"><g transform="translate(-22 0)"><rect x="-22" y="-18" width="44" height="13" rx="4" fill="var(--bad)"/><rect x="-11" y="-26" width="20" height="9" rx="3" fill="var(--bad)" opacity=".8"/>${Array.from({length:n},(_,k)=>`<rect x="-9" y="${-31-k*4}" width="16" height="3.4" rx="1.5" fill="var(--muted)" stroke="var(--ink)" stroke-width=".6"/>`).join("")}<circle cx="-12" cy="-4" r="5" fill="var(--ink)"/><circle cx="12" cy="-4" r="5" fill="var(--ink)"/></g></g></svg>`};
+  const top=()=>{const h=+H.value,yT=yF-h*4.2,ang=Math.atan2(yF-yT,x0-10)*180/Math.PI;return [10+44,yT+44*(yF-yT)/(x0-10),ang]};
+  const table=()=>{const any=MASS.some((x,i)=>res[i]);
+    $("#rpTable").innerHTML=any?`<thead><tr><th>Washers</th><th>Mass (g)</th><th>Trial 1 (cm)</th><th>Trial 2 (cm)</th><th>Trial 3 (cm)</th><th>Average (cm)</th></tr></thead><tbody>${MASS.map((x,i)=>{const r=res[i];if(!r)return"";const a=r.length?Math.round(r.reduce((p,q)=>p+q,0)/r.length):"";return `<tr><td>${x[0]}</td><td>${x[1]}</td>${[0,1,2].map(k=>`<td>${r[k]??""}</td>`).join("")}<td><b>${r.length===3?a:""}</b></td></tr>`}).join("")}</tbody>`:`<tbody><tr><td class="hint" style="margin:0">Results appear here. Run 3 trials for each mass.</td></tr></tbody>`};
+  const idle=()=>{stopAnim();const [x,y,a]=top();scene(null,x,y,a);table()};
+  sel.onchange=idle;
+  H.oninput=()=>{$("#rpHv").textContent=`${H.value} cm`;Object.keys(res).forEach(k=>delete res[k]);idle()};
+  $("#rpHv").textContent=`${H.value} cm`;
+  $("#rpGo").onclick=()=>{stopAnim();const i=+sel.value,m=MASS[i][1],h=+H.value;const d=Math.min(440,Math.round(0.8*h/(0.05+0.9/m)*rnd(.05)));
+    const [sx,sy,ang]=top();const T1=600,T2=500+d*7;let t0=null;$("#rpGo").disabled=true;
+    const step=ts=>{if(!t0)t0=ts;const t=ts-t0;
+      if(t<T1){const f=(t/T1)**2;scene(null,sx+(x0-sx)*f,sy+(yF-sy)*f,ang)}
+      else{const f=Math.min(1,(t-T1)/T2),e=1-(1-f)**2,cur=Math.round(d*e);scene(cur,x0+d*px*e,yF,0);$("#rpOut").innerHTML=`${cur} cm<small>stopping distance from the bottom of the ramp</small>`;
+        if(f>=1){(res[i]=res[i]||[]);if(res[i].length>=3)res[i]=[];res[i].push(d);table();$("#rpGo").disabled=false;RAF=null;return}}
+      RAF=requestAnimationFrame(step)};
+    RAF=requestAnimationFrame(step)};
+  $("#rpClear").onclick=()=>{Object.keys(res).forEach(k=>delete res[k]);$("#rpOut").innerHTML=`0 cm<small>stopping distance from the bottom of the ramp</small>`;idle()};
+  idle();
+})();
+</script>
+</body>
+</html>
