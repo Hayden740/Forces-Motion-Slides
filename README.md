@@ -8,4 +8,4 @@ Live site: https://hayden740.github.io/Forces-Motion-Slides/
 - YouTube videos play on the slides when the site is hosted here on GitHub Pages.
 - Built-in simulators: tug of war (net force), spring balance (newtons, mass and weight on other planets), toy car ramp (mass and stopping distance practical), parachute drop (air resistance practical), force diagram builder, magnets, and balloon static charge.
 
-Relief lesson: Lesson 13 (Introducing force diagrams) has a standalone student site with a four page self-marking worksheet at https://hayden740.github.io/Forces-Motion-Slides/relief-force-diagrams/
+Relief lesson: Lesson 13 (Introducing force diagrams) has a standalone student site with a six page self-marking worksheet at https://hayden740.github.io/Forces-Motion-Slides/relief-force-diagrams/

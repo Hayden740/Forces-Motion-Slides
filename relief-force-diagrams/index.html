@@ -31,13 +31,13 @@ button,select,input,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
 .wrap{max-width:1040px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:16px}
+.stack{display:grid;gap:16px}
 
-/* top bar */
 .bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .brand{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
 .dots{display:inline-flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;display:block}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
-.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px;display:flex;align-items:center;gap:6px}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:14px;display:flex;align-items:center;gap:6px}
 .tabs button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .tabs button .tick{color:var(--good);font-weight:700}
 .tabs button[aria-current="true"] .tick{color:var(--bg)}
@@ -45,21 +45,19 @@ button{cursor:pointer}
 .progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 
 header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4.5vw,42px);letter-spacing:-.02em;line-height:1.05;margin:0 0 6px}
-header p{margin:0;color:var(--muted);max-width:70ch}
+header p{margin:0;color:var(--muted);max-width:72ch}
 .eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
 .card h2{font-family:var(--f-display);font-weight:600;font-size:21px;margin:0 0 10px;line-height:1.2}
 .card h3{font-size:17px;margin:0 0 6px}
 .card p{margin:0 0 10px}.card p:last-child{margin-bottom:0}
+.part{font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .muted{color:var(--muted)}
 .small{font-size:14px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.grid2>*,.grid3>*{min-width:0}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2>*,.grid3>*{min-width:0}
 .accent{border-left:5px solid var(--accent)}
-.teacher{border-left:5px solid var(--grav)}
-.teacher summary{font-weight:700;cursor:pointer;font-family:var(--f-display);font-size:19px}
-.teacher ul{margin:8px 0 0;padding-left:1.2em;display:grid;gap:4px}
 ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
 ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
 ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);font-size:14px}
@@ -69,37 +67,68 @@ ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;
 .objlab{font-size:14px;font-weight:700;font-family:var(--f-body);fill:var(--ink)}
 .video{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
 .video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sum{font-family:var(--f-mono);font-weight:700;background:color-mix(in srgb,var(--ink) 6%,var(--surface));border-radius:8px;padding:8px 12px;margin:8px 0}
 
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.sm{padding:6px 12px;font-size:15px}
 .navrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-input[type=text],textarea,select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px}
+input[type=text],input[type=number],textarea,select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px}
 input[type=text]{width:100%}
+input[type=number]{width:110px}
 textarea{width:100%;min-height:120px;resize:vertical}
 label.field{display:grid;gap:4px;font-weight:700}
+select{max-width:100%;min-width:0}
+.mrow select,.q select{width:100%}
+.numq select{width:auto;flex:1 1 140px}
+.mrow>*,.tfrow>*{min-width:0}
 
-/* fill in the blanks */
 .blanks{margin:0;padding-left:1.4em;display:grid;gap:12px}
-.blanks select{margin:0 4px;max-width:100%}
-.mark{font-weight:700;margin-left:6px}
+.blanks select{margin:0 4px}
+.mark{font-weight:700;margin-left:6px;white-space:nowrap}
 .ok{color:var(--good)}.no{color:var(--bad)}
 
-/* multiple choice */
+.tf{display:grid;gap:8px}
+.tfrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.tfrow.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.tfrow.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--surface))}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;font-size:14px;font-weight:700}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.why{font-size:14px;color:var(--muted);grid-column:1/-1}
+.why[hidden]{display:none}
+
+.match{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:170px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.mrow b{font-size:16px}
+
 .q{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
-.q:first-of-type{border-top:0;padding-top:0}
+.q:first-child{border-top:0;padding-top:0}
 .q .stem{font-weight:700}
 .opts{display:grid;gap:6px}
 .opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;background:var(--surface)}
 .opt input{margin-top:5px;accent-color:var(--accent)}
 .opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
 .opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.numq{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.numq.right input,.numq.right select{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.numq.wrong input,.numq.wrong select{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
 .fb{font-size:15px;border-radius:8px;padding:8px 12px;background:color-mix(in srgb,var(--ink) 5%,var(--surface))}
 .fb[hidden]{display:none}
 .score{font-family:var(--f-mono);font-weight:700;font-size:20px}
 
-/* builder */
+.sorts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.sortcard{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--surface)}
+.sortcard .sit{font-weight:700}
+.sortcard .pick{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+.sortcard.right{border-color:var(--good)}
+.sortcard.wrong{border-color:var(--bad)}
+
+.diagrams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.diagrams figure{margin:0}
+.diagrams figcaption{font-family:var(--f-display);font-weight:800;font-size:20px;margin-bottom:4px}
+
 .builder{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
 .builder>*{min-width:0}
 .scen{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
@@ -124,20 +153,17 @@ label.field{display:grid;gap:4px;font-weight:700}
 .verdict ul{margin:6px 0 0;padding-left:1.2em;font-weight:400;color:var(--ink)}
 .verdict[hidden]{display:none}
 
-/* finish */
 .sumtable{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
 .sumtable th,.sumtable td{border:1px solid var(--line);padding:8px 10px;text-align:left}
 .sumtable th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
 .code{font-family:var(--f-mono);font-size:28px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
 .page[hidden]{display:none}
 .pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.mcard{display:grid;gap:8px}
 
-@media (max-width:820px){.grid2,.builder{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.tabs{margin-left:0}}
-@media print{
-  .bar,.progress,.navrow,.noprint{display:none!important}
-  body{background:#fff;color:#000}
-  .card{border-color:#999}
-}
+@media (max-width:820px){.grid2,.builder,.sorts{grid-template-columns:1fr}.grid3,.diagrams{grid-template-columns:1fr 1fr}.tabs{margin-left:0}.mrow{grid-template-columns:minmax(0,1fr)!important}}
+@media (max-width:520px){.grid3,.diagrams{grid-template-columns:1fr}}
+@media print{.bar,.progress,.navrow,.noprint{display:none!important}body{background:#fff;color:#000}.card{border-color:#999}}
 </style>
 </head>
 <body>
@@ -150,13 +176,12 @@ label.field{display:grid;gap:4px;font-weight:700}
 
   <!-- ================= START ================= -->
   <section class="page" id="p-start">
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
         <div class="eyebrow">Year 7 Science · Forces and Motion · Lesson 13</div>
         <h1>Introducing force diagrams</h1>
-        <p>Scientists draw forces as arrows. Today you will learn the rules for drawing force diagrams, then work through a four page worksheet. Every page checks your answers as you go.</p>
+        <p>Scientists draw forces as arrows. Today you will learn the rules for drawing force diagrams, then work through a six page worksheet. Every page checks your answers, and your <b>first check</b> on each page is the score your teacher sees, so think before you press it.</p>
       </header>
-
       <div class="grid2">
         <div class="card accent">
           <h2>Learning intention</h2>
@@ -174,42 +199,30 @@ label.field{display:grid;gap:4px;font-weight:700}
           <p class="small muted" style="margin-top:10px">Your work saves in this browser as you go. If you close the tab, open the same page on the same computer to keep going.</p>
         </div>
       </div>
-
       <div class="card">
         <h2>What you will do today</h2>
         <ol class="steps">
-          <li><div><b>Learn:</b> read the five arrow rules and watch a short video.</div></li>
-          <li><div><b>Page 1, The rules:</b> fill in the missing words.</div></li>
-          <li><div><b>Page 2, Read the diagram:</b> answer questions about force diagrams.</div></li>
-          <li><div><b>Page 3, Build it:</b> draw your own force diagrams arrow by arrow.</div></li>
-          <li><div><b>Page 4, Spot the mistake:</b> find what is wrong with four diagrams, then write your exit ticket.</div></li>
+          <li><div><b>Learn:</b> the five arrow rules, the forces you need to know, and how to work out the overall force.</div></li>
+          <li><div><b>Page 1, The rules:</b> missing words, true or false, and matching forces to descriptions.</div></li>
+          <li><div><b>Page 2, Read the diagram:</b> six diagrams with forces in newtons. Work out what happens.</div></li>
+          <li><div><b>Page 3, Sort it:</b> decide if twelve situations are balanced or unbalanced.</div></li>
+          <li><div><b>Page 4, Match it:</b> match six situations to the right force diagram.</div></li>
+          <li><div><b>Page 5, Build it:</b> draw your own force diagrams arrow by arrow.</div></li>
+          <li><div><b>Page 6, Spot the mistake:</b> find what is wrong with six diagrams, then write your exit ticket.</div></li>
           <li><div><b>Finish:</b> show your teacher your results screen.</div></li>
         </ol>
       </div>
-
-      <details class="card teacher">
-        <summary>Notes for the relief teacher</summary>
-        <ul>
-          <li>This lesson runs itself. Students work through the pages in order on their own device. No science background is needed to supervise it.</li>
-          <li>Suggested timing: Learn page 15 minutes, worksheet pages 1 to 4 about 8 to 10 minutes each, Finish page 5 minutes.</li>
-          <li>Headphones help for the video on the Learn page. If YouTube is blocked, students can skip it: the rules on that page are enough.</li>
-          <li>Pages 1 to 3 are self-marked. Page 4 has a written exit ticket which the class teacher will read.</li>
-          <li>At the end, the Finish page shows each student's scores and a completion code. Please either record the code next to each name on the roll, or have students click <b>Print or save as PDF</b> and submit it as directed by the class teacher.</li>
-          <li>Students who finish early: go back to Page 3 and try to get every scenario right first go, or use the Extension box on the Finish page.</li>
-        </ul>
-      </details>
-
       <div class="navrow"><span></span><button class="btn primary" data-go="learn">Start: Learn the rules →</button></div>
     </div>
   </section>
 
   <!-- ================= LEARN ================= -->
   <section class="page" id="p-learn" hidden>
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
         <div class="eyebrow">Learn</div>
         <h1>Forces are shown with arrows</h1>
-        <p>A force diagram shows every force acting on one object. Read the rules, look at the example, then watch the video.</p>
+        <p>A force diagram shows every force acting on one object. Read everything on this page carefully. You will need all of it for the worksheet.</p>
       </header>
       <div class="grid2">
         <div class="card">
@@ -221,6 +234,7 @@ label.field{display:grid;gap:4px;font-weight:700}
             <li><div>A <b>longer</b> arrow means a <b>bigger</b> force.</div></li>
             <li><div><b>Label</b> every arrow with the force's name (and its size in newtons, N, if you know it).</div></li>
           </ol>
+          <p class="small muted" style="margin-top:12px">Forces are measured in <b>newtons</b> (N). An apple weighs about 1 N.</p>
         </div>
         <div class="card">
           <h2>Example: pushing a box</h2>
@@ -229,60 +243,115 @@ label.field{display:grid;gap:4px;font-weight:700}
         </div>
       </div>
 
-      <div class="grid3">
-        <div class="card"><h3 style="color:var(--grav)">Weight</h3><p class="small">Gravity pulling the object <b>down</b>. Every object on Earth has weight, so almost every diagram has this arrow.</p></div>
-        <div class="card"><h3 style="color:var(--push)">Support force</h3><p class="small">A surface (table, floor, ground) pushing <b>up</b> on an object resting on it.</p></div>
-        <div class="card"><h3 style="color:var(--fric)">Friction</h3><p class="small">Acts <b>against</b> the direction something is sliding or rolling. It slows things down.</p></div>
-        <div class="card"><h3 style="color:var(--air)">Air resistance</h3><p class="small">Acts <b>against</b> an object moving through air. In water it is called water resistance.</p></div>
-        <div class="card"><h3 style="color:var(--push)">Push or pull</h3><p class="small">An applied force from a person or thing, in the direction they push or pull.</p></div>
-        <div class="card" style="border-left:5px solid var(--bad)"><h3 style="color:var(--bad)">Motion is NOT a force</h3><p class="small">Never draw an arrow just because something is moving. Only draw forces: pushes and pulls.</p></div>
+      <div class="card">
+        <h2>Forces you need to know</h2>
+        <div class="grid3">
+          <div><h3 style="color:var(--grav)">Weight</h3><p class="small">Gravity pulling the object <b>down</b>. Every object on Earth has weight, so almost every diagram has this arrow.</p></div>
+          <div><h3 style="color:var(--push)">Support force</h3><p class="small">A surface (table, floor, ground) pushing <b>up</b> on an object resting on it.</p></div>
+          <div><h3 style="color:var(--fric)">Friction</h3><p class="small">Acts <b>against</b> the direction something is sliding or rolling. It slows things down.</p></div>
+          <div><h3 style="color:var(--air)">Air resistance</h3><p class="small">Acts <b>against</b> an object moving through air. It gets bigger the faster you go. In water it is called <b>water resistance</b>.</p></div>
+          <div><h3 style="color:var(--push)">Push, pull and driving force</h3><p class="small">A person or thing pushing or pulling. A rope or cord can pull too. A car's engine gives a <b>driving force</b> forwards.</p></div>
+          <div><h3 style="color:var(--bad)">Motion is NOT a force</h3><p class="small">Never draw an arrow just because something is moving. Only draw forces: pushes and pulls.</p></div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Balanced or unbalanced?</h2>
+          <p><b>Balanced forces:</b> the arrows in opposite directions are the same size. The motion does <b>not change</b>: a still object stays still, and a moving object keeps going at the <b>same speed</b> in the same direction.</p>
+          <p><b>Unbalanced forces:</b> one side is bigger. The motion <b>changes</b>: the object speeds up, slows down or changes direction.</p>
+          <p class="small muted">Watch out: a car cruising at a steady speed has balanced forces. Moving does not mean unbalanced!</p>
+        </div>
+        <div class="card">
+          <h2>Working out the overall force</h2>
+          <p>When forces act in <b>opposite</b> directions, take the smaller one away from the bigger one. The overall force points the same way as the bigger force.</p>
+          <div class="sum">Push 30 N right, friction 15 N left<br>30 − 15 = 15 N to the right</div>
+          <p>If the forces are equal, the overall force is <b>0 N</b> and they are balanced. The overall force is sometimes called the <b>net force</b>.</p>
+        </div>
       </div>
 
       <div class="card">
-        <h2>Watch: How do you draw a force diagram?</h2>
-        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/Pps1EGf5VeE?rel=0" title="How Do You Draw a Force Diagram?" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
-        <p class="small muted" style="margin-top:8px">The video may call them free body diagrams. That means the same thing. Think about these while you watch: What does the length of an arrow tell you? Where does each arrow start? What force acts on every object on Earth?</p>
+        <h2>Watch: force diagrams</h2>
+        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/pFZVI0QbrW4?rel=0" title="Force diagrams" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        <p class="small muted" style="margin-top:8px">The video may call the overall force the <b>resultant force</b>. That means the same thing. If the video will not play, skip it: everything you need is on this page.</p>
       </div>
-
       <div class="navrow"><button class="btn" data-go="start">← Back</button><button class="btn primary" data-go="w1">Go to Page 1 →</button></div>
     </div>
   </section>
 
   <!-- ================= PAGE 1 ================= -->
   <section class="page" id="p-w1" hidden>
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
-        <div class="eyebrow">Worksheet · Page 1 of 4</div>
+        <div class="eyebrow">Worksheet · Page 1 of 6</div>
         <h1>The rules</h1>
-        <p>Choose the missing word for each sentence, then press <b>Check my answers</b>. Fix any red ones and check again.</p>
+        <p>Three parts. Complete them all, then press <b>Check my answers</b> at the bottom. Fix any red ones and check again.</p>
       </header>
       <div class="card">
+        <div class="part">Part A</div><h2>Missing words</h2>
         <ol class="blanks" id="blanks"></ol>
-        <div class="row" style="margin-top:16px"><button class="btn primary" id="w1check">Check my answers</button><span class="score" id="w1score"></span></div>
       </div>
+      <div class="card">
+        <div class="part">Part B</div><h2>True or false?</h2>
+        <div class="tf" id="tf"></div>
+      </div>
+      <div class="card">
+        <div class="part">Part C</div><h2>Match each force to what it does</h2>
+        <div class="match" id="match"></div>
+      </div>
+      <div class="card row"><button class="btn primary" id="w1check">Check my answers</button><span class="score" id="w1score"></span></div>
       <div class="navrow"><button class="btn" data-go="learn">← Learn</button><button class="btn primary" data-go="w2">Go to Page 2 →</button></div>
     </div>
   </section>
 
   <!-- ================= PAGE 2 ================= -->
   <section class="page" id="p-w2" hidden>
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
-        <div class="eyebrow">Worksheet · Page 2 of 4</div>
+        <div class="eyebrow">Worksheet · Page 2 of 6</div>
         <h1>Read the diagram</h1>
-        <p>Look closely at each force diagram: the direction, the length and the label of every arrow. Then answer the two questions beside it.</p>
+        <p>Each diagram shows forces in newtons. Answer every question beside it. For the overall force, type the number and choose the direction. Use the Learn page if you get stuck.</p>
       </header>
-      <div id="readQs" style="display:grid;gap:16px"></div>
+      <div id="readQs" class="stack"></div>
       <div class="card row"><button class="btn primary" id="w2check">Check my answers</button><span class="score" id="w2score"></span></div>
       <div class="navrow"><button class="btn" data-go="w1">← Page 1</button><button class="btn primary" data-go="w3">Go to Page 3 →</button></div>
     </div>
   </section>
 
-  <!-- ================= PAGE 3 ================= -->
+  <!-- ================= PAGE 3 SORT ================= -->
   <section class="page" id="p-w3" hidden>
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
-        <div class="eyebrow">Worksheet · Page 3 of 4</div>
+        <div class="eyebrow">Worksheet · Page 3 of 6</div>
+        <h1>Sort it: balanced or unbalanced?</h1>
+        <p>For each situation, decide if the forces are balanced or unbalanced, then what is happening to its motion. Remember: something can be moving and still have balanced forces.</p>
+      </header>
+      <div class="sorts" id="sorts"></div>
+      <div class="card row"><button class="btn primary" id="w3check">Check my answers</button><span class="score" id="w3score"></span></div>
+      <div class="navrow"><button class="btn" data-go="w2">← Page 2</button><button class="btn primary" data-go="w4">Go to Page 4 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 4 MATCH ================= -->
+  <section class="page" id="p-w4" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 4 of 6</div>
+        <h1>Match it</h1>
+        <p>Look at diagrams A to F. Choose which diagram matches each situation. Each diagram is used once. Look at which arrows are there AND which ones are bigger.</p>
+      </header>
+      <div class="card"><div class="diagrams" id="matchDiagrams"></div></div>
+      <div class="card"><div class="match" id="matchSits"></div></div>
+      <div class="card row"><button class="btn primary" id="w4check">Check my answers</button><span class="score" id="w4score"></span></div>
+      <div class="navrow"><button class="btn" data-go="w3">← Page 3</button><button class="btn primary" data-go="w5">Go to Page 5 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 5 BUILD ================= -->
+  <section class="page" id="p-w5" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 5 of 6</div>
         <h1>Build it arrow by arrow</h1>
         <p>For each situation, choose a force for each direction and pick its size. Leave a direction as <b>No force</b> if nothing acts that way. Press <b>Check my diagram</b> when you are done.</p>
       </header>
@@ -301,22 +370,21 @@ label.field{display:grid;gap:4px;font-weight:700}
           </div>
         </div>
       </div>
-      <div class="card small muted">Tip: think about what is touching the object (it might push or rub on it), whether it is moving through air or water, and remember weight acts on everything. Then ask: is it speeding up, slowing down or staying the same? That tells you which arrows must be bigger.</div>
-      <div class="navrow"><button class="btn" data-go="w2">← Page 2</button><button class="btn primary" data-go="w4">Go to Page 4 →</button></div>
+      <div class="card small muted">Tip: think about what is touching the object (it might push, pull or rub on it), whether it is moving through air or water, and remember weight acts on everything. Then ask: is it speeding up, slowing down or staying the same? That tells you which arrows must be bigger.</div>
+      <div class="navrow"><button class="btn" data-go="w4">← Page 4</button><button class="btn primary" data-go="w6">Go to Page 6 →</button></div>
     </div>
   </section>
 
-  <!-- ================= PAGE 4 ================= -->
-  <section class="page" id="p-w4" hidden>
-    <div style="display:grid;gap:16px">
+  <!-- ================= PAGE 6 MISTAKES ================= -->
+  <section class="page" id="p-w6" hidden>
+    <div class="stack">
       <header>
-        <div class="eyebrow">Worksheet · Page 4 of 4</div>
+        <div class="eyebrow">Worksheet · Page 6 of 6</div>
         <h1>Spot the mistake</h1>
         <p>Each student diagram below has one mistake. Pick what is wrong with it. Then write your exit ticket at the bottom.</p>
       </header>
       <div class="grid2" id="mistakes"></div>
-      <div class="card row"><button class="btn primary" id="w4check">Check my answers</button><span class="score" id="w4score"></span></div>
-
+      <div class="card row"><button class="btn primary" id="w6check">Check my answers</button><span class="score" id="w6score"></span></div>
       <div class="card accent">
         <h2>Exit ticket</h2>
         <p>A skateboarder is <b>rolling to a stop</b> on flat ground. Describe what their force diagram would look like (which arrows, which direction, which are equal). Then explain why there is <b>no arrow pointing forwards</b>.</p>
@@ -324,29 +392,29 @@ label.field{display:grid;gap:4px;font-weight:700}
         <div class="row" style="margin-top:10px"><button class="btn" id="exitReveal">Compare with a model answer</button><span class="small muted" id="exitCount"></span></div>
         <div class="fb" id="exitModel" hidden style="margin-top:10px"><b>Model answer:</b> Weight points down and the support force from the ground points up. These two arrows are the same length because they are balanced. A friction arrow points backwards, against the direction the skateboarder is rolling. There is no forward arrow because nothing is pushing them along. Motion is not a force, and the only sideways force is friction, so they slow down.</div>
       </div>
-
       <div class="card">
         <h2>How did you go?</h2>
         <p class="small muted">Be honest. This helps your teacher plan the next lesson.</p>
         <div id="selfRate" style="display:grid;gap:12px"></div>
       </div>
-      <div class="navrow"><button class="btn" data-go="w3">← Page 3</button><button class="btn primary" data-go="finish">Finish →</button></div>
+      <div class="navrow"><button class="btn" data-go="w5">← Page 5</button><button class="btn primary" data-go="finish">Finish →</button></div>
     </div>
   </section>
 
   <!-- ================= FINISH ================= -->
   <section class="page" id="p-finish" hidden>
-    <div style="display:grid;gap:16px">
+    <div class="stack">
       <header>
         <div class="eyebrow">Finish</div>
         <h1>Your results</h1>
         <p>Show this screen to your teacher, or print it or save it as a PDF if your teacher asks you to.</p>
       </header>
       <div class="card" id="summary"></div>
-      <div class="row noprint"><button class="btn primary" id="printBtn">Print or save as PDF</button><button class="btn" data-go="w3">Improve my Page 3 score</button></div>
+      <div class="row noprint"><button class="btn primary" id="printBtn">Print or save as PDF</button></div>
       <div class="card accent noprint">
         <h2>Extension: finished early?</h2>
         <p>In your book, draw a force diagram for a <b>person sitting still on a swing</b>, then one for the same person <b>at the very bottom of the swing, moving fast</b>. Which arrows change? (Hint: the swing ropes pull.)</p>
+        <p>Then draw a force diagram for a <b>hot air balloon rising faster and faster</b>. Label every arrow and make the sizes show what is happening.</p>
       </div>
     </div>
   </section>
@@ -364,67 +432,68 @@ function arrow(x1,y1,x2,y2,col,lab){
   const lx=horiz?(x2>x1?x1+2:x1-2):x2+12, ly=horiz?y1-14:(y2<y1?y2+14:y2-4), anchor=horiz?(x2>x1?"start":"end"):"start";
   return `<g><defs>${AR(id,col)}</defs><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="7" stroke-linecap="round" marker-end="url(#${id})"/>${lab?`<text class="arrowlab" x="${lx}" y="${ly}" text-anchor="${anchor}" fill="${col}">${esc(lab)}</text>`:""}</g>`;
 }
-/* Generic diagram: forces = [{dir,size(1-3),label,col,gap}] */
+/* forces: [{dir, size (1-3 or px), label, col, gap}] or newtons via {n} scaled to the biggest */
 const LEN={1:38,2:72,3:108};
 function diagram(obj,forces,opts={}){
-  const W=460,H=330,cx=230,cy=165,bw=112,bh=78;
-  const top=cy-bh/2,bot=cy+bh/2,lft=cx-bw/2,rgt=cx+bw/2;
+  const W=460,H=330,cx=230,cy=165,bw=112,bh=78,top=cy-bh/2,bot=cy+bh/2,lft=cx-bw/2,rgt=cx+bw/2;
+  const maxN=Math.max(1,...forces.map(f=>f.n||0));
   let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.aria||("Force diagram for "+obj))}">`;
-  if(opts.ground) s+=`<line x1="40" y1="${bot}" x2="${W-40}" y2="${bot}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>`;
+  if(opts.ground)s+=`<line x1="40" y1="${bot}" x2="${W-40}" y2="${bot}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/>`;
   s+=`<rect x="${lft}" y="${top}" width="${bw}" height="${bh}" rx="8" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))" stroke="var(--ink)" stroke-width="3"/>`;
   s+=`<text class="objlab" x="${cx}" y="${cy+5}" text-anchor="middle">${esc(obj)}</text>`;
   forces.forEach(f=>{
-    const L=LEN[f.size]||f.size, g=f.gap||0, c=COL[f.col]||f.col;
-    if(f.dir==="up")s+=arrow(cx,top-g,cx,top-g-L,c,f.label);
-    if(f.dir==="down")s+=arrow(cx,bot+g,cx,bot+g+L,c,f.label);
-    if(f.dir==="left")s+=arrow(lft-g,cy,lft-g-L,cy,c,f.label);
-    if(f.dir==="right")s+=arrow(rgt+g,cy,rgt+g+L,cy,c,f.label);
+    const L=f.n!=null?Math.max(28,108*f.n/maxN):(LEN[f.size]||f.size),g=f.gap||0,c=COL[f.col]||f.col;
+    const lab=f.n!=null?`${f.label} ${f.n} N`:f.label;
+    if(f.dir==="up")s+=arrow(cx,top-g,cx,top-g-L,c,lab);
+    if(f.dir==="down")s+=arrow(cx,bot+g,cx,bot+g+L,c,lab);
+    if(f.dir==="left")s+=arrow(lft-g,cy,lft-g-L,cy,c,lab);
+    if(f.dir==="right")s+=arrow(rgt+g,cy,rgt+g+L,cy,c,lab);
   });
-
   return s+"</svg>";
 }
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function setMark(el,state){el.classList.remove("right","wrong");if(state)el.classList.add(state)}
 
 /* ---------- state ---------- */
-const KEY="fd-relief-l13-v1";
-let S={name:"",cls:"",page:"start",w1:{},w2:{},w4:{},build:{},exit:"",rate:{},seen:{}};
+const KEY="fd-relief-l13-v2";
+let S={name:"",cls:"",page:"start",w1:{b:{},t:{},m:{}},w2:{},w3:{},w4:{},w6:{},build:{},exit:"",rate:{},seen:{},first:{},checked:{}};
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function recordFirst(p,sc){if(S.first[p]==null)S.first[p]=sc;S.checked[p]=true;save()}
 
 /* ---------- navigation ---------- */
-const PAGES=[["start","Start"],["learn","Learn"],["w1","Page 1"],["w2","Page 2"],["w3","Page 3"],["w4","Page 4"],["finish","Finish"]];
+const PAGES=[["start","Start"],["learn","Learn"],["w1","Page 1"],["w2","Page 2"],["w3","Page 3"],["w4","Page 4"],["w5","Page 5"],["w6","Page 6"],["finish","Finish"]];
 function done(p){
   if(p==="learn")return !!S.seen.learn;
-  if(p==="w1")return w1Score()===BLANKS.length;
-  if(p==="w2")return w2Answered()===READ.reduce((n,d)=>n+d.qs.length,0);
-  if(p==="w3")return SCEN.every(sc=>S.build[sc.id]&&S.build[sc.id].ok);
-  if(p==="w4")return w4Answered()===MISTAKES.length && S.exit.trim().length>=20;
+  if(p==="w1")return w1Score()===W1MAX;
+  if(p==="w2")return w2Score()===W2MAX;
+  if(p==="w3")return w3Score()===W3MAX;
+  if(p==="w4")return w4Score()===SITS.length;
+  if(p==="w5")return SCEN.every(sc=>S.build[sc.id]&&S.build[sc.id].ok);
+  if(p==="w6")return w6Score()===MISTAKES.length&&S.exit.trim().length>=20;
   return false;
 }
 function renderTabs(){
   $("#tabs").innerHTML=PAGES.map(([id,l])=>`<button data-go="${id}" aria-current="${S.page===id}">${l}${done(id)?'<span class="tick" aria-label="done">✓</span>':""}</button>`).join("");
-  const i=PAGES.findIndex(p=>p[0]===S.page);
-  $("#prog").style.width=(i/(PAGES.length-1)*100)+"%";
+  $("#prog").style.width=(PAGES.findIndex(p=>p[0]===S.page)/(PAGES.length-1)*100)+"%";
 }
 function go(p){
-  S.page=p; if(p!=="start")S.seen[p]=true; save();
+  S.page=p;if(p!=="start")S.seen[p]=true;save();
   document.querySelectorAll(".page").forEach(el=>el.hidden=el.id!=="p-"+p);
   if(p==="finish")renderSummary();
-  renderTabs(); window.scrollTo({top:0,behavior:"smooth"});
+  renderTabs();window.scrollTo({top:0,behavior:"smooth"});
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
 
-/* ---------- start ---------- */
 $("#sName").value=S.name;$("#sClass").value=S.cls;
 $("#sName").addEventListener("input",e=>{S.name=e.target.value;save()});
 $("#sClass").addEventListener("input",e=>{S.cls=e.target.value;save()});
 
-/* ---------- learn example ---------- */
 $("#exDiagram").innerHTML=diagram("Box",[
-  {dir:"right",size:3,label:"Push 30 N",col:"push"},{dir:"left",size:1.5*36,label:"Friction 15 N",col:"fric"},
+  {dir:"right",size:3,label:"Push 30 N",col:"push"},{dir:"left",size:54,label:"Friction 15 N",col:"fric"},
   {dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"}],{ground:true,aria:"A box with a long push arrow to the right, a half length friction arrow to the left, and equal weight and support arrows"});
 
-/* ---------- PAGE 1: blanks ---------- */
+/* =========== PAGE 1 =========== */
 const BLANKS=[
   ["Forces are shown in diagrams using","arrows","."],
   ["Each arrow must start","on the object","."],
@@ -435,55 +504,162 @@ const BLANKS=[
   ["The size of a force is measured in","newtons","(N)."],
   ["When two arrows are the same length and point in opposite directions, the forces are","balanced","."],
   ["Friction always acts","against","the direction an object is moving."],
-  ["An object that is moving is NOT a reason to draw an arrow, because motion is not a","force","."]];
-const BANK=shuffle(BLANKS.map(b=>b[1]).concat(["smaller","colour","kilograms","unbalanced","away from the object"]));
-$("#blanks").innerHTML=BLANKS.map((b,i)=>`<li>${esc(b[0])} <select data-i="${i}" aria-label="Blank ${i+1}"><option value="">choose…</option>${BANK.map(w=>`<option${S.w1[i]===w?" selected":""}>${esc(w)}</option>`).join("")}</select> ${esc(b[2])}<span class="mark" id="m1-${i}"></span></li>`).join("");
-$("#blanks").addEventListener("change",e=>{if(e.target.dataset.i!=null){S.w1[e.target.dataset.i]=e.target.value;save();$("#m1-"+e.target.dataset.i).textContent=""}});
-function w1Score(){return BLANKS.filter((b,i)=>S.w1[i]===b[1]).length}
-$("#w1check").onclick=()=>{
-  BLANKS.forEach((b,i)=>{const m=$("#m1-"+i),v=S.w1[i];m.className="mark "+(v===b[1]?"ok":"no");m.textContent=!v?"✗ not answered":v===b[1]?"✓":"✗ try again"});
-  S.w1checked=true;save();
-  const sc=w1Score();$("#w1score").textContent=`${sc} / ${BLANKS.length}`+(sc===BLANKS.length?"  Great work!":"");renderTabs();
-};
+  ["An object that is moving is NOT a reason to draw an arrow, because motion is not a","force","."],
+  ["If a push of 20 N right and friction of 5 N left act on a box, the overall force is","15 N","to the right."],
+  ["When forces are unbalanced, the object speeds up, slows down or changes","direction","."]];
+const BANK=["arrows","on the object","direction","bigger","label","weight","newtons","balanced","against","force","15 N","smaller","colour","kilograms","unbalanced","away from the object","25 N","with","speed"].sort((a,b)=>a.localeCompare(b));
+/* direction appears twice as an answer, so the bank lists it once */
+$("#blanks").innerHTML=BLANKS.map((b,i)=>`<li>${esc(b[0])} <select data-b="${i}" aria-label="Blank ${i+1}"><option value="">choose…</option>${BANK.map(w=>`<option${S.w1.b[i]===w?" selected":""}>${esc(w)}</option>`).join("")}</select> ${esc(b[2])}<span class="mark" id="mb-${i}"></span></li>`).join("");
+$("#blanks").addEventListener("change",e=>{const i=e.target.dataset.b;if(i!=null){S.w1.b[i]=e.target.value;save();$("#mb-"+i).textContent=""}});
 
-/* ---------- PAGE 2: read the diagram ---------- */
+const TF=[
+  ["A ball sitting still on the floor has no forces acting on it.",false,"It has weight pulling it down and a support force pushing it up. They are balanced."],
+  ["A car driving at a steady 60 km/h in a straight line has balanced forces.",true,"Steady speed in a straight line means the motion is not changing, so the forces are balanced."],
+  ["The longer the arrow, the bigger the force.",true,"Arrow length shows the size of the force."],
+  ["Friction can push a sliding object forwards.",false,"Friction always acts against the motion."],
+  ["A falling apple that is speeding up has unbalanced forces.",true,"Its motion is changing, so the forces must be unbalanced. Weight is bigger than air resistance."],
+  ["You should draw a 'motion' arrow on anything that is moving.",false,"Motion is not a force. Only pushes and pulls get arrows."],
+  ["Air resistance gets bigger the faster an object moves.",true,"Faster objects hit more air each second, so air resistance grows."],
+  ["If two equal forces act in opposite directions, the overall force is 0 N.",true,"Equal and opposite forces cancel out."],
+  ["An object with balanced forces must be standing still.",false,"It could be still OR moving at a steady speed."],
+  ["Weight pulls objects towards the centre of the Earth.",true,"That is why we draw weight pointing down."]];
+$("#tf").innerHTML=TF.map((t,i)=>`<div class="tfrow" id="tfr-${i}"><span>${i+1}. ${esc(t[0])}</span><span class="seg" role="group" aria-label="True or false">${["True","False"].map(v=>`<button data-t="${i}" data-v="${v}" aria-pressed="${S.w1.t[i]===v}">${v}</button>`).join("")}</span><div class="why" hidden></div></div>`).join("");
+$("#tf").addEventListener("click",e=>{const b=e.target.closest("button[data-t]");if(!b)return;const i=b.dataset.t;S.w1.t[i]=b.dataset.v;save();
+  b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));const r=$("#tfr-"+i);setMark(r);r.querySelector(".why").hidden=true});
+
+const MATCH=[["Weight","Pulls every object down towards the Earth"],["Support force","A surface pushing up on something resting on it"],["Friction","Two surfaces rubbing, which slows things down"],["Air resistance","Slows down objects moving through air"],["Water resistance","Slows down objects moving through water"],["Driving force","The forwards force from a car's engine"],["Pull","A rope or cord tugging on an object"]];
+const MDESC=shuffle(MATCH.map(m=>m[1]));
+$("#match").innerHTML=MATCH.map((m,i)=>`<div class="mrow" id="mr-${i}"><b>${esc(m[0])}</b><select data-m="${i}" aria-label="What ${esc(m[0])} does"><option value="">choose…</option>${MDESC.map(d=>`<option${S.w1.m[i]===d?" selected":""}>${esc(d)}</option>`).join("")}</select><span class="mark" id="mm-${i}"></span></div>`).join("");
+$("#match").addEventListener("change",e=>{const i=e.target.dataset.m;if(i!=null){S.w1.m[i]=e.target.value;save();$("#mm-"+i).textContent=""}});
+
+const W1MAX=BLANKS.length+TF.length+MATCH.length;
+function w1Score(){return BLANKS.filter((b,i)=>S.w1.b[i]===b[1]).length+TF.filter((t,i)=>S.w1.t[i]===(t[1]?"True":"False")).length+MATCH.filter((m,i)=>S.w1.m[i]===m[1]).length}
+function markW1(){
+  BLANKS.forEach((b,i)=>{const m=$("#mb-"+i),v=S.w1.b[i];m.className="mark "+(v===b[1]?"ok":"no");m.textContent=!v?"✗ not answered":v===b[1]?"✓":"✗"});
+  TF.forEach((t,i)=>{const r=$("#tfr-"+i),v=S.w1.t[i],ok=v===(t[1]?"True":"False"),w=r.querySelector(".why");setMark(r,v?(ok?"right":"wrong"):"wrong");w.hidden=false;w.innerHTML=!v?"Not answered.":ok?esc(t[2]):"Not quite. Re-read the Learn page and try again."});
+  MATCH.forEach((m,i)=>{const k=$("#mm-"+i),v=S.w1.m[i];k.className="mark "+(v===m[1]?"ok":"no");k.textContent=!v?"✗ not answered":v===m[1]?"✓":"✗"});
+  const sc=w1Score();$("#w1score").textContent=`${sc} / ${W1MAX}`+(sc===W1MAX?"  Great work!":"");
+}
+$("#w1check").onclick=()=>{recordFirst("w1",w1Score());markW1();renderTabs()};
+
+/* =========== PAGE 2 =========== */
+const DIRS=["no direction","up","down","left","right"];
 const READ=[
- {obj:"Book",ground:true,motion:"Book resting on a table",f:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"}],
+ {obj:"Book",ground:true,cap:"A book resting on a table",f:[{dir:"down",n:10,label:"Weight",col:"grav"},{dir:"up",n:10,label:"Support force",col:"push"}],
   qs:[
-   {s:"Are the forces on the book balanced or unbalanced?",o:["Balanced","Unbalanced"],a:0,e:"The arrows are the same length and point in opposite directions, so the forces are balanced."},
-   {s:"What will the book do?",o:["Start moving up","Fall through the table","Stay still","Slide sideways"],a:2,e:"Balanced forces mean no change in motion. The book was still, so it stays still."}]},
- {obj:"Box",ground:true,motion:"Box being pushed to the right",f:[{dir:"right",size:3,label:"Push 30 N",col:"push"},{dir:"left",size:54,label:"Friction 15 N",col:"fric"},{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"}],
+   {t:"mc",s:"Are the forces on the book balanced or unbalanced?",o:["Balanced","Unbalanced"],a:0,e:"10 N up and 10 N down are equal and opposite."},
+   {t:"num",s:"What is the overall force on the book?",a:0,d:"no direction",e:"10 − 10 = 0 N. No overall force, so no direction."},
+   {t:"mc",s:"A second book is stacked on top, so the weight becomes 20 N. What will the support force from the table be?",o:["10 N","20 N","30 N","0 N"],a:1,e:"The book still is not moving, so the forces stay balanced: the table pushes up with 20 N."}]},
+ {obj:"Box",ground:true,cap:"A box being pushed across the floor",f:[{dir:"right",n:30,label:"Push",col:"push"},{dir:"left",n:15,label:"Friction",col:"fric"},{dir:"down",n:25,label:"Weight",col:"grav"},{dir:"up",n:25,label:"Support",col:"push"}],
   qs:[
-   {s:"How does the push compare with friction?",o:["They are the same size","The push is twice as big","Friction is twice as big","The push is 15 times bigger"],a:1,e:"30 N is twice 15 N, which is why the push arrow is drawn twice as long."},
-   {s:"What will happen to the box?",o:["It speeds up to the right","It speeds up to the left","It stays still","It slows down"],a:0,e:"The push is bigger than friction, so the forces are unbalanced and the box speeds up in the direction of the bigger force."}]},
- {obj:"Skydiver",motion:"Skydiver who just jumped",f:[{dir:"down",size:3,label:"Weight",col:"grav"},{dir:"up",size:1,label:"Air resistance",col:"air"}],
+   {t:"num",s:"What is the overall force on the box?",a:15,d:"right",e:"30 − 15 = 15 N, pointing the same way as the bigger force (right). Up and down cancel out."},
+   {t:"mc",s:"What will happen to the box?",o:["It speeds up to the right","It speeds up to the left","It stays still","It moves at a steady speed"],a:0,e:"The overall force is to the right, so it speeds up to the right."},
+   {t:"mc",s:"To make the forces balanced, the push would need to be:",o:["0 N","15 N","25 N","45 N"],a:1,e:"A 15 N push would exactly match the 15 N of friction."}]},
+ {obj:"Skydiver",cap:"A skydiver who has just jumped",f:[{dir:"down",n:700,label:"Weight",col:"grav"},{dir:"up",n:200,label:"Air resistance",col:"air"}],
   qs:[
-   {s:"Which arrow is longer?",o:["Air resistance","Weight","They are equal"],a:1,e:"The weight arrow is much longer, so weight is the bigger force."},
-   {s:"What is happening to the skydiver's speed?",o:["Speeding up as they fall","Slowing down","Staying the same","Going back up"],a:0,e:"Weight is bigger than air resistance, so the overall force is down and the skydiver speeds up."}]},
- {obj:"Car",ground:true,motion:"Car rolling right, engine off",f:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"left",size:2,label:"Friction",col:"fric"}],
+   {t:"num",s:"What is the overall force on the skydiver?",a:500,d:"down",e:"700 − 200 = 500 N down."},
+   {t:"mc",s:"What is happening to the skydiver's speed?",o:["Speeding up","Slowing down","Staying the same","They are going up"],a:0,e:"The overall force is down, in the direction they are moving, so they speed up."},
+   {t:"mc",s:"As they fall faster, air resistance grows. At what air resistance will the forces be balanced?",o:["200 N","500 N","700 N","900 N"],a:2,e:"When air resistance reaches 700 N it matches their weight, and they fall at a steady speed."}]},
+ {obj:"Car",ground:true,cap:"A car rolling right with its engine off",f:[{dir:"down",n:8000,label:"Weight",col:"grav"},{dir:"up",n:8000,label:"Support",col:"push"},{dir:"left",n:2000,label:"Friction",col:"fric"}],
   qs:[
-   {s:"The car is rolling to the right. Why is there no arrow pointing right?",o:["The student forgot to draw it","Nothing is pushing the car forwards, and motion is not a force","Cars do not have forces","Friction points right"],a:1,e:"Only forces get arrows. With the engine off, nothing pushes the car forwards."},
-   {s:"What is happening to the car's speed?",o:["Speeding up","Staying the same","Slowing down","It will reverse straight away"],a:2,e:"The only sideways force is friction, acting backwards, so the car slows down."}]}];
+   {t:"mc",s:"The car is rolling to the right. Why is there no arrow pointing right?",o:["The student forgot to draw it","Nothing is pushing the car forwards, and motion is not a force","Cars do not have forces","Friction points right"],a:1,e:"Only forces get arrows. With the engine off, nothing pushes the car forwards."},
+   {t:"num",s:"What is the overall force on the car?",a:2000,d:"left",e:"Up and down cancel. The only sideways force is 2000 N of friction to the left."},
+   {t:"mc",s:"What is happening to the car's speed?",o:["Speeding up","Staying the same","Slowing down","It reverses straight away"],a:2,e:"The overall force points backwards, against its motion, so it slows down."}]},
+ {obj:"Rope",cap:"A tug of war: Team A pulls left, Team B pulls right",f:[{dir:"left",n:400,label:"Team A",col:"push"},{dir:"right",n:550,label:"Team B",col:"fric"}],
+  qs:[
+   {t:"num",s:"What is the overall force on the rope?",a:150,d:"right",e:"550 − 400 = 150 N to the right."},
+   {t:"mc",s:"Which team is winning?",o:["Team A","Team B","Neither, it is a draw"],a:1,e:"The rope moves towards the bigger force: Team B."},
+   {t:"mc",s:"Team A gets a new player and now pulls with 550 N. What happens?",o:["Team A wins","Team B wins","The rope stops moving: the forces are balanced","The rope snaps"],a:2,e:"550 N each way is balanced, so the rope stays put."}]},
+ {obj:"Lamp",cap:"A lamp hanging still from a cord",f:[{dir:"down",n:20,label:"Weight",col:"grav"},{dir:"up",n:20,label:"Pull of cord",col:"push"}],
+  qs:[
+   {t:"mc",s:"Why is there no support force arrow on the lamp?",o:["Nothing is underneath pushing it up; the cord pulls it up instead","Lamps do not have weight","Support forces only act on cars","The student forgot it"],a:0,e:"A support force comes from a surface underneath. The lamp hangs, so the cord pulls it up."},
+   {t:"num",s:"What is the overall force on the lamp?",a:0,d:"no direction",e:"20 − 20 = 0 N. Balanced, so it stays still."},
+   {t:"mc",s:"The cord can only hold 15 N before it snaps. What would happen?",o:["The lamp would float up","The cord snaps and the lamp falls","Nothing changes","The lamp gets lighter"],a:1,e:"The cord cannot pull with 20 N, so it snaps. Then only weight acts and the lamp falls."}]}];
 let qn=0;
-$("#readQs").innerHTML=READ.map((d,di)=>`<div class="card"><div class="grid2"><div><div class="view">${diagram(d.obj,d.f,{ground:d.ground,motion:d.motion})}</div><p class="small muted" style="margin-top:6px">Diagram ${di+1}: ${esc(d.motion)}</p></div><div>${d.qs.map((q,qi)=>{const k=di+"-"+qi;qn++;return `<div class="q" data-k="${k}"><div class="stem">${qn}. ${esc(q.s)}</div><div class="opts">${q.o.map((o,oi)=>`<label class="opt"><input type="radio" name="r${k}" value="${oi}"${S.w2[k]==oi?" checked":""}><span>${esc(o)}</span></label>`).join("")}</div><div class="fb" hidden></div></div>`}).join("")}</div></div></div>`).join("");
-$("#readQs").addEventListener("change",e=>{const q=e.target.closest(".q");if(!q)return;S.w2[q.dataset.k]=+e.target.value;save();q.querySelectorAll(".opt").forEach(o=>o.classList.remove("right","wrong"));q.querySelector(".fb").hidden=true});
-function w2Answered(){return Object.keys(S.w2).length}
-function w2Score(){let n=0;READ.forEach((d,di)=>d.qs.forEach((q,qi)=>{if(S.w2[di+"-"+qi]===q.a)n++}));return n}
-$("#w2check").onclick=()=>{
+$("#readQs").innerHTML=READ.map((d,di)=>`<div class="card"><div class="grid2"><div><div class="view">${diagram(d.obj,d.f,{ground:d.ground})}</div><p class="small muted" style="margin-top:6px">Diagram ${di+1}: ${esc(d.cap)}</p></div><div>${d.qs.map((q,qi)=>{const k=di+"-"+qi;qn++;const v=S.w2[k]||{};
+  if(q.t==="mc")return `<div class="q" data-k="${k}"><div class="stem">${qn}. ${esc(q.s)}</div><div class="opts">${q.o.map((o,oi)=>`<label class="opt"><input type="radio" name="r${k}" value="${oi}"${v.c===oi?" checked":""}><span>${esc(o)}</span></label>`).join("")}</div><div class="fb" hidden></div></div>`;
+  return `<div class="q" data-k="${k}"><div class="stem">${qn}. ${esc(q.s)}</div><div class="numq"><input type="number" min="0" step="1" inputmode="numeric" aria-label="Overall force in newtons" value="${v.n!=null?v.n:""}"><span>N</span><select aria-label="Direction"><option value="">direction…</option>${DIRS.map(x=>`<option${v.d===x?" selected":""}>${x}</option>`).join("")}</select></div><div class="fb" hidden></div></div>`;
+}).join("")}</div></div></div>`).join("");
+function w2Read(el){const k=el.dataset.k,v=S.w2[k]||(S.w2[k]={});const r=el.querySelector("input[type=radio]:checked");if(r)v.c=+r.value;const n=el.querySelector("input[type=number]");if(n)v.n=n.value===""?null:+n.value;const s=el.querySelector("select");if(s)v.d=s.value;save()}
+$("#readQs").addEventListener("input",e=>{const q=e.target.closest(".q");if(!q)return;w2Read(q);q.querySelectorAll(".opt").forEach(o=>setMark(o));const nq=q.querySelector(".numq");if(nq)setMark(nq);q.querySelector(".fb").hidden=true});
+const W2MAX=READ.reduce((n,d)=>n+d.qs.length,0);
+function qOK(q,v){if(!v)return false;return q.t==="mc"?v.c===q.a:(v.n===q.a&&v.d===q.d)}
+function w2Score(){let n=0;READ.forEach((d,di)=>d.qs.forEach((q,qi)=>{if(qOK(q,S.w2[di+"-"+qi]))n++}));return n}
+function markW2(){
   READ.forEach((d,di)=>d.qs.forEach((q,qi)=>{
-    const k=di+"-"+qi,el=document.querySelector(`.q[data-k="${k}"]`),v=S.w2[k],fb=el.querySelector(".fb");
-    el.querySelectorAll(".opt").forEach((o,oi)=>{o.classList.remove("right","wrong");if(v===oi)o.classList.add(oi===q.a?"right":"wrong")});
+    const k=di+"-"+qi,el=document.querySelector(`.q[data-k="${k}"]`),v=S.w2[k],fb=el.querySelector(".fb"),ok=qOK(q,v);
+    const answered=v&&(q.t==="mc"?v.c!=null:(v.n!=null||v.d));
+    if(q.t==="mc")el.querySelectorAll(".opt").forEach((o,oi)=>{setMark(o);if(v&&v.c===oi)o.classList.add(ok?"right":"wrong")});
+    else setMark(el.querySelector(".numq"),answered?(ok?"right":"wrong"):null);
     fb.hidden=false;
-    fb.innerHTML=v==null?"<b>Not answered yet.</b>":v===q.a?`<b class="ok">Correct.</b> ${esc(q.e)}`:`<b class="no">Not quite.</b> Look at the arrows again and have another go.`;
+    let hint="Look at the arrows again and have another go.";
+    if(q.t==="num"&&v&&v.n===q.a&&v.d!==q.d)hint="The number is right. Check the direction.";
+    else if(q.t==="num"&&v&&v.d===q.d&&v.n!==q.a)hint="The direction is right. Check your subtraction.";
+    fb.innerHTML=!answered?"<b>Not answered yet.</b>":ok?`<b class="ok">Correct.</b> ${esc(q.e)}`:`<b class="no">Not quite.</b> ${hint}`;
   }));
-  const tot=READ.reduce((n,d)=>n+d.qs.length,0),sc=w2Score();
-  $("#w2score").textContent=`${sc} / ${tot}`+(sc===tot?"  Excellent!":"");S.w2checked=true;save();renderTabs();
-};
+  const sc=w2Score();$("#w2score").textContent=`${sc} / ${W2MAX}`+(sc===W2MAX?"  Excellent!":"");
+}
+$("#w2check").onclick=()=>{recordFirst("w2",w2Score());markW2();renderTabs()};
 
-/* ---------- PAGE 3: builder ---------- */
-const LABELS=["Weight","Support force","Push","Friction","Air resistance","Water resistance","Motion"];
-const LCOL={"Weight":"grav","Support force":"push","Push":"push","Friction":"fric","Air resistance":"air","Water resistance":"air","Motion":"bad"};
-const DIRN={up:"up",down:"down",left:"left",right:"right"};
+/* =========== PAGE 3 SORT =========== */
+const MOT=["Stays still","Keeps moving at a steady speed","Speeds up","Slows down","Changes direction"];
+const SORT=[
+  ["A car parked on a flat street","Balanced",0],
+  ["A car cruising at a steady 60 km/h on a straight, flat road","Balanced",1],
+  ["A soccer ball the moment it is kicked","Unbalanced",2],
+  ["A cyclist who stops pedalling on flat ground","Unbalanced",3],
+  ["A lamp hanging from the ceiling","Balanced",0],
+  ["A skydiver falling at a steady speed","Balanced",1],
+  ["A rocket lifting off the launch pad","Unbalanced",2],
+  ["A bowling ball rolling to a stop on grass","Unbalanced",3],
+  ["A boat floating still on a calm lake","Balanced",0],
+  ["A tug of war where neither team can move the rope","Balanced",0],
+  ["A car going around a roundabout at a steady speed","Unbalanced",4],
+  ["A shopping trolley being pushed harder and harder","Unbalanced",2]];
+$("#sorts").innerHTML=SORT.map((s,i)=>{const v=S.w3[i]||{};return `<div class="sortcard" id="sc-${i}"><div class="sit">${i+1}. ${esc(s[0])}</div><div class="pick"><span>Forces:</span><span class="seg" role="group" aria-label="Balanced or unbalanced">${["Balanced","Unbalanced"].map(b=>`<button data-s="${i}" data-v="${b}" aria-pressed="${v.b===b}">${b}</button>`).join("")}</span><span>Motion:</span><select data-s="${i}" aria-label="What happens to its motion"><option value="">choose…</option>${MOT.map((m,mi)=>`<option value="${mi}"${v.m===mi?" selected":""}>${m}</option>`).join("")}</select></div><div class="fb" hidden></div></div>`}).join("");
+$("#sorts").addEventListener("click",e=>{const b=e.target.closest("button[data-s]");if(!b)return;const i=b.dataset.s;(S.w3[i]=S.w3[i]||{}).b=b.dataset.v;save();b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));const c=$("#sc-"+i);setMark(c);c.querySelector(".fb").hidden=true});
+$("#sorts").addEventListener("change",e=>{const i=e.target.dataset.s;if(i==null)return;(S.w3[i]=S.w3[i]||{}).m=e.target.value===""?null:+e.target.value;save();const c=$("#sc-"+i);setMark(c);c.querySelector(".fb").hidden=true});
+const W3MAX=SORT.length*2;
+function w3Score(){return SORT.reduce((n,s,i)=>{const v=S.w3[i]||{};return n+(v.b===s[1]?1:0)+(v.m===s[2]?1:0)},0)}
+function markW3(){
+  SORT.forEach((s,i)=>{const v=S.w3[i]||{},c=$("#sc-"+i),fb=c.querySelector(".fb"),bo=v.b===s[1],mo=v.m===s[2];
+    setMark(c,bo&&mo?"right":"wrong");fb.hidden=false;
+    fb.innerHTML=bo&&mo?'<b class="ok">✓ Both correct.</b>':`${bo?'<span class="ok">✓ Forces</span>':'<span class="no">✗ Forces</span>'} · ${mo?'<span class="ok">✓ Motion</span>':'<span class="no">✗ Motion</span>'}`;});
+  const sc=w3Score();$("#w3score").textContent=`${sc} / ${W3MAX}`+(sc===W3MAX?"  Spot on!":"");
+}
+$("#w3check").onclick=()=>{recordFirst("w3",w3Score());markW3();renderTabs()};
+
+/* =========== PAGE 4 MATCH =========== */
+const MD={
+ A:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"}],
+ B:[{dir:"down",size:3,label:"Weight",col:"grav"},{dir:"up",size:1,label:"Air resistance",col:"air"}],
+ C:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"left",size:2,label:"Friction",col:"fric"}],
+ D:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"right",size:3,label:"Push",col:"push"},{dir:"left",size:1,label:"Friction",col:"fric"}],
+ E:[{dir:"up",size:3,label:"Air resistance",col:"air"},{dir:"down",size:2,label:"Weight",col:"grav"}],
+ F:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"right",size:2,label:"Driving force",col:"push"},{dir:"left",size:2,label:"Air resistance",col:"air"}]};
+const SITS=[
+  ["A car driving along a flat road at a steady speed","F","Driving force and air resistance are equal, so the speed stays the same."],
+  ["A cup sitting on a bench","A","Only weight and support force, and they are equal."],
+  ["A parachutist just after the parachute opens","E","The big canopy makes air resistance bigger than weight, so they slow down."],
+  ["A sled sliding along flat snow and slowing to a stop","C","Nothing pushes it forwards. Friction acts backwards and slows it."],
+  ["A stone just dropped off a cliff","B","Weight is much bigger than air resistance, so it speeds up. Nothing supports it from below."],
+  ["A heavy box being shoved across the floor, speeding up","D","The push is bigger than friction, so it speeds up."]];
+$("#matchDiagrams").innerHTML=Object.keys(MD).map(k=>`<figure><figcaption>${k}</figcaption><div class="view">${diagram("Object",MD[k],{aria:"Diagram "+k})}</div></figure>`).join("");
+$("#matchSits").innerHTML=SITS.map((s,i)=>`<div class="mrow" id="ms-${i}" style="grid-template-columns:1fr auto auto"><span>${i+1}. ${esc(s[0])}</span><select data-x="${i}" aria-label="Diagram for situation ${i+1}"><option value="">diagram…</option>${Object.keys(MD).map(k=>`<option${S.w4[i]===k?" selected":""}>${k}</option>`).join("")}</select><span class="mark" id="mx-${i}"></span><div class="why" hidden></div></div>`).join("");
+$("#matchSits").addEventListener("change",e=>{const i=e.target.dataset.x;if(i==null)return;S.w4[i]=e.target.value;save();$("#mx-"+i).textContent="";setMark($("#ms-"+i));$("#ms-"+i).querySelector(".why").hidden=true});
+function w4Score(){return SITS.filter((s,i)=>S.w4[i]===s[1]).length}
+function markW4(){
+  SITS.forEach((s,i)=>{const v=S.w4[i],ok=v===s[1],m=$("#mx-"+i),r=$("#ms-"+i),w=r.querySelector(".why");
+    m.className="mark "+(ok?"ok":"no");m.textContent=!v?"✗ not answered":ok?"✓":"✗";w.hidden=!ok;w.textContent=s[2]});
+  const used={};Object.values(S.w4).forEach(v=>{if(v)used[v]=(used[v]||0)+1});
+  const dup=Object.keys(used).filter(k=>used[k]>1);
+  const sc=w4Score();$("#w4score").textContent=`${sc} / ${SITS.length}`+(sc===SITS.length?"  Perfect match!":dup.length?`  (You used ${dup.join(", ")} more than once.)`:"");
+}
+$("#w4check").onclick=()=>{recordFirst("w4",w4Score());markW4();renderTabs()};
+
+/* =========== PAGE 5 BUILD =========== */
+const LABELS=["Weight","Support force","Push","Pull","Driving force","Friction","Air resistance","Water resistance","Motion"];
+const LCOL={"Weight":"grav","Support force":"push","Push":"push","Pull":"push","Driving force":"push","Friction":"fric","Air resistance":"air","Water resistance":"air","Motion":"bad"};
 const SCEN=[
  {id:"phone",name:"A phone resting on a desk",obj:"Phone",ground:true,motion:"Still",
   model:{up:"Support force",down:"Weight"},rel:[["up","=","down","The phone is not moving up or down, so weight and support force must be the same size."]]},
@@ -494,90 +670,77 @@ const SCEN=[
   model:{right:"Push",left:"Friction",up:"Support force",down:"Weight"},rel:[["right",">","left","It is speeding up to the right, so the push must be bigger than friction."],["up","=","down","It is not moving up or down, so weight and support force must be equal."]]},
  {id:"skate",name:"A skateboarder rolling to a stop",obj:"Skateboarder",ground:true,motion:"Moving right, slowing down",
   model:{left:"Friction",up:"Support force",down:"Weight"},rel:[["up","=","down","They are not moving up or down, so weight and support force must be equal."]]},
+ {id:"lamp",name:"A lamp hanging from a cord",obj:"Lamp",motion:"Still",
+  model:{up:"Pull",down:"Weight"},rel:[["up","=","down","The lamp is still, so the pull of the cord must equal its weight."]],
+  extra:{up:{"Support force":"Nothing is underneath the lamp. What is holding it up from above?"}}},
+ {id:"car",name:"A car driving at a steady speed",obj:"Car",ground:true,motion:"Moving right, steady speed",
+  model:{right:"Driving force",left:"Air resistance",up:"Support force",down:"Weight"},rel:[["right","=","left","The speed is steady, so the driving force must equal air resistance."],["up","=","down","It is not moving up or down, so weight and support force must be equal."]],
+  extra:{right:{"Push":"Close! For a car, the forwards force from the engine is called the driving force."},left:{"Friction":"Friction acts too, but for this one use air resistance as the main force holding the car back."}}},
  {id:"chute",name:"A parachute just opened",obj:"Parachutist",motion:"Falling, slowing down",
   model:{up:"Air resistance",down:"Weight"},rel:[["up",">","down","The parachutist is slowing down, so the big canopy makes air resistance bigger than weight."]]},
  {id:"swim",name:"A swimmer pushing off the wall",obj:"Swimmer",motion:"Moving right, speeding up",
   model:{right:"Push",left:"Water resistance"},rel:[["right",">","left","The swimmer is speeding up, so the push off the wall must be bigger than water resistance."]],
-  note:"Only draw the left and right forces for this one (weight and upthrust balance out, so leave up and down empty).",
+  note:"Only draw left and right for this one",
   extra:{left:{"Air resistance":"The swimmer is in water, so it is called water resistance."},up:{"_":"For this one, only draw the forces left and right."},down:{"_":"For this one, only draw the forces left and right."}}}];
 let cur=0;
 function bState(id){if(!S.build[id])S.build[id]={f:{},ok:false,tries:0};return S.build[id]}
 function renderScenBtns(){$("#scenBtns").innerHTML=SCEN.map((sc,i)=>`<button data-sc="${i}" aria-current="${i===cur}" class="${bState(sc.id).ok?"done":""}">${i+1}. ${esc(sc.name.replace(/^An? /,""))}</button>`).join("")}
 $("#scenBtns").addEventListener("click",e=>{const b=e.target.closest("[data-sc]");if(b){cur=+b.dataset.sc;renderBuilder()}});
 function renderBuilder(){
-  const sc=SCEN[cur],st=bState(sc.id);
-  renderScenBtns();
-  $("#scenName").textContent=sc.name;
-  $("#scenMotion").textContent=sc.motion+(sc.note?"  ·  "+sc.note:"");
+  const sc=SCEN[cur],st=bState(sc.id);renderScenBtns();
+  $("#scenName").textContent=sc.name;$("#scenMotion").textContent=sc.motion+(sc.note?"  ·  "+sc.note:"");
   $("#dirs").innerHTML=["up","down","left","right"].map(d=>{const f=st.f[d]||{};return `<div class="dir"><b>${d[0].toUpperCase()+d.slice(1)}</b><div class="ctrls"><select data-d="${d}" aria-label="Force pointing ${d}"><option value="">No force</option>${LABELS.map(l=>`<option${f.label===l?" selected":""}>${l}</option>`).join("")}</select><span class="sz" role="group" aria-label="Size of ${d} arrow">${[1,2,3].map(n=>`<button data-d="${d}" data-n="${n}" aria-pressed="${f.size===n}" ${f.label?"":"disabled"}>${["S","M","L"][n-1]}</button>`).join("")}</span></div></div>`}).join("");
-  drawBuild();
-  const out=$("#bOut");
+  drawBuild();const out=$("#bOut");
   if(st.ok){out.hidden=false;out.className="verdict good";out.innerHTML="✓ Correct! This diagram is done."}else out.hidden=true;
 }
-function drawBuild(){
-  const sc=SCEN[cur],st=bState(sc.id);
-  const forces=Object.entries(st.f).filter(([d,f])=>f.label).map(([d,f])=>({dir:d,size:f.size||2,label:f.label,col:LCOL[f.label]}));
-  $("#bView").innerHTML=diagram(sc.obj,forces,{ground:sc.ground,motion:sc.motion});
-}
-$("#dirs").addEventListener("change",e=>{
-  const d=e.target.dataset.d;if(!d)return;const st=bState(SCEN[cur].id);
-  if(!e.target.value)delete st.f[d];else st.f[d]={label:e.target.value,size:(st.f[d]&&st.f[d].size)||2};
-  st.ok=false;save();renderBuilder();
-});
-$("#dirs").addEventListener("click",e=>{
-  const b=e.target.closest("button[data-n]");if(!b||b.disabled)return;const st=bState(SCEN[cur].id);
-  st.f[b.dataset.d].size=+b.dataset.n;st.ok=false;save();renderBuilder();
-});
+function drawBuild(){const sc=SCEN[cur],st=bState(sc.id);
+  $("#bView").innerHTML=diagram(sc.obj,Object.entries(st.f).filter(([d,f])=>f.label).map(([d,f])=>({dir:d,size:f.size||2,label:f.label,col:LCOL[f.label]})),{ground:sc.ground})}
+$("#dirs").addEventListener("change",e=>{const d=e.target.dataset.d;if(!d)return;const st=bState(SCEN[cur].id);
+  if(!e.target.value)delete st.f[d];else st.f[d]={label:e.target.value,size:(st.f[d]&&st.f[d].size)||2};st.ok=false;save();renderBuilder()});
+$("#dirs").addEventListener("click",e=>{const b=e.target.closest("button[data-n]");if(!b||b.disabled)return;const st=bState(SCEN[cur].id);st.f[b.dataset.d].size=+b.dataset.n;st.ok=false;save();renderBuilder()});
 $("#bClear").onclick=()=>{const st=bState(SCEN[cur].id);st.f={};st.ok=false;save();renderBuilder()};
 $("#bCheck").onclick=()=>{
   const sc=SCEN[cur],st=bState(sc.id),probs=[];st.tries++;
+  const ex=(d,k)=>sc.extra&&sc.extra[d]&&sc.extra[d][k];
   ["up","down","left","right"].forEach(d=>{
     const want=sc.model[d],got=st.f[d]&&st.f[d].label;
     if(want&&!got)probs.push(`Something is missing: there should be a force pointing <b>${d}</b>.`);
     else if(!want&&got){
       if(got==="Motion")probs.push(`Motion is not a force. Remove the <b>${d}</b> arrow labelled Motion.`);
-      else if(sc.extra&&sc.extra[d]&&sc.extra[d]["_"])probs.push(sc.extra[d]["_"]);
-      else if(sc.extra&&sc.extra[d]&&sc.extra[d][got])probs.push(sc.extra[d][got]);
+      else if(ex(d,"_"))probs.push(ex(d,"_"));else if(ex(d,got))probs.push(ex(d,got));
       else probs.push(`There should not be a force pointing <b>${d}</b> here. What would be pushing or pulling that way?`);
-    }
-    else if(want&&got&&want!==got){
+    }else if(want&&got&&want!==got){
       if(got==="Motion")probs.push(`Motion is not a force. Which real force points <b>${d}</b>?`);
-      else if(sc.extra&&sc.extra[d]&&sc.extra[d][got])probs.push(sc.extra[d][got]);
+      else if(ex(d,got))probs.push(ex(d,got));
       else probs.push(`The <b>${d}</b> arrow is the right direction but has the wrong label. Which force acts ${d} here?`);
-    }
-  });
-  if(!probs.length)sc.rel.forEach(([a,op,b,why])=>{
-    const A=st.f[a].size,B=st.f[b].size;
-    if(op==="="&&A!==B)probs.push(`Check your arrow sizes. ${why}`);
-    if(op===">"&&!(A>B))probs.push(`Check your arrow sizes. ${why}`);
-  });
-  st.ok=!probs.length;
-  if(st.ok&&st.firstTry==null)st.firstTry=st.tries===1;
-  save();
+    }});
+  if(!probs.length)sc.rel.forEach(([a,op,b,why])=>{const A=st.f[a].size,B=st.f[b].size;if((op==="="&&A!==B)||(op===">"&&!(A>B)))probs.push(`Check your arrow sizes. ${why}`)});
+  st.ok=!probs.length;if(st.ok&&st.firstTry==null)st.firstTry=st.tries===1;save();
   const out=$("#bOut");out.hidden=false;
-  if(st.ok){out.className="verdict good";out.innerHTML="✓ Correct! "+(cur<SCEN.length-1?"Choose the next situation above.":"That was the last one. Head to Page 4.");renderScenBtns()}
+  if(st.ok){out.className="verdict good";out.innerHTML="✓ Correct! "+(SCEN.every(s=>bState(s.id).ok)?"All done. Head to Page 6.":"Choose the next situation above.");renderScenBtns()}
   else{out.className="verdict bad";out.innerHTML=`Not yet. Fix ${probs.length===1?"this":"these"}:<ul>${probs.map(p=>`<li>${p}</li>`).join("")}</ul>`}
   renderTabs();
 };
 renderBuilder();
 
-/* ---------- PAGE 4: spot the mistake ---------- */
-const MOPTS=["An arrow does not start on the object","An arrow is the wrong size","An arrow has no label","An arrow shows motion, which is not a force"];
+/* =========== PAGE 6 MISTAKES =========== */
+const MOPTS=["An arrow does not start on the object","An arrow is the wrong size","An arrow has no label","An arrow shows motion, which is not a force","A force is missing","An arrow points the wrong way"];
 const MISTAKES=[
- {obj:"Ball",motion:"Falling",f:[{dir:"down",size:2,label:"Weight",col:"grav",gap:40},{dir:"up",size:1,label:"Air resistance",col:"air",gap:40}],a:0,e:"Both arrows are floating in space. Every arrow must start on the object."},
- {obj:"Car",ground:true,motion:"Rolling right, slowing down",f:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"left",size:1,label:"Friction",col:"fric"},{dir:"right",size:2,label:"Motion",col:"bad"}],a:3,e:"Nothing pushes a rolling car forwards. Motion is not a force, so there should be no forward arrow."},
- {obj:"Apple",motion:"Falling, speeding up",f:[{dir:"down",size:1,label:"Weight",col:"grav"},{dir:"up",size:3,label:"Air resistance",col:"air"}],a:1,e:"If the apple is speeding up as it falls, weight must be bigger than air resistance. These arrow sizes are the wrong way around."},
- {obj:"Book",ground:true,motion:"Still on a shelf",f:[{dir:"down",size:2,label:"",col:"grav"},{dir:"up",size:2,label:"",col:"push"}],a:2,e:"The directions and sizes are right, but neither arrow is labelled. Every arrow needs the name of the force."}];
-$("#mistakes").innerHTML=MISTAKES.map((m,i)=>`<div class="card q" data-m="${i}" style="padding:18px;border-top:1px solid var(--line)"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Diagram ${String.fromCharCode(65+i)}</h2><span class="pill">${esc(m.motion)}</span></div><div class="view">${diagram(m.obj,m.f,{ground:m.ground})}</div><div class="stem">What is the mistake?</div><div class="opts">${MOPTS.map((o,oi)=>`<label class="opt"><input type="radio" name="m${i}" value="${oi}"${S.w4[i]==oi?" checked":""}><span>${esc(o)}</span></label>`).join("")}</div><div class="fb" hidden></div></div>`).join("");
-$("#mistakes").addEventListener("change",e=>{const q=e.target.closest("[data-m]");if(!q)return;S.w4[q.dataset.m]=+e.target.value;save();q.querySelectorAll(".opt").forEach(o=>o.classList.remove("right","wrong"));q.querySelector(".fb").hidden=true;renderTabs()});
-function w4Answered(){return Object.keys(S.w4).length}
-function w4Score(){return MISTAKES.filter((m,i)=>S.w4[i]===m.a).length}
-$("#w4check").onclick=()=>{
-  MISTAKES.forEach((m,i)=>{const el=document.querySelector(`[data-m="${i}"]`),v=S.w4[i],fb=el.querySelector(".fb");
-    el.querySelectorAll(".opt").forEach((o,oi)=>{o.classList.remove("right","wrong");if(v===oi)o.classList.add(oi===m.a?"right":"wrong")});
+ {obj:"Ball",cap:"Falling",f:[{dir:"down",size:2,label:"Weight",col:"grav",gap:40},{dir:"up",size:1,label:"Air resistance",col:"air",gap:40}],a:0,e:"Both arrows are floating in space. Every arrow must start on the object."},
+ {obj:"Car",ground:true,cap:"Rolling right, slowing down",f:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"left",size:1,label:"Friction",col:"fric"},{dir:"right",size:2,label:"Motion",col:"bad"}],a:3,e:"Nothing pushes a rolling car forwards. Motion is not a force, so there should be no forward arrow."},
+ {obj:"Apple",cap:"Falling, speeding up",f:[{dir:"down",size:1,label:"Weight",col:"grav"},{dir:"up",size:3,label:"Air resistance",col:"air"}],a:1,e:"If the apple is speeding up as it falls, weight must be bigger than air resistance. These sizes are the wrong way around."},
+ {obj:"Book",ground:true,cap:"Still on a shelf",f:[{dir:"down",size:2,label:"",col:"grav"},{dir:"up",size:2,label:"",col:"push"}],a:2,e:"The directions and sizes are right, but neither arrow is labelled."},
+ {obj:"Sled",ground:true,cap:"Sliding right, slowing down",f:[{dir:"down",size:2,label:"Weight",col:"grav"},{dir:"up",size:2,label:"Support force",col:"push"},{dir:"right",size:2,label:"Friction",col:"fric"}],a:5,e:"Friction acts against the motion. The sled is moving right, so friction must point left."},
+ {obj:"Bucket",cap:"Hanging still from a rope",f:[{dir:"up",size:2,label:"Pull of rope",col:"push"}],a:4,e:"Weight is missing. Every object on Earth has weight pulling it down, equal to the rope's pull here."}];
+$("#mistakes").innerHTML=MISTAKES.map((m,i)=>`<div class="card mcard" data-mk="${i}"><div class="row" style="justify-content:space-between"><h2 style="margin:0">Diagram ${String.fromCharCode(65+i)}</h2><span class="pill">${esc(m.cap)}</span></div><div class="view">${diagram(m.obj,m.f,{ground:m.ground})}</div><div class="q"><div class="stem">What is the mistake?</div><select aria-label="Mistake in diagram ${String.fromCharCode(65+i)}"><option value="">choose…</option>${MOPTS.map((o,oi)=>`<option value="${oi}"${S.w6[i]===oi?" selected":""}>${esc(o)}</option>`).join("")}</select><div class="fb" hidden></div></div></div>`).join("");
+$("#mistakes").addEventListener("change",e=>{const c=e.target.closest("[data-mk]");if(!c)return;S.w6[c.dataset.mk]=e.target.value===""?undefined:+e.target.value;save();c.querySelector(".fb").hidden=true;setMark(c.querySelector(".q select"))});
+function w6Score(){return MISTAKES.filter((m,i)=>S.w6[i]===m.a).length}
+function markW6(){
+  MISTAKES.forEach((m,i)=>{const c=document.querySelector(`[data-mk="${i}"]`),v=S.w6[i],fb=c.querySelector(".fb");
     fb.hidden=false;fb.innerHTML=v==null?"<b>Not answered yet.</b>":v===m.a?`<b class="ok">Correct.</b> ${esc(m.e)}`:`<b class="no">Not quite.</b> Check the arrows against the five rules.`});
-  const sc=w4Score();$("#w4score").textContent=`${sc} / ${MISTAKES.length}`;S.w4checked=true;save();renderTabs();
-};
+  const sc=w6Score();$("#w6score").textContent=`${sc} / ${MISTAKES.length}`;
+}
+$("#w6check").onclick=()=>{recordFirst("w6",w6Score());markW6();renderTabs()};
 const ex=$("#exitText");ex.value=S.exit;
 function exCount(){const w=S.exit.trim()?S.exit.trim().split(/\s+/).length:0;$("#exitCount").textContent=w+" words"}
 ex.addEventListener("input",()=>{S.exit=ex.value;save();exCount();renderTabs()});exCount();
@@ -588,17 +751,14 @@ const LV=["Not yet","Getting there","Got it"];
 $("#selfRate").innerHTML=SC.map((c,i)=>`<div><div style="font-weight:700;margin-bottom:6px">${esc(c)}</div><div class="row">${LV.map((l,li)=>`<label class="opt" style="padding:6px 12px"><input type="radio" name="sr${i}" value="${li}"${S.rate[i]==li?" checked":""}><span>${l}</span></label>`).join("")}</div></div>`).join("");
 $("#selfRate").addEventListener("change",e=>{const m=e.target.name.match(/^sr(\d)$/);if(m){S.rate[m[1]]=+e.target.value;save()}});
 
-/* ---------- FINISH ---------- */
-function code(){
-  const t=w1Score()+w2Score()+w4Score()+SCEN.filter(s=>bState(s.id).ok).length;
-  let h=7;for(const ch of (S.name.trim().toLowerCase()+"|"+t))h=(h*31+ch.charCodeAt(0))%46656;
-  return "FD"+String(t).padStart(2,"0")+"-"+h.toString(36).toUpperCase().padStart(3,"0");
-}
+/* =========== FINISH =========== */
+function firstTot(){return ["w1","w2","w3","w4","w6"].reduce((n,p)=>n+(S.first[p]||0),0)+SCEN.filter(s=>bState(s.id).firstTry).length}
+function code(){let h=7;for(const ch of (S.name.trim().toLowerCase()+"|"+firstTot()))h=(h*31+ch.charCodeAt(0))%46656;return "FD"+String(firstTot()).padStart(2,"0")+"-"+h.toString(36).toUpperCase().padStart(3,"0")}
 function renderSummary(){
-  const b3=SCEN.filter(s=>bState(s.id).ok).length,first=SCEN.filter(s=>bState(s.id).firstTry).length;
-  const tot2=READ.reduce((n,d)=>n+d.qs.length,0);
-  const total=w1Score()+w2Score()+b3+w4Score(),max=BLANKS.length+tot2+SCEN.length+MISTAKES.length;
-  const rate=SC.map((c,i)=>`<li>${esc(c)} <b>${S.rate[i]!=null?LV[S.rate[i]]:"not rated"}</b></li>`).join("");
+  const b5=SCEN.filter(s=>bState(s.id).ok).length,first5=SCEN.filter(s=>bState(s.id).firstTry).length;
+  const f=p=>S.first[p]==null?"not checked":S.first[p];
+  const rows=[["Page 1: The rules",f("w1"),w1Score(),W1MAX],["Page 2: Read the diagram",f("w2"),w2Score(),W2MAX],["Page 3: Sort it",f("w3"),w3Score(),W3MAX],["Page 4: Match it",f("w4"),w4Score(),SITS.length],["Page 5: Build it",first5,b5,SCEN.length],["Page 6: Spot the mistake",f("w6"),w6Score(),MISTAKES.length]];
+  const max=rows.reduce((n,r)=>n+r[3],0),now=rows.reduce((n,r)=>n+r[2],0);
   $("#summary").innerHTML=`
    <div class="row" style="justify-content:space-between;align-items:flex-start">
      <div><h2 style="margin:0">${esc(S.name||"Name not entered")}</h2><div class="muted">${esc(S.cls||"Class not entered")} · Year 7 Science · Lesson 13 Force diagrams · ${new Date().toLocaleDateString("en-AU")}</div></div>
@@ -606,23 +766,19 @@ function renderSummary(){
    </div>
    ${S.name.trim()?"":`<p class="no" style="margin-top:10px"><b>Add your name on the Start page so your teacher knows this is yours.</b></p>`}
    <table class="sumtable" style="margin-top:14px">
-     <tr><th>Page</th><th>Score</th></tr>
-     <tr><td>Page 1: The rules</td><td>${w1Score()} / ${BLANKS.length}</td></tr>
-     <tr><td>Page 2: Read the diagram</td><td>${w2Score()} / ${tot2}</td></tr>
-     <tr><td>Page 3: Build it</td><td>${b3} / ${SCEN.length} correct (${first} first go)</td></tr>
-     <tr><td>Page 4: Spot the mistake</td><td>${w4Score()} / ${MISTAKES.length}</td></tr>
-     <tr><th>Total</th><th>${total} / ${max}</th></tr>
+     <tr><th>Page</th><th>First check</th><th>Final</th></tr>
+     ${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}${typeof r[1]==="number"?" / "+r[3]:""}</td><td>${r[2]} / ${r[3]}</td></tr>`).join("")}
+     <tr><th>Total</th><th>${firstTot()} / ${max}</th><th>${now} / ${max}</th></tr>
    </table>
+   <p class="small muted" style="margin-top:6px">For Page 5, first check means diagrams correct on the first try.</p>
    <h3 style="margin-top:16px">Exit ticket</h3>
-   <div class="fb" style="white-space:pre-wrap">${S.exit.trim()?esc(S.exit):"<i>Not written yet. Go back to Page 4.</i>"}</div>
-   <h3 style="margin-top:16px">Self assessment</h3><ul style="margin:0;padding-left:1.2em">${rate}</ul>`;
+   <div class="fb" style="white-space:pre-wrap">${S.exit.trim()?esc(S.exit):"<i>Not written yet. Go back to Page 6.</i>"}</div>
+   <h3 style="margin-top:16px">Self assessment</h3><ul style="margin:0;padding-left:1.2em">${SC.map((c,i)=>`<li>${esc(c)} <b>${S.rate[i]!=null?LV[S.rate[i]]:"not rated"}</b></li>`).join("")}</ul>`;
 }
 $("#printBtn").onclick=()=>window.print();
 
-/* ---------- boot ---------- */
-if(S.w1checked)$("#w1check").click();
-if(S.w2checked)$("#w2check").click();
-if(S.w4checked)$("#w4check").click();
+/* boot */
+if(S.checked.w1)markW1();if(S.checked.w2)markW2();if(S.checked.w3)markW3();if(S.checked.w4)markW4();if(S.checked.w6)markW6();
 go(PAGES.some(p=>p[0]===S.page)?S.page:"start");
 </script>
 </body>
