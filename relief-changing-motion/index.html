@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Forces Change Motion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#e9efed; --surface:#fbfdfc; --ink:#13221e; --muted:#566862; --line:#cad7d2;
+  --air:#2f73bb; --push:#0f7f80; --fric:#b0512a; --grav:#6a4bb3; --mag:#b8326a;
+  --accent:#b0512a; --accent-ink:#ffffff; --good:#2f7d3a; --bad:#b3372f;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:16px}
+.stack{display:grid;gap:16px}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.dots{display:inline-flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:14px;display:flex;align-items:center;gap:6px}
+.tabs button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button .tick{color:var(--good);font-weight:700}
+.tabs button[aria-current="true"] .tick{color:var(--bg)}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+
+header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4.5vw,42px);letter-spacing:-.02em;line-height:1.05;margin:0 0 6px}
+header p{margin:0;color:var(--muted);max-width:72ch}
+.eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{font-family:var(--f-display);font-weight:600;font-size:21px;margin:0 0 10px;line-height:1.2}
+.card h3{font-size:17px;margin:0 0 6px}
+.card p{margin:0 0 10px}.card p:last-child{margin-bottom:0}
+.part{font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2>*,.grid3>*{min-width:0}
+.accent{border-left:5px solid var(--accent)}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);font-size:14px}
+.view{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--air) 7%,var(--surface))}
+.view svg{width:100%;height:auto;display:block}
+.arrowlab{font-size:15px;font-weight:700;font-family:var(--f-body);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.objlab{font-size:14px;font-weight:700;font-family:var(--f-body);fill:var(--ink)}
+.video{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sum{font-family:var(--f-mono);font-weight:700;background:color-mix(in srgb,var(--ink) 6%,var(--surface));border-radius:8px;padding:8px 12px;margin:8px 0}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.navrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+input[type=text],input[type=number],textarea,select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px}
+input[type=text]{width:100%}
+input[type=number]{width:110px}
+textarea{width:100%;min-height:120px;resize:vertical}
+label.field{display:grid;gap:4px;font-weight:700}
+select{max-width:100%;min-width:0}
+.mrow select,.q select{width:100%}
+.numq select{width:auto;flex:1 1 140px}
+.mrow>*,.tfrow>*{min-width:0}
+
+.blanks{margin:0;padding-left:1.4em;display:grid;gap:12px}
+.blanks select{margin:0 4px}
+.mark{font-weight:700;margin-left:6px;white-space:nowrap}
+.ok{color:var(--good)}.no{color:var(--bad)}
+
+.tf{display:grid;gap:8px}
+.tfrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.tfrow.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.tfrow.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--surface))}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;font-size:14px;font-weight:700}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.why{font-size:14px;color:var(--muted);grid-column:1/-1}
+.why[hidden]{display:none}
+
+.match{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:170px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.mrow b{font-size:16px}
+
+.q{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.q:first-child{border-top:0;padding-top:0}
+.q .stem{font-weight:700}
+.opts{display:grid;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;background:var(--surface)}
+.opt input{margin-top:5px;accent-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.numq{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.numq.right input,.numq.right select{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.numq.wrong input,.numq.wrong select{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.fb{font-size:15px;border-radius:8px;padding:8px 12px;background:color-mix(in srgb,var(--ink) 5%,var(--surface))}
+.fb[hidden]{display:none}
+.score{font-family:var(--f-mono);font-weight:700;font-size:20px}
+
+.sorts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.sortcard{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--surface)}
+.sortcard .sit{font-weight:700}
+.sortcard .pick{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+.sortcard.right{border-color:var(--good)}
+.sortcard.wrong{border-color:var(--bad)}
+
+.diagrams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.diagrams figure{margin:0}
+.diagrams figcaption{font-family:var(--f-display);font-weight:800;font-size:20px;margin-bottom:4px}
+
+.builder{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.builder>*{min-width:0}
+.scen{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.scen button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px}
+.scen button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.scen button.done::after{content:" ✓";color:var(--good);font-weight:700}
+.scen button[aria-current="true"].done::after{color:var(--bg)}
+.motion{font-family:var(--f-mono);font-size:14px;color:var(--accent);font-weight:700}
+.dirs{display:grid;gap:10px}
+.dir{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.dir b{font-size:15px}
+.dir .ctrls{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dir select{flex:1 1 140px}
+.sz{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sz button{border:0;background:var(--surface);padding:6px 10px;font-size:14px;font-weight:700}
+.sz button+button{border-left:1px solid var(--line)}
+.sz button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.sz button:disabled{opacity:.4;cursor:default}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700}
+.verdict.good{background:color-mix(in srgb,var(--good) 15%,var(--surface));color:var(--good)}
+.verdict.bad{background:color-mix(in srgb,var(--bad) 12%,var(--surface));color:var(--bad)}
+.verdict ul{margin:6px 0 0;padding-left:1.2em;font-weight:400;color:var(--ink)}
+.verdict[hidden]{display:none}
+
+.sumtable{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.sumtable th,.sumtable td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.sumtable th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.code{font-family:var(--f-mono);font-size:28px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.page[hidden]{display:none}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.mcard{display:grid;gap:8px}
+
+@media (max-width:820px){.grid2,.builder,.sorts{grid-template-columns:1fr}.grid3,.diagrams{grid-template-columns:1fr 1fr}.tabs{margin-left:0}.mrow{grid-template-columns:minmax(0,1fr)!important}}
+@media (max-width:520px){.grid3,.diagrams{grid-template-columns:1fr}}
+@media print{.bar,.progress,.navrow,.noprint{display:none!important}body{background:#fff;color:#000}.card{border-color:#999}}
+.fcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.fcards>div{border:1px solid var(--line);border-left:6px solid var(--c);border-radius:12px;padding:12px;background:var(--surface)}
+.fcards h3{color:var(--c);margin:0 0 4px;font-family:var(--f-display);font-size:19px}
+.fcards p{margin:0;font-size:15px}
+.sim{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+.sim>*{min-width:0}
+.sim label{display:grid;gap:4px;font-weight:700}
+.sim label .pill{justify-self:start}
+.sim input[type=range]{width:100%;accent-color:var(--accent)}
+.chal{display:grid;gap:8px}
+.chal button.cbtn{display:flex;justify-content:space-between;gap:8px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 12px;font-size:15px}
+.chal button.cbtn[aria-current="true"]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.chal button.cbtn.done{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.chal button.cbtn.done::after{content:"✓";color:var(--good);font-weight:700}
+.kw{display:inline-block;font-size:14px;font-weight:700;padding:2px 10px;border-radius:99px;border:1px solid var(--line);margin:0 6px 6px 0}
+.kw.on{border-color:var(--good);color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.three{display:grid;gap:8px}
+.three .lab{font-family:var(--f-display);font-weight:800;font-size:26px;color:var(--accent);margin-right:8px}
+@media (max-width:820px){.sim{grid-template-columns:1fr}.fcards{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.fcards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="bar">
+    <div class="brand"><span class="dots"><i style="background:var(--push)"></i><i style="background:var(--fric)"></i><i style="background:var(--air)"></i></span>Forces Change Motion</div>
+    <nav class="tabs" id="tabs" aria-label="Pages"></nav>
+  </div>
+  <div class="progress" aria-hidden="true"><i id="prog"></i></div>
+
+  <!-- ================= START ================= -->
+  <section class="page" id="p-start">
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Year 7 Science · Forces and Motion · Lesson 19</div>
+        <h1>How forces change motion</h1>
+        <p>Forces can make things start, stop, speed up, slow down or change direction. Today you will learn how, then work through a four page worksheet. Every page checks your answers, and your <b>first check</b> on each page is the score your teacher sees, so think before you press it.</p>
+      </header>
+      <div class="grid2">
+        <div class="card accent">
+          <h2>Learning intention</h2>
+          <p>I am learning to explain how forces affect speed and direction.</p>
+          <h3>Success criteria</h3>
+          <ul style="margin:0;padding-left:1.2em">
+            <li>I can describe five ways a force can change motion.</li>
+            <li>I can explain a scenario using balanced and unbalanced forces.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Before you start</h2>
+          <label class="field">Your name<input type="text" id="sName" autocomplete="off" placeholder="First and last name"></label>
+          <label class="field" style="margin-top:10px">Class<input type="text" id="sClass" autocomplete="off" placeholder="e.g. 7B"></label>
+          <p class="small muted" style="margin-top:10px">Your work saves in this browser as you go. If you close the tab, open the same page on the same computer to keep going.</p>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Warm up: non-contact forces</h2>
+        <p class="small muted">Answer in your head or your book first, then click to check.</p>
+        <div class="grid3" id="warm"></div>
+      </div>
+      <div class="card">
+        <h2>What you will do today</h2>
+        <ol class="steps">
+          <li><div><b>Learn:</b> the five ways a force can change motion, and why they all need an unbalanced force.</div></li>
+          <li><div><b>Page 1, Sort it:</b> decide what a force is doing in twelve situations, then true or false.</div></li>
+          <li><div><b>Page 2, Make it happen:</b> use the cart simulator to complete four challenges, then work out net forces.</div></li>
+          <li><div><b>Page 3, Explain the scenario:</b> six real life scenarios. Balanced or unbalanced, and what happens?</div></li>
+          <li><div><b>Page 4, Write it:</b> a short response about a hockey puck, then your 3-2-1 exit ticket.</div></li>
+          <li><div><b>Finish:</b> show your teacher your results screen.</div></li>
+        </ol>
+      </div>
+      <div class="navrow"><span></span><button class="btn primary" data-go="learn">Start: Learn →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= LEARN ================= -->
+  <section class="page" id="p-learn" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Learn</div>
+        <h1>What can a force do to motion?</h1>
+        <p>Read everything on this page carefully. You will need all of it for the worksheet.</p>
+      </header>
+      <div class="card">
+        <h2>Five ways a force changes motion (plus one more)</h2>
+        <div class="fcards">
+          <div style="--c:var(--push)"><h3>Start</h3><p>A still object starts moving. <i>Kicking a ball that was sitting on the grass.</i></p></div>
+          <div style="--c:var(--fric)"><h3>Stop</h3><p>A moving object comes to rest. <i>A goalie catching the ball.</i></p></div>
+          <div style="--c:var(--air)"><h3>Speed up</h3><p>A moving object goes faster. <i>A skydiver just after jumping.</i></p></div>
+          <div style="--c:var(--grav)"><h3>Slow down</h3><p>A moving object goes slower. <i>A bike rolling up a hill.</i></p></div>
+          <div style="--c:var(--mag)"><h3>Change direction</h3><p>Turns, bounces or curves. <i>A ball bouncing off a wall.</i></p></div>
+          <div style="--c:var(--muted)"><h3>Change shape</h3><p>Squashes, stretches or bends. This is not a change in motion, but it is still something a force can do.</p></div>
+        </div>
+        <p class="sum" style="margin-top:14px">Every change in motion needs an UNBALANCED force.</p>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Balanced forces: no change</h2>
+          <p>The forces in opposite directions are the <b>same size</b>, so they cancel out. The net force is <b>0 N</b>.</p>
+          <ul style="margin:0;padding-left:1.2em">
+            <li>A still object <b>stays still</b>.</li>
+            <li>A moving object keeps going at the <b>same speed</b> in the <b>same direction</b>.</li>
+          </ul>
+          <p class="small muted" style="margin-top:10px">Watch out: something can be moving and still have balanced forces. A car cruising at a steady 60 km/h in a straight line has balanced forces.</p>
+        </div>
+        <div class="card">
+          <h2>Unbalanced forces: motion changes</h2>
+          <p>One force is <b>bigger</b> than the force pushing the other way. There is a net force, and the object's motion <b>changes</b>.</p>
+          <ul style="margin:0;padding-left:1.2em">
+            <li>Net force the <b>same way</b> it is moving: it speeds up.</li>
+            <li>Net force the <b>opposite way</b> to its motion: it slows down (and may stop).</li>
+            <li>Net force <b>sideways</b> to its motion: it changes direction.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="card">
+          <h2>Working out the net force</h2>
+          <p>When forces act in <b>opposite</b> directions, take the smaller one away from the bigger one. The net force points the same way as the bigger force.</p>
+          <div class="sum">Push 50 N right, friction 20 N left<br>50 − 20 = 30 N to the right</div>
+          <p>If the forces are equal, the net force is <b>0 N</b> and they are balanced.</p>
+        </div>
+        <div class="card">
+          <h2>Tricky one: changing direction</h2>
+          <p>A car drives around a roundabout at a <b>steady 30 km/h</b>. Its speed does not change, so are the forces balanced?</p>
+          <p><b>No.</b> Its <b>direction</b> keeps changing, and changing direction counts as changing motion. Friction from the tyres pushes the car towards the centre of the roundabout. That sideways force is unbalanced.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Watch: balanced and unbalanced forces</h2>
+        <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/j-GkorESUkU?rel=0" title="How Forces Affect Motion: Balanced and Unbalanced Forces" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+        <p class="small muted" style="margin-top:8px">As you watch, think: what is a net force, and what happens when forces are unbalanced? If the video will not play, skip it: everything you need is on this page.</p>
+      </div>
+      <div class="navrow"><button class="btn" data-go="start">← Back</button><button class="btn primary" data-go="w1">Go to Page 1 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 1 ================= -->
+  <section class="page" id="p-w1" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 1 of 4</div>
+        <h1>Sort it</h1>
+        <p>Two parts. Complete them both, then press <b>Check my answers</b> at the bottom. Fix any red ones and check again.</p>
+      </header>
+      <div class="card">
+        <div class="part">Part A</div><h2>What is the force doing to the motion?</h2>
+        <p class="small muted">Choose the best answer for each situation.</p>
+        <div class="match" id="sortQs"></div>
+      </div>
+      <div class="card">
+        <div class="part">Part B</div><h2>True or false?</h2>
+        <div class="tf" id="tf"></div>
+      </div>
+      <div class="card row"><button class="btn primary" id="w1check">Check my answers</button><span class="score" id="w1score"></span></div>
+      <div class="navrow"><button class="btn" data-go="learn">← Learn</button><button class="btn primary" data-go="w2">Go to Page 2 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 2 ================= -->
+  <section class="page" id="p-w2" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 2 of 4</div>
+        <h1>Make it happen</h1>
+        <p>Pick a challenge, set the two sliders, then press <b>Let go</b> to see what the cart does. When you think you have it, press <b>Check this challenge</b>. Then answer the net force questions below.</p>
+      </header>
+      <div class="card">
+        <div class="part">Part A</div><h2>Cart challenges</h2>
+        <div class="sim">
+          <div class="stack" style="gap:10px">
+            <div class="view" id="tugView"></div>
+            <label>Left force <span class="pill" id="tugLv"></span><input type="range" id="tugL" min="0" max="100" step="10" value="30"></label>
+            <label>Right force <span class="pill" id="tugRv"></span><input type="range" id="tugR" min="0" max="100" step="10" value="30"></label>
+            <div class="row"><button class="btn primary" id="tugGo">Let go</button><button class="btn" id="tugReset">Reset cart</button></div>
+            <div class="fb" id="tugOut"></div>
+          </div>
+          <div class="stack" style="gap:10px">
+            <div class="chal" id="chal"></div>
+            <div class="card" style="padding:12px"><p class="small muted" style="margin:0 0 4px">Current challenge</p><p id="chalText" style="font-weight:700"></p><button class="btn primary" id="chalCheck">Check this challenge</button><div class="fb" id="chalFb" hidden style="margin-top:8px"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="part">Part B</div><h2>Work out the net force</h2>
+        <p class="small muted">Type the number of newtons and choose the direction. If the forces are balanced, type 0 and choose "no direction".</p>
+        <div id="netQs"></div>
+      </div>
+      <div class="card row"><button class="btn primary" id="w2check">Check my answers</button><span class="score" id="w2score"></span></div>
+      <div class="navrow"><button class="btn" data-go="w1">← Page 1</button><button class="btn primary" data-go="w3">Go to Page 3 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 3 ================= -->
+  <section class="page" id="p-w3" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 3 of 4</div>
+        <h1>Explain the scenario</h1>
+        <p>For each scenario, think about which forces act, whether they are balanced or unbalanced, and what happens to the motion. Then answer the questions.</p>
+      </header>
+      <div id="scenQs" class="stack"></div>
+      <div class="card row"><button class="btn primary" id="w3check">Check my answers</button><span class="score" id="w3score"></span></div>
+      <div class="navrow"><button class="btn" data-go="w2">← Page 2</button><button class="btn primary" data-go="w4">Go to Page 4 →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= PAGE 4 ================= -->
+  <section class="page" id="p-w4" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Worksheet · Page 4 of 4</div>
+        <h1>Write it</h1>
+        <p>Use what you have learnt to write a short explanation. Then complete your 3-2-1 exit ticket.</p>
+      </header>
+      <div class="card accent">
+        <h2>Short response</h2>
+        <p>Explain what happens to a <b>hockey puck</b> after it is hit across the ice, and why it eventually stops.</p>
+        <p class="small">Try to use all four: <span id="kws"></span></p>
+        <textarea id="srText" placeholder="Write at least three full sentences."></textarea>
+        <div class="row" style="margin-top:10px"><button class="btn" id="srReveal">Compare with a model answer</button><span class="small muted" id="srCount"></span></div>
+        <div class="fb" id="srModel" hidden style="margin-top:10px"><b>Model answer:</b> When the stick hits the puck there is a large unbalanced force, so the puck starts moving fast. After it leaves the stick, the only forces acting along the ice are friction from the ice and air resistance. These are small, but they are unbalanced and act backwards, against the motion. The net force is backwards, so the puck slowly slows down until it stops.<br><br><span class="small muted">Compare: did you say what happens when it is hit, what force acts after, which way the net force points, and why that makes it stop? Add anything you missed to your answer.</span></div>
+      </div>
+      <div class="card">
+        <h2>Exit ticket: 3-2-1</h2>
+        <div class="three" id="three"></div>
+      </div>
+      <div class="card">
+        <h2>How did you go?</h2>
+        <p class="small muted">Be honest. This helps your teacher plan the next lesson.</p>
+        <div id="selfRate" style="display:grid;gap:12px"></div>
+      </div>
+      <div class="navrow"><button class="btn" data-go="w3">← Page 3</button><button class="btn primary" data-go="finish">Finish →</button></div>
+    </div>
+  </section>
+
+  <!-- ================= FINISH ================= -->
+  <section class="page" id="p-finish" hidden>
+    <div class="stack">
+      <header>
+        <div class="eyebrow">Finish</div>
+        <h1>Your results</h1>
+        <p>Show this screen to your teacher, or print it or save it as a PDF if your teacher asks you to.</p>
+      </header>
+      <div class="card" id="summary"></div>
+      <div class="row noprint"><button class="btn primary" id="printBtn">Print or save as PDF</button></div>
+      <div class="card accent noprint">
+        <h2>Extension: finished early?</h2>
+        <p>In your book, describe the forces on a <b>ball thrown straight up</b> at four moments: just after it leaves your hand, halfway up, at the very top, and on the way back down. For each one, say whether the forces are balanced or unbalanced and what is happening to its speed.</p>
+        <p>Then think about this: in space, far from any planet, there is no friction or air resistance. If an astronaut throws a spanner, what happens to it? Explain why.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let uid=0;
+const AR=(id,col)=>`<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="${col}"/></marker>`;
+function arrow(x1,y1,x2,y2,col,lab,w=7){
+  const id="ar"+(uid++),anchor=x2>x1?"start":"end";
+  return `<g><defs>${AR(id,col)}</defs><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" marker-end="url(#${id})"/>${lab?`<text class="arrowlab" x="${x1+(x2>x1?4:-4)}" y="${y1-14}" text-anchor="${anchor}" fill="${col}">${esc(lab)}</text>`:""}</g>`;
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function setMark(el,state){el.classList.remove("right","wrong");if(state)el.classList.add(state)}
+const words=t=>t.trim()?t.trim().split(/\s+/).length:0;
+
+/* ---------- state ---------- */
+const KEY="cm-relief-l19-v1";
+let S={name:"",cls:"",page:"start",w1:{s:{},t:{}},chal:{},cur:0,net:{},w3:{},sr:"",srRevealed:false,three:{},rate:{},seen:{},first:{},checked:{}};
+try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(S,JSON.parse(raw))}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function recordFirst(p,sc){if(S.first[p]==null)S.first[p]=sc;S.checked[p]=true;save()}
+
+/* ---------- navigation ---------- */
+const PAGES=[["start","Start"],["learn","Learn"],["w1","Page 1"],["w2","Page 2"],["w3","Page 3"],["w4","Page 4"],["finish","Finish"]];
+function threeDone(){return [0,1,2,3,4,5].every(i=>(S.three[i]||"").trim())}
+function done(p){
+  if(p==="learn")return !!S.seen.learn;
+  if(p==="w1")return w1Score()===W1MAX;
+  if(p==="w2")return w2Score()===W2MAX;
+  if(p==="w3")return w3Score()===W3MAX;
+  if(p==="w4")return words(S.sr)>=25&&threeDone();
+  return false;
+}
+function renderTabs(){
+  $("#tabs").innerHTML=PAGES.map(([id,l])=>`<button data-go="${id}" aria-current="${S.page===id}">${l}${done(id)?'<span class="tick" aria-label="done">✓</span>':""}</button>`).join("");
+  $("#prog").style.width=(PAGES.findIndex(p=>p[0]===S.page)/(PAGES.length-1)*100)+"%";
+}
+function go(p){
+  S.page=p;if(p!=="start")S.seen[p]=true;save();
+  document.querySelectorAll(".page").forEach(el=>el.hidden=el.id!=="p-"+p);
+  if(p==="finish")renderSummary();
+  renderTabs();window.scrollTo({top:0,behavior:"smooth"});
+}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(b)go(b.dataset.go)});
+
+$("#sName").value=S.name;$("#sClass").value=S.cls;
+$("#sName").addEventListener("input",e=>{S.name=e.target.value;save()});
+$("#sClass").addEventListener("input",e=>{S.cls=e.target.value;save()});
+
+/* ---------- warm up ---------- */
+const WARM=[["Name the three non-contact forces.","Gravity, magnetic force and electrostatic force."],["Which of these can only attract?","Gravity."],["What do magnets and static charges have in common?","Like repels, unlike attracts. Both are non-contact forces."]];
+$("#warm").innerHTML=WARM.map((w,i)=>`<div class="card" style="padding:12px"><p style="font-weight:700">${esc(w[0])}</p><button class="btn" data-warm="${i}">Click to check</button><div class="fb" id="wa-${i}" hidden style="margin-top:8px">${esc(w[1])}</div></div>`).join("");
+$("#warm").addEventListener("click",e=>{const b=e.target.closest("[data-warm]");if(b){$("#wa-"+b.dataset.warm).hidden=false;b.hidden=true}});
+
+/* =========== PAGE 1 =========== */
+const CATS=[["start","Starts moving"],["stop","Stops"],["fast","Speeds up"],["slow","Slows down"],["dir","Changes direction"]];
+const SORT=[
+  ["A goalie catching a ball",["stop"],"The ball was moving and the goalie's hands bring it to rest."],
+  ["A car pulling away from a stop sign",["start"],"The car was still and the driving force gets it moving."],
+  ["A cricket ball hit for six",["dir"],"The bat sends the ball off in a completely new direction."],
+  ["A bike rolling up a hill without pedalling",["slow"],"Gravity pulls back down the hill, so the bike loses speed."],
+  ["A skydiver just after jumping",["fast"],"Weight is much bigger than air resistance, so they speed up."],
+  ["A parachute opening",["slow"],"Air resistance suddenly becomes bigger than weight, so the skydiver slows down."],
+  ["A ball bouncing off a wall",["dir"],"The wall pushes the ball back the way it came."],
+  ["Pushing a stalled car that was not moving",["start"],"The car was still and the push gets it moving."],
+  ["A plane landing on a runway",["slow","stop"],"Brakes and friction slow the plane down until it stops, so either answer is right."],
+  ["A sled sliding down a snowy slope",["fast"],"Gravity pulls it down the slope and there is very little friction on snow."],
+  ["A sprinter leaving the starting blocks",["start"],"The sprinter was still and pushes off the blocks to start moving."],
+  ["A car braking at a red light until it is still",["stop","slow"],"Braking slows the car until it stops, so either answer is right."]];
+$("#sortQs").innerHTML=SORT.map((s,i)=>`<div class="mrow" id="sr-${i}" style="grid-template-columns:minmax(0,1fr) 210px auto"><span>${i+1}. ${esc(s[0])}</span><select data-s="${i}" aria-label="${esc(s[0])}"><option value="">choose…</option>${CATS.map(c=>`<option value="${c[0]}"${S.w1.s[i]===c[0]?" selected":""}>${c[1]}</option>`).join("")}</select><span class="mark" id="ms-${i}"></span><div class="why" hidden></div></div>`).join("");
+$("#sortQs").addEventListener("change",e=>{const i=e.target.dataset.s;if(i!=null){S.w1.s[i]=e.target.value;save();$("#ms-"+i).textContent="";setMark($("#sr-"+i));$("#sr-"+i).querySelector(".why").hidden=true}});
+
+const TF=[
+  ["An object needs an unbalanced force to speed up.",true,"Any change in motion, including speeding up, needs an unbalanced force."],
+  ["A car moving at a steady speed in a straight line has balanced forces.",true,"Its motion is not changing, so the forces are balanced."],
+  ["If the forces on an object are balanced, it must be standing still.",false,"It could be still OR moving at a steady speed in a straight line."],
+  ["Changing direction counts as a change in motion.",true,"Motion includes direction, so turning is a change in motion."],
+  ["A car going round a roundabout at a steady speed has balanced forces.",false,"Its direction keeps changing, so there must be an unbalanced force (friction from the tyres towards the centre)."],
+  ["A force can change the shape of an object, like squashing a ball.",true,"Changing shape is not a change in motion, but forces can still do it."],
+  ["A ball rolling across grass slows down because no forces act on it.",false,"Friction and air resistance act backwards. That unbalanced force slows it down."],
+  ["A 40 N push to the right and 40 N of friction to the left give a net force of 80 N.",false,"They act in opposite directions, so 40 − 40 = 0 N. The forces are balanced."]];
+$("#tf").innerHTML=TF.map((t,i)=>`<div class="tfrow" id="tfr-${i}"><span>${i+1}. ${esc(t[0])}</span><span class="seg" role="group" aria-label="True or false">${["True","False"].map(v=>`<button data-t="${i}" data-v="${v}" aria-pressed="${S.w1.t[i]===v}">${v}</button>`).join("")}</span><div class="why" hidden></div></div>`).join("");
+$("#tf").addEventListener("click",e=>{const b=e.target.closest("button[data-t]");if(!b)return;const i=b.dataset.t;S.w1.t[i]=b.dataset.v;save();
+  b.parentNode.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));const r=$("#tfr-"+i);setMark(r);r.querySelector(".why").hidden=true});
+
+const W1MAX=SORT.length+TF.length;
+function w1Score(){return SORT.filter((s,i)=>s[1].includes(S.w1.s[i])).length+TF.filter((t,i)=>S.w1.t[i]===(t[1]?"True":"False")).length}
+function markW1(){
+  SORT.forEach((s,i)=>{const m=$("#ms-"+i),v=S.w1.s[i],ok=s[1].includes(v),r=$("#sr-"+i),w=r.querySelector(".why");m.className="mark "+(ok?"ok":"no");m.textContent=!v?"✗ not answered":ok?"✓":"✗";setMark(r,ok?"right":"wrong");w.hidden=false;w.textContent=!v?"Not answered.":ok?s[2]:"Not quite. Was it still or moving to begin with? What happens to it?"});
+  TF.forEach((t,i)=>{const r=$("#tfr-"+i),v=S.w1.t[i],ok=v===(t[1]?"True":"False"),w=r.querySelector(".why");setMark(r,ok?"right":"wrong");w.hidden=false;w.textContent=!v?"Not answered.":ok?t[2]:"Not quite. Re-read the Learn page and try again."});
+  const sc=w1Score();$("#w1score").textContent=`${sc} / ${W1MAX}`+(sc===W1MAX?"  Great work!":"");
+}
+$("#w1check").onclick=()=>{recordFirst("w1",w1Score());markW1();renderTabs()};
+
+/* =========== PAGE 2: cart =========== */
+const L=$("#tugL"),R=$("#tugR");let off=0;
+function drawTug(){
+  const l=+L.value,r=+R.value,net=r-l;
+  $("#tugLv").textContent=`${l} N`;$("#tugRv").textContent=`${r} N`;
+  $("#tugView").innerHTML=`<svg viewBox="0 0 600 230" role="img" aria-label="Cart with ${l} newtons pulling left and ${r} newtons pulling right">
+    <rect x="0" y="176" width="600" height="54" fill="color-mix(in srgb,var(--fric) 22%,var(--surface))"/><line x1="0" y1="176" x2="600" y2="176" stroke="var(--ink)" stroke-width="2"/>
+    <g id="tugCart" style="transition:transform 1.4s cubic-bezier(.55,0,1,.45);transform:translateX(${off}px)">
+      <rect x="250" y="112" width="100" height="52" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+      <circle cx="272" cy="168" r="10" fill="var(--ink)"/><circle cx="328" cy="168" r="10" fill="var(--ink)"/>
+      ${l?arrow(250,138,250-l*1.9,138,"var(--push)",`${l} N`):""}${r?arrow(350,138,350+r*1.9,138,"var(--air)",`${r} N`):""}
+    </g>
+    <text x="300" y="40" text-anchor="middle" font-size="18" font-weight="700" fill="${net?"var(--bad)":"var(--good)"}">${net?`Net force ${Math.abs(net)} N to the ${net>0?"right":"left"}`:"Net force 0 N"}</text>
+    ${net?arrow(300,70,300+Math.sign(net)*Math.max(30,Math.abs(net)*1.9),70,"var(--bad)","",5):""}</svg>`;
+  $("#tugOut").innerHTML=net?`<b>Unbalanced.</b> The forces are different sizes, so the cart's motion changes: it speeds up towards the ${net>0?"right":"left"}.`:`<b>Balanced.</b> Equal forces in opposite directions cancel out. A still cart stays still.`;
+}
+L.oninput=R.oninput=()=>{off=0;drawTug()};
+$("#tugGo").onclick=()=>{const net=+R.value-+L.value;off=Math.sign(net)*Math.min(230,Math.abs(net)*4);const c=$("#tugCart");if(c)c.style.transform=`translateX(${off}px)`;if(!net)$("#tugOut").insertAdjacentHTML("beforeend",` Nothing happens. That is what balanced looks like.`)};
+$("#tugReset").onclick=()=>{off=0;drawTug()};
+
+const CHAL=[
+  {t:"Make the cart start moving to the LEFT.",ok:(l,r)=>l>r,hint:(l,r)=>l===r?"The forces are balanced, so the cart stays still. Make one side bigger.":"The cart would move right. Which side needs the bigger force?",win:(l,r)=>`Yes! ${l} N left is bigger than ${r} N right, so the net force is ${l-r} N to the left. The cart starts moving left.`},
+  {t:"Make the forces BALANCED, with 70 N on one side.",ok:(l,r)=>l===70&&r===70,hint:(l,r)=>l===r?"Balanced, but one side needs to be exactly 70 N.":"The two forces must be the same size to be balanced.",win:()=>"Yes! 70 N each way cancels out. Net force 0 N, so the cart stays still."},
+  {t:"Make the SMALLEST unbalanced force you can.",ok:(l,r)=>Math.abs(r-l)===10,hint:(l,r)=>l===r?"That's balanced (0 N), not unbalanced. Make them just a little different.":"That works, but you can make the difference even smaller.",win:(l,r)=>"Yes! A difference of 10 N is the smallest these sliders allow. Even a small unbalanced force changes motion."},
+  {t:"Make a net force of 30 N to the RIGHT, with the left force at least 40 N.",ok:(l,r)=>r-l===30&&l>=40,hint:(l,r)=>l<40?"The left force needs to be 40 N or more.":r-l<=0?"The right force needs to be bigger than the left.":`Your net force is ${r-l} N to the right. You need exactly 30 N.`,win:(l,r)=>`Yes! ${r} − ${l} = 30 N to the right.`}];
+function renderChal(){
+  $("#chal").innerHTML=CHAL.map((c,i)=>`<button class="cbtn${S.chal[i]?" done":""}" data-c="${i}" aria-current="${S.cur===i}"><span><b>Challenge ${i+1}.</b> ${esc(c.t)}</span></button>`).join("");
+  $("#chalText").textContent=CHAL[S.cur].t;
+}
+$("#chal").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(!b)return;S.cur=+b.dataset.c;save();$("#chalFb").hidden=true;renderChal()});
+$("#chalCheck").onclick=()=>{const l=+L.value,r=+R.value,c=CHAL[S.cur],ok=c.ok(l,r),fb=$("#chalFb");fb.hidden=false;
+  fb.innerHTML=ok?`<span class="ok"><b>✓</b></span> ${esc(c.win(l,r))}`:`<span class="no"><b>Not yet.</b></span> ${esc(c.hint(l,r))}`;
+  if(ok){S.chal[S.cur]=true;save();const nx=CHAL.findIndex((x,i)=>!S.chal[i]);renderChal();if(nx>=0)fb.insertAdjacentHTML("beforeend",` <button class="btn" style="margin-top:6px" id="nextChal">Next challenge →</button>`)}
+  renderTabs();
+  const n=$("#nextChal");if(n)n.onclick=()=>{S.cur=CHAL.findIndex((x,i)=>!S.chal[i]);save();$("#chalFb").hidden=true;renderChal()};
+};
+
+const DIRS=["no direction","up","down","left","right"];
+const NET=[
+  ["A box has a 60 N push to the left and a 20 N push to the right.",40,"left","60 − 20 = 40 N, pointing the same way as the bigger force (left)."],
+  ["A box is pushed with 25 N to the right. Friction is 25 N to the left.",0,"no direction","25 − 25 = 0 N. The forces are balanced."],
+  ["A falling skydiver has a weight of 500 N down and air resistance of 300 N up.",200,"down","500 − 300 = 200 N down, so the skydiver is still speeding up."],
+  ["A car's driving force is 900 N forwards (right). Friction and air resistance add up to 400 N backwards (left).",500,"right","900 − 400 = 500 N to the right, so the car speeds up."],
+  ["In a tug of war, Team A pulls 350 N to the left and Team B pulls 410 N to the right.",60,"right","410 − 350 = 60 N to the right. Team B is winning."],
+  ["A rocket at lift off has a thrust of 2000 N up and a weight of 1500 N down.",500,"up","2000 − 1500 = 500 N up, so the rocket speeds up as it rises."]];
+$("#netQs").innerHTML=NET.map((q,i)=>{const v=S.net[i]||{};return `<div class="q" id="nq-${i}"><div class="stem">${i+1}. ${esc(q[0])}</div><div class="numq" id="nr-${i}"><input type="number" min="0" step="1" data-n="${i}" aria-label="Net force in newtons" value="${v.n??""}"> <span>N</span> <select data-d="${i}" aria-label="Direction"><option value="">direction…</option>${DIRS.map(d=>`<option${v.d===d?" selected":""}>${d}</option>`).join("")}</select><span class="mark" id="nm-${i}"></span></div><div class="fb" hidden></div></div>`}).join("");
+$("#netQs").addEventListener("input",e=>{const t=e.target,i=t.dataset.n??t.dataset.d;if(i==null)return;S.net[i]=S.net[i]||{};if(t.dataset.n!=null)S.net[i].n=t.value;else S.net[i].d=t.value;save();setMark($("#nr-"+i));$("#nm-"+i).textContent="";$("#nq-"+i).querySelector(".fb").hidden=true});
+const netOk=i=>{const v=S.net[i]||{};return v.n!==undefined&&v.n!==""&&+v.n===NET[i][1]&&v.d===NET[i][2]};
+const W2MAX=CHAL.length+NET.length;
+function w2Score(){return CHAL.filter((c,i)=>S.chal[i]).length+NET.filter((q,i)=>netOk(i)).length}
+function markW2(){
+  NET.forEach((q,i)=>{const ok=netOk(i),v=S.net[i]||{},fb=$("#nq-"+i).querySelector(".fb"),m=$("#nm-"+i);setMark($("#nr-"+i),ok?"right":"wrong");m.className="mark "+(ok?"ok":"no");m.textContent=ok?"✓":"✗";fb.hidden=false;
+    fb.textContent=ok?q[3]:(v.n===undefined||v.n===""||!v.d)?"Answer both the number and the direction.":(+v.n===q[1]?"The number is right. Check the direction: it points the same way as the bigger force.":"Take the smaller force away from the bigger one.")});
+  const left=CHAL.length-CHAL.filter((c,i)=>S.chal[i]).length;
+  const sc=w2Score();$("#w2score").textContent=`${sc} / ${W2MAX}`+(sc===W2MAX?"  Great work!":left?`  (${left} cart challenge${left>1?"s":""} still to do)`:"");
+}
+$("#w2check").onclick=()=>{recordFirst("w2",w2Score());markW2();renderTabs()};
+
+/* =========== PAGE 3 =========== */
+const SCEN=[
+ {h:"A shopping trolley is pushed, then let go.",qs:[
+   ["After it is let go, are the forces along the floor balanced or unbalanced?",["Balanced","Unbalanced"],1,"Nothing is pushing it forwards any more, so friction acting backwards is not balanced by anything."],
+   ["Which way does the net force point after it is let go?",["Forwards","Backwards","Up","There is no net force"],1,"Friction acts backwards, against the motion."],
+   ["What happens to the trolley's motion?",["It speeds up","It keeps going at a steady speed","It slows down and stops","It changes direction"],2,"A backwards net force slows it down until it stops."]]},
+ {h:"A soccer ball rolls across the grass and stops.",qs:[
+   ["Which forces slow the ball down?",["Friction and air resistance","Weight and support force","A forwards push","No forces act on it"],0,"Friction from the grass and air resistance both act backwards."],
+   ["While it rolls, are the forces balanced or unbalanced?",["Balanced","Unbalanced"],1,"Its speed is changing, so the forces must be unbalanced."],
+   ["Why doesn't the ball keep rolling forever?",["It runs out of force","Weight pulls it backwards","The net force acts backwards, against its motion","Balanced forces always stop things"],2,"A ball does not carry a force with it. The backwards net force from friction and air resistance slows it until it stops."]]},
+ {h:"A car drives round a roundabout at a steady 30 km/h.",qs:[
+   ["Is the car's motion changing?",["No, its speed is steady","Yes, its direction is changing"],1,"Changing direction counts as a change in motion."],
+   ["So are the forces on the car balanced or unbalanced?",["Balanced","Unbalanced"],1,"Any change in motion, including turning, needs an unbalanced force."],
+   ["Which force pushes the car towards the centre of the roundabout?",["Friction from the tyres","Weight","Air resistance","The driving force from the engine"],0,"Friction between the tyres and the road pushes the car sideways, towards the centre, so it turns."]]},
+ {h:"A ball is thrown straight up into the air.",qs:[
+   ["Once the ball leaves your hand, which forces act on it?",["Weight and air resistance, both acting down","A push from your hand acting up","Weight down and a push up that are balanced","No forces"],0,"Your hand's push stops when the ball leaves it. Weight pulls down, and air resistance acts against the upwards motion, so it also points down."],
+   ["What happens to the ball's speed on the way up?",["It speeds up","It slows down","It stays the same"],1,"The net force is down, opposite to its motion, so it slows down."],
+   ["What happens at the very top?",["It stops for a moment, then speeds up as it falls","It stays at the top","It keeps going up slowly forever"],0,"It runs out of upwards speed, stops for an instant, then weight makes it speed up on the way down."]]},
+ {h:"A cyclist pedals at a steady 20 km/h along a flat, straight road.",qs:[
+   ["Are the forces on the cyclist balanced or unbalanced?",["Balanced","Unbalanced"],0,"Steady speed in a straight line means the motion is not changing, so the forces are balanced."],
+   ["Compared with friction and air resistance, the forwards force from pedalling is:",["Bigger","The same size","Smaller"],1,"Balanced forces are the same size in opposite directions."],
+   ["The cyclist starts pedalling harder. What happens?",["They speed up","They slow down","Nothing changes"],0,"The forwards force is now bigger, so there is an unbalanced force forwards and they speed up."]]},
+ {h:"A falling skydiver opens their parachute.",qs:[
+   ["Just after the parachute opens, which force is bigger?",["Air resistance","Weight","They are the same"],0,"The big canopy suddenly hits much more air, so air resistance becomes bigger than weight."],
+   ["Which way does the net force point?",["Up","Down","There is no net force"],0,"Air resistance (up) is bigger than weight (down)."],
+   ["So what happens to the skydiver?",["They speed up","They slow down","They start going back up"],1,"The net force is up, opposite to their motion, so they slow down. They are still falling, just more slowly."]]}];
+const QS=[];SCEN.forEach((s,si)=>s.qs.forEach((q,qi)=>QS.push({id:si+"-"+qi,q})));
+$("#scenQs").innerHTML=SCEN.map((s,si)=>`<div class="card"><div class="part">Scenario ${si+1}</div><h2>${esc(s.h)}</h2>${s.qs.map((q,qi)=>{const id=si+"-"+qi;return `<div class="q" id="q-${id}"><div class="stem">${esc(q[0])}</div><div class="opts">${q[1].map((o,oi)=>`<label class="opt"><input type="radio" name="r-${id}" value="${oi}"${S.w3[id]==oi?" checked":""}><span>${esc(o)}</span></label>`).join("")}</div><div class="fb" hidden></div></div>`}).join("")}</div>`).join("");
+$("#scenQs").addEventListener("change",e=>{const m=e.target.name&&e.target.name.match(/^r-(.+)$/);if(!m)return;S.w3[m[1]]=+e.target.value;save();const q=$("#q-"+m[1]);q.querySelectorAll(".opt").forEach(o=>setMark(o));q.querySelector(".fb").hidden=true});
+const W3MAX=QS.length;
+function w3Score(){return QS.filter(x=>S.w3[x.id]===x.q[2]).length}
+function markW3(){
+  QS.forEach(({id,q})=>{const el=$("#q-"+id),v=S.w3[id],fb=el.querySelector(".fb");el.querySelectorAll(".opt").forEach((o,oi)=>setMark(o,oi===v?(v===q[2]?"right":"wrong"):null));fb.hidden=false;fb.textContent=v==null?"Not answered.":v===q[2]?q[3]:"Not quite. Think about which forces act and which one is bigger."});
+  const sc=w3Score();$("#w3score").textContent=`${sc} / ${W3MAX}`+(sc===W3MAX?"  Great work!":"");
+}
+$("#w3check").onclick=()=>{recordFirst("w3",w3Score());markW3();renderTabs()};
+
+/* =========== PAGE 4 =========== */
+const KW=[["unbalanced",/unbalanced/i],["friction",/friction/i],["slows down",/slow/i],["net force",/net\s*force/i]];
+function renderKw(){$("#kws").innerHTML=KW.map(k=>`<span class="kw${k[1].test(S.sr)?" on":""}">${k[1].test(S.sr)?"✓ ":""}${k[0]}</span>`).join("")}
+const sr=$("#srText");sr.value=S.sr;
+function srCount(){$("#srCount").textContent=words(S.sr)+" words"}
+sr.addEventListener("input",()=>{S.sr=sr.value;save();srCount();renderKw();renderTabs()});srCount();renderKw();
+$("#srReveal").onclick=()=>{if(words(S.sr)<25){$("#srCount").textContent="Write your own answer first (at least 25 words), then compare.";return}$("#srModel").hidden=false;S.srRevealed=true;save()};
+if(S.srRevealed)$("#srModel").hidden=false;
+
+const THREE=[[3,"ways a force can change motion",[0,1,2]],[2,"examples of an unbalanced force from today",[3,4]],[1,"question you still have",[5]]];
+$("#three").innerHTML=THREE.map(t=>`<div><div style="display:flex;align-items:center;margin-bottom:6px"><span class="lab">${t[0]}</span><b>${esc(t[1])}</b></div><div class="three">${t[2].map(i=>`<input type="text" data-th="${i}" value="${esc(S.three[i]||"")}" aria-label="${esc(t[1])}">`).join("")}</div></div>`).join("");
+$("#three").addEventListener("input",e=>{const i=e.target.dataset.th;if(i!=null){S.three[i]=e.target.value;save();renderTabs()}});
+
+const SC=["I can describe five ways a force can change motion.","I can explain a scenario using balanced and unbalanced forces."];
+const LV=["Not yet","Getting there","Got it"];
+$("#selfRate").innerHTML=SC.map((c,i)=>`<div><div style="font-weight:700;margin-bottom:6px">${esc(c)}</div><div class="row">${LV.map((l,li)=>`<label class="opt" style="padding:6px 12px"><input type="radio" name="sr${i}" value="${li}"${S.rate[i]==li?" checked":""}><span>${l}</span></label>`).join("")}</div></div>`).join("");
+$("#selfRate").addEventListener("change",e=>{const m=e.target.name.match(/^sr(\d)$/);if(m){S.rate[m[1]]=+e.target.value;save()}});
+
+/* =========== FINISH =========== */
+function firstTot(){return ["w1","w2","w3"].reduce((n,p)=>n+(S.first[p]||0),0)}
+function code(){let h=7;for(const ch of (S.name.trim().toLowerCase()+"|"+firstTot()))h=(h*31+ch.charCodeAt(0))%46656;return "CM"+String(firstTot()).padStart(2,"0")+"-"+h.toString(36).toUpperCase().padStart(3,"0")}
+function renderSummary(){
+  const f=p=>S.first[p]==null?"not checked":S.first[p];
+  const rows=[["Page 1: Sort it",f("w1"),w1Score(),W1MAX],["Page 2: Make it happen",f("w2"),w2Score(),W2MAX],["Page 3: Explain the scenario",f("w3"),w3Score(),W3MAX]];
+  const max=rows.reduce((n,r)=>n+r[3],0),now=rows.reduce((n,r)=>n+r[2],0);
+  const kwUsed=KW.filter(k=>k[1].test(S.sr)).map(k=>k[0]);
+  const th=i=>S.three[i]&&S.three[i].trim()?esc(S.three[i]):"<i>blank</i>";
+  $("#summary").innerHTML=`
+   <div class="row" style="justify-content:space-between;align-items:flex-start">
+     <div><h2 style="margin:0">${esc(S.name||"Name not entered")}</h2><div class="muted">${esc(S.cls||"Class not entered")} · Year 7 Science · Lesson 19 How forces change motion · ${new Date().toLocaleDateString("en-AU")}</div></div>
+     <div style="text-align:right"><div class="small muted">Completion code</div><div class="code">${code()}</div></div>
+   </div>
+   ${S.name.trim()?"":`<p class="no" style="margin-top:10px"><b>Add your name on the Start page so your teacher knows this is yours.</b></p>`}
+   <table class="sumtable" style="margin-top:14px">
+     <tr><th>Page</th><th>First check</th><th>Final</th></tr>
+     ${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}${typeof r[1]==="number"?" / "+r[3]:""}</td><td>${r[2]} / ${r[3]}</td></tr>`).join("")}
+     <tr><th>Total</th><th>${firstTot()} / ${max}</th><th>${now} / ${max}</th></tr>
+   </table>
+   <h3 style="margin-top:16px">Short response: hockey puck</h3>
+   <div class="fb" style="white-space:pre-wrap">${S.sr.trim()?esc(S.sr):"<i>Not written yet. Go back to Page 4.</i>"}</div>
+   <p class="small muted" style="margin-top:6px">${words(S.sr)} words · key words used: ${kwUsed.length?kwUsed.join(", "):"none"} (${kwUsed.length} / ${KW.length})</p>
+   <h3 style="margin-top:16px">Exit ticket: 3-2-1</h3>
+   <ul style="margin:0;padding-left:1.2em"><li><b>3 ways:</b> ${th(0)}; ${th(1)}; ${th(2)}</li><li><b>2 examples:</b> ${th(3)}; ${th(4)}</li><li><b>1 question:</b> ${th(5)}</li></ul>
+   <h3 style="margin-top:16px">Self assessment</h3><ul style="margin:0;padding-left:1.2em">${SC.map((c,i)=>`<li>${esc(c)} <b>${S.rate[i]!=null?LV[S.rate[i]]:"not rated"}</b></li>`).join("")}</ul>`;
+}
+$("#printBtn").onclick=()=>window.print();
+
+/* boot */
+drawTug();renderChal();
+if(S.checked.w1)markW1();if(S.checked.w2)markW2();if(S.checked.w3)markW3();
+go(PAGES.some(p=>p[0]===S.page)?S.page:"start");
+</script>
+</body>
+</html>
