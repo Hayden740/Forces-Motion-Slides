@@ -77,12 +77,12 @@ body[data-step="1"] .s2,body[data-step="2"] .s1{display:none!important}
   <header>
     <div class="eyebrow">Year 7 Science · Forces and Motion</div>
     <h1>Parachute Simulator</h1>
-    <p>Does changing one thing about a parachute change how long it takes to fall? Test the standard parachute, then change <b>one thing</b> and compare.</p>
+    <p>Does changing one variable on a parachute change how long it takes to fall? Test the standard parachute, then change <b>one variable</b> and compare.</p>
   </header>
 
   <nav class="steps" aria-label="Pages">
     <button id="tab1" data-go="1">Page 1: The standard parachute<small>Drop the standard 3 times</small></button>
-    <button id="tab2" data-go="2">Page 2: Change one thing<small>Test your new versions</small></button>
+    <button id="tab2" data-go="2">Page 2: Change one variable<small>Test your new versions</small></button>
   </nav>
 
   <section class="card task s1">
@@ -96,10 +96,10 @@ body[data-step="1"] .s2,body[data-step="2"] .s1{display:none!important}
   </section>
 
   <section class="card task s2">
-    <h2>Page 2: Change one thing</h2>
+    <h2>Page 2: Change one variable</h2>
     <ol>
-      <li>Choose <b>one</b> thing to change. Test at least <b>2 different versions</b>, with 3 drops each.</li>
-      <li>Keep everything else the same as the standard. The green or red box tells you if your test is fair.</li>
+      <li>Choose <b>one variable</b> to change. This is your <b>independent variable</b>. Test at least <b>2 different versions</b>, with 3 drops each.</li>
+      <li>Keep all the other variables the same as the standard. These are your <b>controlled variables</b>. The green or red box tells you if your test is fair.</li>
       <li>Your standard results from Page 1 stay in the table so you can compare.</li>
       <li>Copy every result from the table onto your worksheet.</li>
     </ol>
@@ -134,7 +134,7 @@ body[data-step="1"] .s2,body[data-step="2"] .s1{display:none!important}
       <div class="status ok s2" id="status">Standard parachute</div>
       <div class="row"><button class="btn primary" id="go">Drop from 2 m</button><button class="btn s2" id="reset">Back to standard</button><button class="btn" id="clear">Clear results</button></div>
       <div class="readout" id="out">0.00 s<small>fall time</small></div>
-      <button class="btn primary next s1" id="next" hidden>Next: Page 2, change one thing</button>
+      <button class="btn primary next s1" id="next" hidden>Next: Page 2, change one variable</button>
     </div>
   </section>
 
@@ -221,8 +221,8 @@ function table(){
 function status(){
   const d=changes(cur()),s=$("#status");
   if(!d.length){s.className="status ok";s.textContent="Standard parachute"}
-  else if(d.length===1){s.className="status ok";s.textContent=`Fair test: you changed one thing (${d[0]})`}
-  else{s.className="status bad";s.textContent=`Not a fair test: you changed ${d.length} things. Change only one, or press Back to standard.`}
+  else if(d.length===1){s.className="status ok";s.textContent=`Fair test: you changed one variable (${d[0]})`}
+  else{s.className="status bad";s.textContent=`Not a fair test: you changed ${d.length} variables. Change only one, or press Back to standard.`}
 }
 function labels(){$("#sizeV").textContent=`${SZ.value} cm x ${SZ.value} cm`;$("#massV").textContent=`${MS.value} washer${MS.value>1?"s":""} (${MS.value*5} g)`}
 function idle(){stopAnim();labels();status();draw(0);$("#go").disabled=changes(cur()).length>1}
