@@ -27,7 +27,7 @@ html,body{margin:0}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.45}
 button,select{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
-.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 40px;display:grid;gap:16px}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 40px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(26px,4vw,38px);letter-spacing:-.02em;line-height:1.05;margin:0 0 6px}
 header p{margin:0;color:var(--muted);max-width:70ch}
 .eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
@@ -63,6 +63,12 @@ td:first-child,th:first-child{text-align:left}
 .stdcard{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:0;padding:0;list-style:none}
 .stdcard li{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:15px}
 .stdcard b{display:block;font-size:13px;color:var(--muted);font-weight:700}
+.steps{display:flex;gap:10px;flex-wrap:wrap}
+.steps button{flex:1 1 220px;border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;text-align:left}
+.steps button small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+.steps button[aria-current="step"]{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,var(--surface))}
+body[data-step="1"] .s2,body[data-step="2"] .s1{display:none!important}
+.next{justify-self:start}
 @media (max-width:760px){.sim{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.readout{font-size:24px}}
 </style>
 </head>
@@ -74,17 +80,32 @@ td:first-child,th:first-child{text-align:left}
     <p>Does changing one thing about a parachute change how long it takes to fall? Test the standard parachute, then change <b>one thing</b> and compare.</p>
   </header>
 
-  <section class="card task">
-    <h2>Your task</h2>
+  <nav class="steps" aria-label="Pages">
+    <button id="tab1" data-go="1">Page 1: The standard parachute<small>Drop the standard 3 times</small></button>
+    <button id="tab2" data-go="2">Page 2: Change one thing<small>Test your new versions</small></button>
+  </nav>
+
+  <section class="card task s1">
+    <h2>Page 1: Test the standard parachute</h2>
     <ol>
-      <li>Start with the <b>standard parachute</b> (the settings when the page opens). Press <b>Drop from 2 m</b> 3 times.</li>
+      <li>Read the standard parachute card below.</li>
+      <li>Press <b>Drop from 2 m</b> 3 times.</li>
+      <li>Copy your 3 times and the average onto your worksheet.</li>
+      <li>When the average appears, go to <b>Page 2</b>.</li>
+    </ol>
+  </section>
+
+  <section class="card task s2">
+    <h2>Page 2: Change one thing</h2>
+    <ol>
       <li>Choose <b>one</b> thing to change. Test at least <b>2 different versions</b>, with 3 drops each.</li>
       <li>Keep everything else the same as the standard. The green or red box tells you if your test is fair.</li>
+      <li>Your standard results from Page 1 stay in the table so you can compare.</li>
       <li>Copy every result from the table onto your worksheet.</li>
     </ol>
   </section>
 
-  <section class="card">
+  <section class="card s1">
     <h2>The standard parachute</h2>
     <ul class="stdcard">
       <li><b>Material</b>Tablecloth</li>
@@ -102,17 +123,18 @@ td:first-child,th:first-child{text-align:left}
       <p class="hint">Each washer is 5 g. Times change a little each drop, just like a real stopwatch, so always do 3 trials.</p>
     </div>
     <div class="ctl">
-      <div class="grid2">
+      <div class="grid2 s2">
         <label>String length <span class="std">standard: 30 cm</span><select id="len"></select></label>
         <label>Canopy material <span class="std">standard: tablecloth</span><select id="mat"></select></label>
         <label>Canopy shape <span class="std">standard: square</span><select id="shape"></select></label>
         <label>Hole in canopy <span class="std">standard: none</span><select id="hole"></select></label>
       </div>
-      <label>Canopy size <span class="v" id="sizeV"></span><span class="std">standard: 25 cm x 25 cm</span><input type="range" id="size" min="15" max="35" step="5" value="25"></label>
-      <label>Skydiver mass <span class="v" id="massV"></span><span class="std">standard: 2 washers</span><input type="range" id="mass" min="1" max="4" step="1" value="2"></label>
-      <div class="status ok" id="status">Standard parachute</div>
-      <div class="row"><button class="btn primary" id="go">Drop from 2 m</button><button class="btn" id="reset">Back to standard</button><button class="btn" id="clear">Clear results</button></div>
+      <label class="s2">Canopy size <span class="v" id="sizeV"></span><span class="std">standard: 25 cm x 25 cm</span><input type="range" id="size" min="15" max="35" step="5" value="25"></label>
+      <label class="s2">Skydiver mass <span class="v" id="massV"></span><span class="std">standard: 2 washers</span><input type="range" id="mass" min="1" max="4" step="1" value="2"></label>
+      <div class="status ok s2" id="status">Standard parachute</div>
+      <div class="row"><button class="btn primary" id="go">Drop from 2 m</button><button class="btn s2" id="reset">Back to standard</button><button class="btn" id="clear">Clear results</button></div>
       <div class="readout" id="out">0.00 s<small>fall time</small></div>
+      <button class="btn primary next s1" id="next" hidden>Next: Page 2, change one thing</button>
     </div>
   </section>
 
@@ -157,7 +179,7 @@ function changes(c){
   if(c.mass!==STD.mass)d.push(`${c.mass} washer${c.mass>1?"s":""}`);
   return d;
 }
-const nameOf=c=>{const d=changes(c);return d.length?d.join(", "):"Standard"};
+const nameOf=c=>{const d=changes(c).join(", ");return d?d[0].toUpperCase()+d.slice(1):"Standard"};
 
 /* physics: weight down, air resistance up (0.5 x air density x Cd x area x v^2) */
 function fallTime(c){
@@ -207,17 +229,26 @@ function idle(){stopAnim();labels();status();draw(0);$("#go").disabled=changes(c
 
 [L,M,SH,H,SZ,MS].forEach(e=>e.oninput=e.onchange=idle);
 $("#reset").onclick=()=>{setAll(STD);idle()};
-$("#clear").onclick=()=>{Object.keys(runs).forEach(k=>delete runs[k]);table();$("#out").innerHTML=`0.00 s<small>fall time</small>`};
+$("#clear").onclick=()=>{Object.keys(runs).forEach(k=>delete runs[k]);table();nextBtn();$("#out").innerHTML=`0.00 s<small>fall time</small>`};
 $("#go").onclick=()=>{
   stopAnim();const c=cur(),f=fallTime(c),T=Math.max(.3,f.t*rnd(.02)+(Math.random()-.5)*.04),name=nameOf(c);
   let t0=null;$("#go").disabled=true;
   const step=ts=>{if(!t0)t0=ts;const el=(ts-t0)/1000,t=el*(f.t/T);const p=f.pts.find(q=>q[0]>=t)||[f.t,2];
     draw(Math.min(2,p[1]));$("#out").innerHTML=`${Math.min(T,el).toFixed(2)} s<small>fall time</small>`;
-    if(t>=f.t){$("#out").innerHTML=`${T.toFixed(2)} s<small>fall time: ${name}</small>`;runs[name]=runs[name]||[];if(runs[name].length>=3)runs[name]=[];runs[name].push(T);table();$("#go").disabled=changes(cur()).length>1;RAF=null;return}
+    if(t>=f.t){$("#out").innerHTML=`${T.toFixed(2)} s<small>fall time: ${name}</small>`;runs[name]=runs[name]||[];if(runs[name].length>=3)runs[name]=[];runs[name].push(T);table();nextBtn();$("#go").disabled=changes(cur()).length>1;RAF=null;return}
     RAF=requestAnimationFrame(step)};
   RAF=requestAnimationFrame(step);
 };
-setAll(STD);idle();table();
+function setStep(n){
+  document.body.dataset.step=n;
+  $("#tab1").setAttribute("aria-current",n===1?"step":"false");$("#tab2").setAttribute("aria-current",n===2?"step":"false");
+  if(n===1)setAll(STD);
+  history.replaceState(null,"",n===1?"#standard":"#change");idle();
+}
+function nextBtn(){$("#next").hidden=!(runs.Standard&&runs.Standard.length===3)}
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{setStep(+b.dataset.go);scrollTo(0,0)});
+$("#next").onclick=()=>{setStep(2);scrollTo(0,0)};
+setAll(STD);table();setStep(location.hash==="#change"?2:1);
 </script>
 </body>
 </html>
