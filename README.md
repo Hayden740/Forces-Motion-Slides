@@ -10,4 +10,6 @@ Live site: https://hayden740.github.io/Forces-Motion-Slides/
 
 Relief lesson: Lesson 13 (Introducing force diagrams) has a standalone student site with a six page self-marking worksheet at https://hayden740.github.io/Forces-Motion-Slides/relief-force-diagrams/
 
+Parachute simulator: a standalone student page (no access to the rest of the slides) at https://hayden740.github.io/Forces-Motion-Slides/parachute-simulator/
+
 Lesson 19 (How forces change motion) has a student-only copy of its slides, with no other lessons and no teacher notes, at https://hayden740.github.io/Forces-Motion-Slides/lesson-19/
