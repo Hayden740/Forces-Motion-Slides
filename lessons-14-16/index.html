@@ -748,9 +748,6 @@ LESSONS.push(
   sc:["I can draw force diagrams for objects that speed up, slow down or change direction.","I can work out the net force and its direction."],
   prep:"Mini whiteboards. Scenario cards for group discussion.",
   slides:[
-  {mode:"check", h:"Retrieval: balanced diagrams",
-   html:`<div class="grid3">${[["Balanced means the net force is...","Zero."],["Draw a lamp hanging still.","Tension up, weight down, equal arrows."],["Can a moving object have balanced forces?","Yes, if it moves at a steady speed in a straight line."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="lead">Answer these in your book (draw the lamp with a ruler), then click each one to check.</p>`,
-   notes:""},
   {mode:"learn", h:"Unbalanced: the bigger arrow wins",
    html:`<div class="grid3">${[["Speeds up","The bigger force points the same way as the motion.","push"],["Slows down","The bigger force points against the motion.","fric"],["Changes direction","A force acts from the side (like turning a corner or hitting a ball).","grav"]].map(c=>`<div class="fcard ${c[2]}"><h3 style="font-size:2.4cqw">${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>
    <p class="def"><b>Net force</b> = bigger force &minus; smaller force, in the direction of the bigger force.</p><p class="small">e.g. 50 N right and 20 N left: net force = 30 N to the right.</p>`,
