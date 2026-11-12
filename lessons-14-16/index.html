@@ -739,7 +739,7 @@ LESSONS.push(
    html:`<p>Circle the best answer on your worksheet, then click each one to check.</p><div class="grid2">${QQ.map((q,n)=>rv(`${n+1}. ${q[0]}<br><span class="small" style="font-weight:400">${q[1].map((o,k)=>`<b>${"ABCD"[k]}</b> ${o}`).join("&nbsp;&nbsp; ")}</span>`,`${"ABCD"[q[2]]}: ${q[1][q[2]]}. ${q[3]}`)).join("")}</div>`,
    notes:""},
   {mode:"check", h:"Exit",
-   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">True or false? Explain.</p><p class="def">"If a car is moving, the forces on it can't be balanced."</p>${rv("Answer","False. If the car moves at a steady speed in a straight line, the forces are balanced.")}</div>${exitFist(["I can draw balanced force diagrams with equal and opposite arrows.","I can explain why motion does or does not change."])}</div>`,
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">True or false? Explain.</p><p class="def">"If a car is moving, the forces on it can't be balanced."</p>${rv("Answer","False. If the car moves at a steady speed in a straight line, the forces are balanced.")}</div>${`<div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet.</p></div>`}</div>`,
    notes:""}
   ]},
 
@@ -765,7 +765,7 @@ LESSONS.push(
    html:`<div class="grid2 fill"><div class="box"><h3>On your own, in Section 4</h3><p class="lead">A cyclist goes down a hill without pedalling, getting faster and faster. Then she reaches a steady top speed.</p>${steps(["a) Draw a force diagram at the start of the hill. Circle balanced or unbalanced.","b) Draw one at top speed. Circle balanced or unbalanced.","c) Write what changed between the two diagrams, and why."])}</div>${rv("Check","At the start, gravity pulling her down the hill is bigger than air resistance and friction: unbalanced, she speeds up. As she gets faster, air resistance grows until the forces balance, so she reaches a steady top speed.")}</div>`,
    notes:"Mirrors the skydiver story. Good stretch task."},
   {mode:"check", h:"Exit ticket",
-   html:`<div class="grid2 fill"><div class="box"><p class="lead">A boat's engine pushes with 300 N. Water resistance is 100 N.</p><ol><li>What is the net force?</li><li>What happens to the boat's motion?</li></ol>${rv("Answer","Net force = 200 N forwards. Unbalanced, so the boat speeds up.")}</div>${exitFist(["I can draw force diagrams for objects that speed up, slow down or change direction.","I can work out the net force and its direction."])}</div>`,
+   html:`<div class="grid2 fill"><div class="box"><p class="lead">A boat's engine pushes with 300 N. Water resistance is 100 N.</p><ol><li>What is the net force?</li><li>What happens to the boat's motion?</li></ol>${rv("Answer","Net force = 200 N forwards. Unbalanced, so the boat speeds up.")}</div>${`<div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet.</p></div>`}</div>`,
    notes:""}
   ]},
 
@@ -818,7 +818,7 @@ LESSONS.push(
    <div class="box"><h3>Word bank</h3><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div><p class="small">Aim to use at least 5 words from the bank.</p></div></div>`,
    notes:"Application task evidence. Students underline each scientific word they used."},
   {mode:"check", h:"Exit: share one",
-   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner checks:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div>${exitFist(["I can identify the forces acting in transport, sport and playground situations.","I can explain an everyday situation using scientific vocabulary."])}</div>`,
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner checks:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div>${`<div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet.</p></div>`}</div>`,
    notes:""}
   ]}
 );
