@@ -696,6 +696,15 @@ const fcards = (list=FORCE_SIX) => `<div class="grid3">${list.map(f=>`<div class
 const exitFist = sc => `<div class="box"><h3>Fist to five</h3><ul>${sc.map(c=>`<li>${c}</li>`).join("")}</ul><p class="small">Fist = not yet. Five = I could teach it.</p></div>`;
 
 const QQ=[["A book sits on a shelf. The forces are...",["Unbalanced","Balanced","Zero","Only gravity"],1,"Weight down and support up are equal."],["A skydiver falls at a steady speed. Air resistance is...",["Bigger than weight","Smaller than weight","Equal to weight","Zero"],2,"Steady speed means balanced."],["In a balanced diagram, the arrows are...",["All pointing down","Equal and opposite","Different lengths","Not labelled"],1,"Each arrow has an equal partner pointing the opposite way."],["Balanced forces mean an object...",["Must be still","Must be speeding up","Keeps the same motion","Changes direction"],2,"Still stays still; moving keeps moving steadily."]];
+const SITC=(a,b)=>`<div class="box"><h3>${a}</h3><p><b>Think about:</b> ${b}</p></div>`;
+const SIT1=SITC("A bus pulling away from a stop","What makes it go forward? What tries to hold it back? Is it speeding up?");
+const SIT2=SITC("A bus braking hard","Is anything still pushing it forward? What slows it down? Is its speed changing?");
+const SIT3=SITC("A netball shot","Think about the ball after it leaves your hands. What pulls it down? Does it push through air? Does its path curve?");
+const SIT4=SITC("A surfer on a wave","What pulls the surfer down? What holds them up? What pushes them along? What slows the board?");
+const SIT5=SITC("A child at the top of a slide","They are sitting still, waiting to go. What pulls them down? What holds them up?");
+const SIT6=SITC("A child halfway down the slide","What pulls them down the slide? What rubs against them? Are they getting faster?");
+const FD_EX=(()=>{const cx=230,cy=150,bw=112,bh=78,t=cy-bh/2,b=cy+bh/2,l=cx-bw/2,r=cx+bw/2;
+  return `<svg viewBox="0 0 460 300" style="width:100%;max-height:24cqw" role="img" aria-label="Example force diagram: a box with a long push arrow right, a shorter friction arrow left, and equal weight and support arrows"><line x1="40" y1="${b}" x2="420" y2="${b}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/><rect x="${l}" y="${t}" width="${bw}" height="${bh}" rx="8" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))" stroke="var(--ink)" stroke-width="3"/><text x="${cx}" y="${cy+6}" text-anchor="middle" font-weight="700" fill="var(--ink)">Box</text>${arrowSVG(r,cy,r+100,cy,"var(--push)","Push","ex1")}${arrowSVG(l,cy,l-50,cy,"var(--fric)","Friction","ex2")}${arrowSVG(cx,b,cx,b+62,"var(--grav)","Weight","ex3")}${arrowSVG(cx,t,cx,t-62,"var(--push)","Support","ex4")}</svg>`})();
 /* ---------- Week 4: Force diagrams and motion ---------- */
 const W=(s=2)=>["down",s,"Weight","grav"], SUP=(s=2)=>["up",s,"Support force","push"];
 const FD_INTRO=[
@@ -775,30 +784,44 @@ LESSONS.push(
   prep:"Station cards printed for transport, sport and playgrounds. Optional: photos of local playgrounds or sports.",
   reliefPrep:"Each student needs the Lesson 16 pages of the Week 4 force diagrams booklet (pages 7 and 8). No equipment.",
   relief:[
-  {mode:"check", h:"Warm up: net force", timer:4,
-   html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="lead">Answer in <b>Section 1</b> of your worksheet, then we'll check.</p>`,
-   notes:"Relief: about 5 minutes. Students answer first, then click each card to show the answer. Net force = bigger force take away the smaller one."},
-  {mode:"learn", h:"Forces are everywhere",
-   html:tabs([
+  {mode:"check", h:"Section 1: Warm up", timer:4,
+   html:`<div class="grid2 fill"><div class="box"><h3>Net force reminder</h3><p>When forces push in opposite directions, take the smaller one away from the bigger one.</p><p class="lead">80 N up and 30 N down: 80 − 30 = <b>50 N up</b>.</p><p>If they are equal, the net force is <b>0 N</b> and the forces are <b>balanced</b>. If not, they are <b>unbalanced</b> and the motion changes.</p><p class="small">Answer the three rows in <b>Section 1</b> on your own, then click to check.</p></div><div style="display:grid;gap:1cqw">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction and braking)."]].map(c=>rv(c[0],c[1])).join("")}</div></div>`,
+   notes:""},
+  {mode:"learn", h:"Key ideas: forces are everywhere",
+   html:`<p>Follow along with the <b>Key ideas</b> table on your worksheet. Click each tab as you read.</p>`+tabs([
      ["Transport",`<div class="grid3">${[["Braking","Friction between brake pads and wheels, and between tyres and road, slows the car."],["Seatbelts","When a car stops suddenly, your body keeps moving. The seatbelt applies a force to stop you."],["Streamlining","Cars and trains are shaped to reduce air resistance and save fuel."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
      ["Sport",`<div class="grid3">${[["Kicking a footy","A large push for a short time changes the ball's speed and direction."],["Swimming","Swimmers push water backwards. Streamlined bodies and caps cut water resistance."],["Cycling","Riders tuck down to reduce air resistance. Tyre grip (friction) stops skidding."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
      ["Playground",`<div class="grid3">${[["Slide","Gravity pulls you down. A smooth slide means less friction, so you go faster."],["Swing","Gravity pulls you back down. Pushing changes your speed. The chains pull you in a curve."],["See-saw","Gravity on each person turns the see-saw. A heavier person pushes their side down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`]]),
-   notes:"Relief: about 5 minutes. Click each tab and read the cards aloud. This table is also on the worksheet."},
-  {mode:"move", timer:15, h:"Stations: transport, sport, playground",
-   html:`<div class="grid2 fill"><div class="box">${steps(["Groups of 4.","Work through all six situations.","Name every force acting. Contact or non-contact?","Balanced or unbalanced?","Fill in the table in <b>Section 2</b> of your worksheet."])}</div>
-   <div class="grid3">${[["Transport","A bus pulling away from a stop. A bus braking hard."],["Sport","A netball shot. A surfer on a wave."],["Playground","A child at the top of a slide. Halfway down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p class="small">${c[1]}</p></div>`).join("")}</div></div>`,
-   notes:"Relief: 15 minutes. If station cards were left out, groups can move between them. Remind students gravity acts on everything."},
+   notes:""},
+  {mode:"learn", h:"Section 2: how to fill in the table",
+   html:`<div class="grid2 fill"><div class="box"><h3>For each situation, fill in three columns</h3>${steps(["<b>Forces acting:</b> name every push and pull. Gravity acts on everything, so it is always there.","<b>Contact or non-contact?</b> Contact forces need touching: push, friction, air resistance, water resistance, support force. Gravity is non-contact.","<b>Balanced or unbalanced?</b> Is the motion changing? Speeding up, slowing down or turning means unbalanced. Still, or a steady speed, means balanced."])}</div>
+   <div class="box"><h3>Example: a book sitting on a desk</h3><table class="mini"><tr><th>Forces acting</th><th>Contact or non-contact?</th><th>Balanced?</th></tr><tr><td>Gravity (weight)<br>Support force from the desk</td><td>Non-contact<br>Contact</td><td>Balanced: it isn't moving</td></tr></table><p class="small">Now do the same for the six situations on the next three slides.</p></div></div>`,
+   notes:""},
+  {mode:"write", timer:5, h:"Section 2: Transport",
+   html:`<p>Fill in the two <b>Transport</b> rows of your table.</p><div class="grid2">${[SIT1,SIT2].join("")}</div>`,
+   notes:""},
+  {mode:"write", timer:5, h:"Section 2: Sport",
+   html:`<p>Fill in the two <b>Sport</b> rows of your table.</p><div class="grid2">${[SIT3,SIT4].join("")}</div>`,
+   notes:""},
+  {mode:"write", timer:5, h:"Section 2: Playground",
+   html:`<p>Fill in the two <b>Playground</b> rows of your table.</p><div class="grid2">${[SIT5,SIT6].join("")}</div>`,
+   notes:""},
   {mode:"check", h:"Check your table",
-   html:`<div class="grid3">${[["Bus pulling away","Driving force, friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Bus braking hard","Braking friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Netball shot","Air resistance (contact). Gravity (non-contact). Unbalanced: it curves."],["Surfer on a wave","Wave push, support from water, water resistance (contact). Gravity (non-contact). Mostly unbalanced."],["Top of the slide","Support (contact). Gravity (non-contact). Balanced."],["Halfway down","Support, friction, air resistance (contact). Gravity (non-contact). Unbalanced."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="small">Add anything you missed in a different colour.</p>`,
-   notes:"Relief: about 5 minutes. Ask a group first, then click to show the answer."},
-  {mode:"write", timer:12, h:"Application task",
-   html:`<div class="grid2 fill"><div class="box"><h3>Choose one</h3><ol><li>Explain how forces help a cyclist speed up, ride steadily and stop.</li><li>Explain the forces on a child going down a slide, from the top to the bottom.</li><li>Explain why a sprinter wears spiked shoes.</li></ol><p class="small">Write 5 to 8 sentences and include a force diagram in <b>Section 3</b>.</p></div>
-   <div class="box"><h3>Word bank</h3><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div><p class="small">Use at least 5 and underline each one.</p></div></div>`,
-   notes:"Relief: 12 minutes. Good answers name the forces, say which way they act and what happens to the motion."},
-  {mode:"check", h:"Exit: share one",
-   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner ticks <b>Section 4</b> if it:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div><div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet, then hand it in.</p></div></div>`,
-   notes:"Relief: about 5 minutes. Collect the worksheets for the class teacher."}
+   html:`<div class="grid3">${[["Bus pulling away","Driving force, friction, air resistance, support (contact). Gravity (non-contact). Unbalanced: speeding up."],["Bus braking hard","Braking friction, air resistance, support (contact). Gravity (non-contact). Unbalanced: slowing down."],["Netball shot","Air resistance (contact). Gravity (non-contact). Unbalanced: it curves."],["Surfer on a wave","Wave push, support from water, water resistance (contact). Gravity (non-contact). Mostly unbalanced."],["Top of the slide","Support (contact). Gravity (non-contact). Balanced: staying still."],["Halfway down","Support, friction, air resistance (contact). Gravity (non-contact). Unbalanced: speeding up."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="small">Add anything you missed in a different colour.</p>`,
+   notes:""},
+  {mode:"learn", h:"Section 3: choose your task",
+   html:`<div class="grid2 fill"><div class="box"><h3>Pick one and circle it on your worksheet</h3><ol><li><b>A</b> Explain how forces help a cyclist speed up, ride steadily and stop.</li><li><b>B</b> Explain the forces on a child going down a slide, from the top to the bottom.</li><li><b>C</b> Explain why a sprinter wears spiked shoes.</li></ol></div>
+   <div class="box"><h3>A good answer</h3>${steps(["Names the forces acting.","Says which direction each one acts.","Says whether they are balanced or unbalanced.","Says what that does to the motion: speed up, slow down or stay the same."])}<p class="small">Example sentence: <i>Friction from the brakes acts backwards, so the forces are unbalanced and the bike slows down.</i></p></div></div>`,
+   notes:""},
+  {mode:"write", timer:12, h:"Section 3: draw and write",
+   html:`<div class="grid2 fill"><div class="box"><h3>1. Draw your force diagram</h3><div>${FD_EX}</div><p class="small">Arrows start on the object. Longer arrow = bigger force. Label every arrow.</p></div>
+   <div class="box"><h3>2. Write 5 to 8 sentences</h3><p>Use at least 5 words from the word bank and underline each one.</p><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div></div></div>`,
+   notes:""},
+  {mode:"check", h:"Section 4: check your best sentence",
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Choose your best sentence and read it to yourself. Tick each box in <b>Section 4</b> if it:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul><p class="small">Missing one? Add it to your sentence.</p></div><div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet.</p></div></div>`,
+   notes:""}
   ],
+
   slides:[
   {mode:"check", h:"Retrieval: net force",
    html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
