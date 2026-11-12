@@ -695,6 +695,7 @@ const FORCE_SIX=[["push","Applied force","Contact","A push or pull by a person o
 const fcards = (list=FORCE_SIX) => `<div class="grid3">${list.map(f=>`<div class="fcard ${f[0]}"><span class="tag">${f[2]}</span><h3>${f[1]}</h3><p>${f[3]}</p><p class="small">e.g. ${f[4]}</p></div>`).join("")}</div>`;
 const exitFist = sc => `<div class="box"><h3>Fist to five</h3><ul>${sc.map(c=>`<li>${c}</li>`).join("")}</ul><p class="small">Fist = not yet. Five = I could teach it.</p></div>`;
 
+const QQ=[["A book sits on a shelf. The forces are...",["Unbalanced","Balanced","Zero","Only gravity"],1,"Weight down and support up are equal."],["A skydiver falls at a steady speed. Air resistance is...",["Bigger than weight","Smaller than weight","Equal to weight","Zero"],2,"Steady speed means balanced."],["In a balanced diagram, the arrows are...",["All pointing down","Equal and opposite","Different lengths","Not labelled"],1,"Each arrow has an equal partner pointing the opposite way."],["Balanced forces mean an object...",["Must be still","Must be speeding up","Keeps the same motion","Changes direction"],2,"Still stays still; moving keeps moving steadily."]];
 /* ---------- Week 4: Force diagrams and motion ---------- */
 const W=(s=2)=>["down",s,"Weight","grav"], SUP=(s=2)=>["up",s,"Support force","push"];
 const FD_INTRO=[
@@ -734,12 +735,8 @@ LESSONS.push(
   {mode:"write", timer:8, h:"Draw it in your book",
    html:`<p>Draw a force diagram for each one in your book. Use a ruler, make equal forces equal length, and label every arrow. Then click Check to compare.</p><div class="grid3">${[["A plane flying level at a steady speed","Lift up = weight down. Thrust forward = air resistance back."],["A spider hanging still on its thread","Tension up = weight down."],["A cyclist riding at a steady 20 km/h","Pedal force forward = friction + air resistance back. Weight = support."]].map(c=>`<div class="box"><p class="lead">${c[0]}</p>${rv("Check",c[1])}</div>`).join("")}</div>`,
    notes:"The plane has four forces, a stretch for confident groups."},
-  {mode:"write", timer:6, h:"Why doesn't the motion change?",
-   html:`<div class="grid2 fill"><div class="box"><p class="lead">Explain why a car on cruise control keeps going at exactly 100 km/h.</p><p class="starter">The forces on the car are ___ because ___. This means the net force is ___, so the car's motion ___.</p></div>${rv("Model answer","The forces on the car are balanced because the driving force forwards is the same size as friction and air resistance backwards. This means the net force is zero, so the car's motion does not change: it keeps moving at the same speed in the same direction.")}</div>`,
-   notes:"Worksheet / written explanation evidence."},
-  {mode:"check", h:"Quick quiz", init:"quiz",
-   data:[["A book sits on a shelf. The forces are...",["Unbalanced","Balanced","Zero","Only gravity"],1,"Weight down and support up are equal."],["A skydiver falls at a steady speed. Air resistance is...",["Bigger than weight","Smaller than weight","Equal to weight","Zero"],2,"Steady speed means balanced."],["In a balanced diagram, the arrows are...",["All pointing down","Equal and opposite","Different lengths","Not labelled"],1,"Each arrow has an equal partner pointing the opposite way."],["Balanced forces mean an object...",["Must be still","Must be speeding up","Keeps the same motion","Changes direction"],2,"Still stays still; moving keeps moving steadily."]],
-   html:quizUI,
+  {mode:"check", h:"Quick quiz",
+   html:`<p>Circle the best answer on your worksheet, then click each one to check.</p><div class="grid2">${QQ.map((q,n)=>rv(`${n+1}. ${q[0]}<br><span class="small" style="font-weight:400">${q[1].map((o,k)=>`<b>${"ABCD"[k]}</b> ${o}`).join("&nbsp;&nbsp; ")}</span>`,`${"ABCD"[q[2]]}: ${q[1][q[2]]}. ${q[3]}`)).join("")}</div>`,
    notes:""},
   {mode:"check", h:"Exit",
    html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">True or false? Explain.</p><p class="def">"If a car is moving, the forces on it can't be balanced."</p>${rv("Answer","False. If the car moves at a steady speed in a straight line, the forces are balanced.")}</div>${exitFist(["I can draw balanced force diagrams with equal and opposite arrows.","I can explain why motion does or does not change."])}</div>`,
