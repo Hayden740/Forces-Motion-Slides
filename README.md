@@ -13,3 +13,5 @@ Relief lesson: Lesson 13 (Introducing force diagrams) has a standalone student s
 Parachute simulator: a standalone student page (no access to the rest of the slides) at https://hayden740.github.io/Forces-Motion-Slides/parachute-simulator/
 
 Lesson 19 (How forces change motion) has a student-only copy of its slides, with no other lessons and no teacher notes, at https://hayden740.github.io/Forces-Motion-Slides/lesson-19/
+
+Relief lesson: Lesson 16 (Forces in real life) has a run sheet for a non-science relief teacher, with what to say, what students write, answers, and a "Show on board" slide for every step. Students use the printed Lesson 16 pages of the Week 4 worksheet booklet: https://hayden740.github.io/Forces-Motion-Slides/relief-forces-real-life/

@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relief lesson: Forces in Real Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#e9efed; --surface:#fbfdfc; --ink:#13221e; --muted:#566862; --line:#cad7d2;
+  --air:#2f73bb; --push:#0f7f80; --fric:#b0512a; --grav:#6a4bb3; --mag:#b8326a;
+  --accent:#b0512a; --accent-ink:#ffffff; --good:#2f7d3a; --bad:#b3372f;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.5}
+button,select,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 16px 48px;display:grid;gap:16px}
+.stack{display:grid;gap:16px}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.dots{display:inline-flex;gap:3px}.dots i{width:9px;height:9px;border-radius:50%;display:block}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.tabs button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 11px;font-size:14px;display:flex;align-items:center;gap:6px}
+.tabs button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tabs button .tick{color:var(--good);font-weight:700}
+.tabs button[aria-current="true"] .tick{color:var(--bg)}
+.progress{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.progress i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+
+header h1{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,4.5vw,42px);letter-spacing:-.02em;line-height:1.05;margin:0 0 6px}
+header p{margin:0;color:var(--muted);max-width:72ch}
+.eyebrow{font-family:var(--f-mono);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px}
+.card h2{font-family:var(--f-display);font-weight:600;font-size:21px;margin:0 0 10px;line-height:1.2}
+.card h3{font-size:17px;margin:0 0 6px}
+.card p{margin:0 0 10px}.card p:last-child{margin-bottom:0}
+.part{font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid2>*,.grid3>*{min-width:0}
+.accent{border-left:5px solid var(--accent)}
+ol.steps{margin:0;padding:0;list-style:none;counter-reset:s;display:grid;gap:10px}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+ol.steps li::before{content:counter(s);width:30px;height:30px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-family:var(--f-mono);font-size:14px}
+.view{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:color-mix(in srgb,var(--air) 7%,var(--surface))}
+.view svg{width:100%;height:auto;display:block}
+.arrowlab{font-size:15px;font-weight:700;font-family:var(--f-body);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.objlab{font-size:14px;font-weight:700;font-family:var(--f-body);fill:var(--ink)}
+.video{position:relative;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000}
+.video iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.sum{font-family:var(--f-mono);font-weight:700;background:color-mix(in srgb,var(--ink) 6%,var(--surface));border-radius:8px;padding:8px 12px;margin:8px 0}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 16px;font-weight:700}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.navrow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+input[type=text],input[type=number],textarea,select{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:8px 10px}
+input[type=text]{width:100%}
+input[type=number]{width:110px}
+textarea{width:100%;min-height:120px;resize:vertical}
+label.field{display:grid;gap:4px;font-weight:700}
+select{max-width:100%;min-width:0}
+.mrow select,.q select{width:100%}
+.numq select{width:auto;flex:1 1 140px}
+.mrow>*,.tfrow>*{min-width:0}
+
+.blanks{margin:0;padding-left:1.4em;display:grid;gap:12px}
+.blanks select{margin:0 4px}
+.mark{font-weight:700;margin-left:6px;white-space:nowrap}
+.ok{color:var(--good)}.no{color:var(--bad)}
+
+.tf{display:grid;gap:8px}
+.tfrow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.tfrow.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 10%,var(--surface))}
+.tfrow.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 8%,var(--surface))}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;font-size:14px;font-weight:700}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.why{font-size:14px;color:var(--muted);grid-column:1/-1}
+.why[hidden]{display:none}
+
+.match{display:grid;gap:8px}
+.mrow{display:grid;grid-template-columns:170px minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.mrow b{font-size:16px}
+
+.q{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line)}
+.q:first-child{border-top:0;padding-top:0}
+.q .stem{font-weight:700}
+.opts{display:grid;gap:6px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer;background:var(--surface)}
+.opt input{margin-top:5px;accent-color:var(--accent)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.numq{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.numq.right input,.numq.right select{border-color:var(--good);background:color-mix(in srgb,var(--good) 12%,var(--surface))}
+.numq.wrong input,.numq.wrong select{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--surface))}
+.fb{font-size:15px;border-radius:8px;padding:8px 12px;background:color-mix(in srgb,var(--ink) 5%,var(--surface))}
+.fb[hidden]{display:none}
+.score{font-family:var(--f-mono);font-weight:700;font-size:20px}
+
+.sorts{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.sortcard{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--surface)}
+.sortcard .sit{font-weight:700}
+.sortcard .pick{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:14px}
+.sortcard.right{border-color:var(--good)}
+.sortcard.wrong{border-color:var(--bad)}
+
+.diagrams{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.diagrams figure{margin:0}
+.diagrams figcaption{font-family:var(--f-display);font-weight:800;font-size:20px;margin-bottom:4px}
+
+.builder{display:grid;grid-template-columns:1.25fr 1fr;gap:16px}
+.builder>*{min-width:0}
+.scen{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.scen button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px}
+.scen button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.scen button.done::after{content:" ✓";color:var(--good);font-weight:700}
+.scen button[aria-current="true"].done::after{color:var(--bg)}
+.motion{font-family:var(--f-mono);font-size:14px;color:var(--accent);font-weight:700}
+.dirs{display:grid;gap:10px}
+.dir{display:grid;grid-template-columns:70px 1fr;gap:8px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.dir b{font-size:15px}
+.dir .ctrls{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.dir select{flex:1 1 140px}
+.sz{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sz button{border:0;background:var(--surface);padding:6px 10px;font-size:14px;font-weight:700}
+.sz button+button{border-left:1px solid var(--line)}
+.sz button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.sz button:disabled{opacity:.4;cursor:default}
+.verdict{border-radius:10px;padding:10px 14px;font-weight:700}
+.verdict.good{background:color-mix(in srgb,var(--good) 15%,var(--surface));color:var(--good)}
+.verdict.bad{background:color-mix(in srgb,var(--bad) 12%,var(--surface));color:var(--bad)}
+.verdict ul{margin:6px 0 0;padding-left:1.2em;font-weight:400;color:var(--ink)}
+.verdict[hidden]{display:none}
+
+.sumtable{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+.sumtable th,.sumtable td{border:1px solid var(--line);padding:8px 10px;text-align:left}
+.sumtable th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.code{font-family:var(--f-mono);font-size:28px;font-weight:700;letter-spacing:.08em;color:var(--accent)}
+.page[hidden]{display:none}
+.pill{display:inline-block;font-family:var(--f-mono);font-size:12px;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.mcard{display:grid;gap:8px}
+
+@media (max-width:820px){.grid2,.builder,.sorts{grid-template-columns:1fr}.grid3,.diagrams{grid-template-columns:1fr 1fr}.tabs{margin-left:0}.mrow{grid-template-columns:minmax(0,1fr)!important}}
+@media (max-width:520px){.grid3,.diagrams{grid-template-columns:1fr}}
+@media print{.bar,.progress,.navrow,.noprint{display:none!important}body{background:#fff;color:#000}.card{border-color:#999}}
+</style>
+<style>
+.step{display:grid;gap:12px}
+.step .top{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.step .top h2{margin:0;flex:1 1 300px}
+.time{font-family:var(--f-mono);font-weight:700;font-size:13px;background:var(--ink);color:var(--bg);border-radius:99px;padding:3px 10px}
+.lab{font-family:var(--f-mono);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.say{border-left:5px solid var(--push);padding:8px 12px;background:color-mix(in srgb,var(--push) 7%,var(--surface));border-radius:0 10px 10px 0}
+.say .lab{color:var(--push)}
+.say p{margin:0 0 6px}.say p:last-child{margin:0}
+.do{border-left:5px solid var(--accent);padding:8px 12px;background:color-mix(in srgb,var(--accent) 7%,var(--surface));border-radius:0 10px 10px 0}
+.do .lab{color:var(--accent)}
+.ans{border-left:5px solid var(--good);padding:8px 12px;background:color-mix(in srgb,var(--good) 7%,var(--surface));border-radius:0 10px 10px 0}
+.ans .lab{color:var(--good)}
+.ans table{border-collapse:collapse;width:100%;font-size:15px}
+.ans td,.ans th{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+.ans th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.say ul,.do ul,.ans ul{margin:0;padding-left:1.2em;display:grid;gap:4px}
+#show{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;z-index:10}
+#show[hidden]{display:none}
+.sbar{display:flex;gap:8px;align-items:center;padding:8px 14px;font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.sbar .sp{flex:1}
+.slide{flex:1;min-height:0;overflow:auto;padding:1vw 3vw 2vw;font-size:clamp(16px,1.5vw,28px);display:flex;flex-direction:column;gap:1vw}
+.slide h1{font-family:var(--f-display);font-weight:800;font-size:1.8em;letter-spacing:-.02em;line-height:1.05;margin:0}
+.slide .ey{font-family:var(--f-mono);font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;font-size:.6em}
+.slide .card{font-size:1em;padding:1.1vw 1.3vw}
+.slide .card h2,.slide .card h3{font-size:1.15em}
+.slide .small{font-size:.75em}
+.sgrid{display:grid;gap:1.2vw;grid-template-columns:repeat(var(--c,2),1fr)}
+.sgrid>*{min-width:0}
+.where{display:inline-block;font-family:var(--f-mono);font-weight:700;font-size:.7em;background:var(--accent);color:var(--accent-ink);border-radius:8px;padding:.2em .6em}
+.rv{display:grid;gap:.3em;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:.8em 1em;width:100%;font-size:1em}
+.rv .a{display:none}.rv.on .a{display:block;color:var(--good);font-weight:700}
+.rv .h{font-size:.65em;color:var(--muted)}.rv.on .h{display:none}
+.rv .q{font-weight:700}
+.chipz{display:flex;gap:.5em;flex-wrap:wrap}
+.chipz span{border:1px solid var(--line);border-radius:999px;padding:.2em .7em;background:var(--surface);font-weight:700}
+.timer{display:inline-flex;align-items:center;gap:.5em;border:1px solid var(--line);border-radius:10px;padding:.3em .6em;background:var(--surface);font-size:.8em}
+.timer .t{font-family:var(--f-mono);font-weight:700;font-size:1.5em;min-width:3.4em;text-align:center}
+.timer.end .t{color:var(--bad)}
+.timer button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:.2em .7em;font-weight:700}
+.slide .view{max-width:520px}
+@media (max-width:820px){.sgrid{grid-template-columns:1fr}}
+@media print{#show{display:none!important}.step{break-inside:avoid}.btn{display:none!important}.tabs{display:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="guide">
+  <div class="bar">
+    <div class="brand"><span class="dots"><i style="background:var(--push)"></i><i style="background:var(--fric)"></i><i style="background:var(--grav)"></i></span>Relief lesson</div>
+    <div class="tabs"><button class="btn primary" id="startShow">▶ Show slides from the start</button><button class="btn" onclick="window.print()">Print this plan</button></div>
+  </div>
+
+  <header>
+    <div class="eyebrow">Year 7 Science · Forces and Motion · Lesson 16 · About 50 minutes</div>
+    <h1>Forces in Real Life</h1>
+    <p>Thanks for taking this class. <b>You don't need a science background.</b> This page tells you what to say, what the students write, and the answers to look for. Every step has a <b>Show on board</b> button that puts a clean slide up for the class (press <b>Esc</b> to come back here, and use the arrow keys to move between slides).</p>
+  </header>
+
+  <div class="grid2">
+    <div class="card accent">
+      <h2>Before the bell</h2>
+      <ol class="steps">
+        <li><div><b>Print the worksheet:</b> the two Lesson 16 pages from the Week 4 force diagrams booklet (pages 7 and 8), one copy per student. If there are no copies, students rule up the same sections in their science books.</div></li>
+        <li><div><b>Open this page</b> on the classroom computer and connect the projector. Test one <b>Show on board</b> button.</div></li>
+        <li><div><b>No equipment needed.</b> Students need a pen, pencil and ruler.</div></li>
+        <li><div>Optional: if the printed <b>station cards</b> for Lesson 16 have been left for you, spread them on three tables. If not, the station slides do the same job.</div></li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>The science in 60 seconds</h2>
+      <ul style="margin:0;padding-left:1.2em;display:grid;gap:6px">
+        <li>A <b>force</b> is a push or a pull. It is measured in <b>newtons (N)</b>.</li>
+        <li><b>Contact forces</b> need touching: pushes, friction, air resistance, water resistance, the support force from the ground. <b>Non-contact forces</b> work across a gap: gravity (weight), magnetism, static electricity.</li>
+        <li><b>Balanced</b> forces cancel out, so the motion doesn't change (still stays still, or keeps the same speed). <b>Unbalanced</b> forces change the motion: speeding up, slowing down or changing direction.</li>
+        <li><b>Net force</b> = the big force take away the smaller opposite force. Example: 80 N up and 30 N down gives 50 N up.</li>
+        <li>A <b>force diagram</b> shows each force as an arrow starting on the object. Longer arrow = bigger force. Every arrow gets a label.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Lesson at a glance</h2>
+    <table class="sumtable" id="glance"></table>
+  </div>
+
+  <div id="steps" class="stack"></div>
+
+  <div class="card accent">
+    <h2>At the end of the lesson</h2>
+    <p>Collect the worksheets (or ask students to leave their books open on Section 3) and leave them for the class teacher. A quick note about who finished the application task and anyone who struggled is really helpful. Thank you!</p>
+  </div>
+</div>
+
+<!-- slide mode -->
+<div id="show" hidden>
+  <div class="sbar"><span id="sCount"></span><span class="sp"></span><button class="btn" id="sPrev">← Back</button><button class="btn primary" id="sNext">Next →</button><button class="btn" id="sExit">Esc: back to plan</button></div>
+  <div class="slide" id="slide"></div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let uid=0;
+const AR=(id,col)=>`<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="${col}"/></marker>`;
+function arrow(x1,y1,x2,y2,col,lab){const id="ar"+(uid++),horiz=y1===y2;const lx=horiz?(x2>x1?x1+2:x1-2):x2+12,ly=horiz?y1-14:(y2<y1?y2+14:y2-4),anchor=horiz?(x2>x1?"start":"end"):"start";
+  return `<g><defs>${AR(id,col)}</defs><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="7" stroke-linecap="round" marker-end="url(#${id})"/><text class="arrowlab" x="${lx}" y="${ly}" text-anchor="${anchor}" fill="${col}">${esc(lab)}</text></g>`}
+const EXAMPLE=(()=>{const cx=230,cy=165,bw=112,bh=78,top=cy-bh/2,bot=cy+bh/2,l=cx-bw/2,r=cx+bw/2;
+  return `<svg viewBox="0 0 460 330" role="img" aria-label="Force diagram of a box pushed to the right: long push arrow right, shorter friction arrow left, equal weight and support arrows"><line x1="40" y1="${bot}" x2="420" y2="${bot}" stroke="var(--muted)" stroke-width="2" stroke-dasharray="6 5"/><rect x="${l}" y="${top}" width="${bw}" height="${bh}" rx="8" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))" stroke="var(--ink)" stroke-width="3"/><text class="objlab" x="${cx}" y="${cy+5}" text-anchor="middle">Box</text>${arrow(r,cy,r+108,cy,"var(--push)","Push")}${arrow(l,cy,l-54,cy,"var(--fric)","Friction")}${arrow(cx,bot,cx,bot+72,"var(--grav)","Weight")}${arrow(cx,top,cx,top-72,"var(--push)","Support")}</svg>`})();
+const rv=(q,a)=>`<button class="rv" data-rv><span class="q">${q}</span><span class="a">${a}</span><span class="h">Click to show the answer</span></button>`;
+const timer=m=>`<span class="timer" data-min="${m}"><span class="t">${m}:00</span><button data-tg>Start</button><button data-tr>Reset</button></span>`;
+const where=t=>`<span class="where">✎ Worksheet: ${t}</span>`;
+const sit=(name,think)=>`<div class="card"><h2>${name}</h2><p class="small"><b>Think about:</b> ${think}</p></div>`;
+const STATION_ASK=`<div class="card small"><b>For each situation, write in your table:</b> every force acting, whether each one is contact or non-contact, and whether the forces are balanced or unbalanced. Don't forget gravity!</div>`;
+
+const STEPS=[
+{t:"Welcome and learning intention",min:3,
+ say:["Today we're looking at the forces in everyday things: transport, sport and the playground.","Read the learning intention and success criteria off the board. Ask everyone to write their name, class and date at the top of the worksheet."],
+ doo:"Name, class and date at the top of the Lesson 16 worksheet.",
+ slide:`<div class="ey">Year 7 Science · Forces and Motion · Lesson 16</div><h1>Forces in Real Life</h1>
+  <div class="sgrid"><div class="card accent"><h2>Learning intention</h2><p>Apply force ideas to everyday situations.</p></div><div class="card"><h2>Success criteria</h2><ul style="margin:0;padding-left:1.2em"><li>I can identify the forces acting in transport, sport and playground situations.</li><li>I can explain an everyday situation using scientific words.</li></ul></div></div>
+  <p>${where("name, class and date at the top")}</p>`},
+{t:"Warm up: net force",min:6,
+ say:["Students did net force last week, so this is revision. Give them 3 minutes to answer the three rows on their own.","Then click each box on the slide to show the answer and get students to tick or fix theirs."],
+ doo:"Section 1, Warm up: net force (the 3 row table).",
+ ans:`<table><tr><th>Question</th><th>Answer</th></tr><tr><td>60 N right, 60 N left</td><td>Net force 0 N. Balanced (they cancel out).</td></tr><tr><td>80 N up, 30 N down</td><td>80 take away 30 = 50 N up. Unbalanced.</td></tr><tr><td>A car slows down. Which force is bigger?</td><td>The backwards force (friction from the brakes and road, plus air resistance). Unbalanced.</td></tr></table>`,
+ slide:`<div class="ey">Warm up · 3 minutes</div><h1>Net force</h1><p>${where("Section 1")} ${timer(3)}</p>
+  <div class="sgrid" style="--c:3">${rv("60 N right, 60 N left","0 N. Balanced.")}${rv("80 N up, 30 N down","50 N up. Unbalanced.")}${rv("A car slows down. Which force is bigger?","The backwards force: friction and air resistance.")}</div>
+  <p class="small">Net force = bigger force take away the smaller opposite force.</p>`},
+{t:"Key ideas: forces are everywhere",min:7,
+ say:["This table is also printed on the worksheet, so students can follow along. Read the nine examples aloud, or pick students to read one each.","After each column, ask one of the questions below. Students answer out loud or with a show of hands."],
+ doo:"Nothing to write. Students read the Key ideas table on the worksheet.",
+ ans:`<ul><li><b>Why do you lean forward when a bus brakes?</b> Your body keeps moving forward when the bus slows. The seatbelt or your feet provide the force to stop you.</li><li><b>Why do cyclists tuck down?</b> A smaller shape pushes through less air, so there is less air resistance.</li><li><b>Why do you go faster on a smooth slide?</b> Smooth surfaces have less friction, so gravity has less to fight against.</li></ul>`,
+ slide:`<div class="ey">Key ideas</div><h1>Forces are everywhere</h1>
+  <div class="sgrid" style="--c:3">
+   <div class="card"><h2>Transport</h2><p><b>Braking:</b> friction between brake pads and wheels, and tyres and road, slows the car.</p><p><b>Seatbelts:</b> when a car stops suddenly your body keeps moving. The seatbelt applies a force to stop you.</p><p><b>Streamlining:</b> cars and trains are shaped to reduce air resistance and save fuel.</p></div>
+   <div class="card"><h2>Sport</h2><p><b>Kicking a footy:</b> a big push for a short time changes the ball's speed and direction.</p><p><b>Swimming:</b> swimmers push water backwards. Streamlined bodies and caps cut water resistance.</p><p><b>Cycling:</b> riders tuck down to reduce air resistance. Tyre grip (friction) stops skidding.</p></div>
+   <div class="card"><h2>Playground</h2><p><b>Slide:</b> gravity pulls you down. A smooth slide means less friction, so you go faster.</p><p><b>Swing:</b> gravity pulls you back down. Pushing changes your speed. The chains pull you in a curve.</p><p><b>See-saw:</b> gravity on each person turns the see-saw. A heavier person pushes their side down.</p></div>
+  </div>`},
+{t:"Station 1: Transport",min:5,
+ say:["Put students in groups of about 4. Explain: there are 3 stations, 5 minutes each. For each situation they fill in one row of the table.","If you have the printed station cards, groups can rotate around the tables instead and you just run the timer. Otherwise everyone works on the station shown on the board.","Start the 5 minute timer on the slide. Walk around and point students to the 'Think about' hints if they're stuck."],
+ doo:"Section 2, Stations table: the two Transport rows.",
+ slide:`<div class="ey">Station 1 of 3 · 5 minutes</div><h1>Transport</h1><p>${where("Section 2, Transport rows")} ${timer(5)}</p>
+  <div class="sgrid">${sit("A bus pulling away from a stop","What makes it go forward? What tries to hold it back? Is it speeding up?")}${sit("A bus braking hard","Is anything still pushing it forward? What slows it down? Is its speed changing?")}</div>${STATION_ASK}`},
+{t:"Station 2: Sport",min:5,
+ say:["Move on when the timer ends (or rotate groups). Reset and start the timer again."],
+ doo:"Section 2, Stations table: the two Sport rows.",
+ slide:`<div class="ey">Station 2 of 3 · 5 minutes</div><h1>Sport</h1><p>${where("Section 2, Sport rows")} ${timer(5)}</p>
+  <div class="sgrid">${sit("A netball shot","Think about the ball after it leaves the player's hands. What pulls it back down? Does it rub against anything? Does its path curve?")}${sit("A surfer on a wave","What pulls the surfer down? What holds them up? What pushes them along? What slows the board?")}</div>${STATION_ASK}`},
+{t:"Station 3: Playground",min:5,
+ say:["Last station. Reset and start the timer."],
+ doo:"Section 2, Stations table: the two Playground rows.",
+ slide:`<div class="ey">Station 3 of 3 · 5 minutes</div><h1>Playground</h1><p>${where("Section 2, Playground rows")} ${timer(5)}</p>
+  <div class="sgrid">${sit("A child at the top of a slide","They are sitting still, waiting to go. What pulls them down? What holds them up? Is anything changing?")}${sit("A child halfway down the slide","What pulls them down the slide? What rubs against them? Are they getting faster?")}</div>${STATION_ASK}`},
+{t:"Check the stations",min:5,
+ say:["Go through the six situations. Ask a group for their answer first, then click to show it. Students add anything they missed in a different colour.","The most commonly forgotten force is gravity (weight), which acts on everything. Accept 'gravity' or 'weight', and 'support force' or 'normal force'. Sensible extra forces are fine."],
+ doo:"Students correct and add to their Section 2 table.",
+ ans:`<table><tr><th>Situation</th><th>Forces (C = contact, N = non-contact)</th><th>Balanced?</th></tr>
+  <tr><td>Bus pulling away</td><td>Driving force from the engine and tyres (C), friction and air resistance holding it back (C), gravity/weight (N), support force from the road (C)</td><td>Unbalanced: forward force is bigger, it speeds up</td></tr>
+  <tr><td>Bus braking hard</td><td>Friction from the brakes and road (C), air resistance (C), gravity (N), support force (C). No forward force.</td><td>Unbalanced: backward force wins, it slows down</td></tr>
+  <tr><td>Netball shot</td><td>Gravity pulling it down (N), air resistance (C). The push from the hands only acts while touching.</td><td>Unbalanced: its speed and direction change (it curves)</td></tr>
+  <tr><td>Surfer on a wave</td><td>Gravity (N), support/upthrust from the water (C), push from the wave (C), water resistance and friction (C)</td><td>Unbalanced while the wave speeds them up or they turn. Accept balanced if they argue a steady glide.</td></tr>
+  <tr><td>Top of the slide</td><td>Gravity (N), support force from the platform (C)</td><td>Balanced: they stay still</td></tr>
+  <tr><td>Halfway down</td><td>Gravity (N), support from the slide (C), friction (C), air resistance (C)</td><td>Unbalanced: gravity wins, they speed up</td></tr></table>`,
+ slide:`<div class="ey">Check your table</div><h1>Station answers</h1><p class="small">Add anything you missed in a different colour.</p>
+  <div class="sgrid" style="--c:3">
+  ${rv("Bus pulling away","Driving force (C), friction and air resistance (C), gravity (N), support (C). Unbalanced.")}
+  ${rv("Bus braking hard","Braking friction (C), air resistance (C), gravity (N), support (C). Unbalanced.")}
+  ${rv("Netball shot","Gravity (N), air resistance (C). Unbalanced: it curves.")}
+  ${rv("Surfer on a wave","Gravity (N), support from water (C), wave push (C), water resistance (C). Mostly unbalanced.")}
+  ${rv("Top of the slide","Gravity (N), support (C). Balanced: staying still.")}
+  ${rv("Halfway down the slide","Gravity (N), support (C), friction (C), air resistance (C). Unbalanced: speeding up.")}
+  </div><p class="small">C = contact force · N = non-contact force</p>`},
+{t:"Application task",min:12,
+ say:["Students choose ONE of A, B or C, circle it on the worksheet, then write 5 to 8 sentences and draw one force diagram.","Remind them to use at least 5 words from the word bank and underline them. The force diagram example on the board shows how to draw arrows.","Students who finish early can do a second task on the back."],
+ doo:"Section 3, Application task: circle A, B or C, draw the force diagram, write the answer on the lines.",
+ ans:`<p>A good answer names the forces, says which way they act, and says what happens to the motion. Look for:</p><ul>
+  <li><b>A, cyclist:</b> speeding up because the push from pedalling is bigger than friction and air resistance (unbalanced). Riding steadily when the forward and backward forces are equal (balanced). Stopping because the brakes add friction, so the backward force is bigger (unbalanced). Gravity and the support force from the road balance the whole time.</li>
+  <li><b>B, slide:</b> at the top, gravity and the support force are balanced so they stay still. Going down, gravity is bigger than friction and air resistance, so they speed up (unbalanced). A smoother slide means less friction and more speed. At the flat bottom, friction slows them to a stop.</li>
+  <li><b>C, spiked shoes:</b> the spikes grip the track and increase friction, so the sprinter can push hard backwards on the track without slipping. The track pushes them forwards, giving a big unbalanced force so they speed up quickly at the start.</li></ul>`,
+ slide:`<div class="ey">Application task · 12 minutes</div><h1>Choose one</h1><p>${where("Section 3")} ${timer(12)}</p>
+  <div class="sgrid" style="grid-template-columns:1.3fr 1fr">
+   <div style="display:grid;gap:1vw">
+    <div class="card"><h2>A</h2><p>Explain how forces help a cyclist speed up, ride steadily and stop.</p></div>
+    <div class="card"><h2>B</h2><p>Explain the forces on a child going down a slide, from the top to the bottom.</p></div>
+    <div class="card"><h2>C</h2><p>Explain why a sprinter wears spiked shoes.</p></div>
+    <div class="card"><b>Write 5 to 8 sentences and draw a force diagram.</b> Use at least 5 words from the word bank and underline them.<div class="chipz" style="margin-top:.5em">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span>${w}</span>`).join("")}</div></div>
+   </div>
+   <div class="card"><h2>Force diagram reminder</h2><div class="view">${EXAMPLE}</div><ul class="small" style="margin:.5em 0 0;padding-left:1.2em"><li>Arrows start on the object.</li><li>Longer arrow = bigger force.</li><li>Label every arrow.</li></ul></div>
+  </div>`},
+{t:"Sentence starters (if students are stuck)",min:0,
+ say:["Only show this if lots of students are stuck. It stays on the board while they keep writing."],
+ doo:"Keep writing Section 3.",
+ slide:`<div class="ey">Stuck? Try these</div><h1>Sentence starters</h1>
+  <div class="sgrid" style="--c:3">
+   <div class="card"><h2>A Cyclist</h2><ul style="margin:0;padding-left:1.2em"><li>To speed up, the cyclist pushes on the pedals, which...</li><li>When riding at a steady speed, the forces are...</li><li>To stop, the brakes create...</li></ul></div>
+   <div class="card"><h2>B Slide</h2><ul style="margin:0;padding-left:1.2em"><li>At the top, the child is still because...</li><li>Going down, gravity is bigger than...</li><li>At the bottom, friction...</li></ul></div>
+   <div class="card"><h2>C Spikes</h2><ul style="margin:0;padding-left:1.2em"><li>Spikes increase the friction between...</li><li>This stops the sprinter from...</li><li>The forces at the start are unbalanced, so...</li></ul></div>
+  </div>`},
+{t:"Exit: share one, and How did I go?",min:5,
+ say:["Each student reads their best sentence to a partner. The partner ticks the three boxes in Section 4 if the sentence has them.","Then everyone ticks the 'How did I go?' boxes at the bottom of the page. Collect the worksheets."],
+ doo:"Section 4, Exit: share one, then the How did I go? table.",
+ slide:`<div class="ey">Exit</div><h1>Share one</h1><p>${where("Section 4 and How did I go?")}</p>
+  <div class="sgrid"><div class="card"><h2>Read your best sentence to a partner</h2><p>Your partner ticks if it:</p><ul style="margin:0;padding-left:1.2em"><li>names a specific force</li><li>says which direction it acts</li><li>says what it does to the motion</li></ul></div>
+  <div class="card"><h2>How did I go?</h2><p>Tick Not yet, Getting there or Got it for each success criterion at the bottom of your worksheet.</p><p class="small">Then hand your worksheet in.</p></div></div>`}
+];
+
+/* ---------- guide ---------- */
+let clock=0;
+$("#glance").innerHTML=`<tr><th>Time</th><th>Step</th><th>Students write in</th></tr>`+STEPS.map((s,i)=>{const r=`<tr><td>${s.min?clock+" to "+(clock+s.min)+" min":"optional"}</td><td><a href="#s${i}">${esc(s.t)}</a></td><td>${esc(s.doo)}</td></tr>`;clock+=s.min;return r}).join("");
+$("#steps").innerHTML=STEPS.map((s,i)=>`<section class="card step" id="s${i}">
+  <div class="top"><span class="time">${s.min?s.min+" min":"optional"}</span><h2>${i+1}. ${esc(s.t)}</h2><button class="btn primary" data-show="${i}">Show on board</button></div>
+  <div class="say"><div class="lab">Say and do</div>${s.say.map(p=>`<p>${p}</p>`).join("")}</div>
+  <div class="do"><div class="lab">Students write</div><p style="margin:0">${esc(s.doo)}</p></div>
+  ${s.ans?`<div class="ans"><div class="lab">Answers to look for</div>${s.ans}</div>`:""}
+</section>`).join("");
+
+/* ---------- slide mode ---------- */
+let cur=0,tick=null;
+function stopTimer(){clearInterval(tick);tick=null}
+function show(i){cur=Math.max(0,Math.min(STEPS.length-1,i));stopTimer();
+  $("#slide").innerHTML=STEPS[cur].slide;$("#sCount").textContent=`Slide ${cur+1} of ${STEPS.length} · ${STEPS[cur].t}`;
+  $("#show").hidden=false;document.body.style.overflow="hidden";$("#slide").scrollTop=0;
+  try{history.replaceState(null,"","#slide"+(cur+1))}catch(e){}}
+function hide(){stopTimer();$("#show").hidden=true;document.body.style.overflow="";try{history.replaceState(null,"",location.pathname)}catch(e){}
+  const el=document.getElementById("s"+cur);if(el)el.scrollIntoView({block:"start"})}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-show]");if(b)return show(+b.dataset.show);
+  const r=e.target.closest("[data-rv]");if(r)return r.classList.toggle("on");
+  const tg=e.target.closest("[data-tg]"),tr=e.target.closest("[data-tr]");
+  if(tg||tr){const T=(tg||tr).closest(".timer"),disp=T.querySelector(".t");
+    if(tr){stopTimer();T.classList.remove("end");T.dataset.left=T.dataset.min*60;disp.textContent=T.dataset.min+":00";T.querySelector("[data-tg]").textContent="Start";return}
+    if(tick){stopTimer();tg.textContent="Start";return}
+    let left=+(T.dataset.left||T.dataset.min*60);if(left<=0)left=T.dataset.min*60;T.classList.remove("end");tg.textContent="Pause";
+    tick=setInterval(()=>{left--;T.dataset.left=left;disp.textContent=Math.floor(left/60)+":"+String(left%60).padStart(2,"0");
+      if(left<=0){stopTimer();T.classList.add("end");tg.textContent="Start";chime()}},1000)}
+});
+function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.18,a.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.22);o.start(a.currentTime+d);o.stop(a.currentTime+d+.25)})}catch(e){}}
+$("#startShow").onclick=()=>show(0);
+$("#sNext").onclick=()=>show(cur+1);$("#sPrev").onclick=()=>show(cur-1);$("#sExit").onclick=hide;
+document.addEventListener("keydown",e=>{if($("#show").hidden)return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"||e.key===" "){e.preventDefault();show(cur+1)}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();show(cur-1)}
+  else if(e.key==="Escape")hide();
+  else if(e.key==="f"||e.key==="F"){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}});
+const m=location.hash.match(/^#slide(\d+)$/);if(m)show(+m[1]-1);
+</script>
+</body>
+</html>
