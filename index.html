@@ -84,6 +84,8 @@ button{font:inherit;color:inherit;cursor:pointer}
   radial-gradient(circle at 98% 92%, color-mix(in srgb,var(--fric) 20%,transparent) 0 8cqw, transparent 8.1cqw)}
 .title .num{font-family:var(--f-mono);font-weight:700;font-size:1.5cqw;color:var(--accent);letter-spacing:.04em}
 .title h1{font-family:var(--f-display);font-weight:800;font-size:6cqw;line-height:.98;letter-spacing:-.03em;margin:0;max-width:16ch;text-wrap:balance}
+.reliefSw{position:absolute;top:2cqw;right:2.4cqw;font-size:1.3cqw;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.4cqw 1.2cqw;text-decoration:none;background:var(--surface)}
+.reliefTag{background:var(--accent);color:var(--surface);padding:.1cqw .7cqw;border-radius:.5cqw}
 .lisc{display:grid;grid-template-columns:1fr 1fr;gap:2cqw;max-width:72cqw}
 .lisc .box{background:var(--surface)}
 .lisc h3{font-size:1.4cqw;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--f-body);font-weight:700}
@@ -1302,6 +1304,32 @@ LESSONS.push(
   li:"Apply force concepts to everyday situations.",
   sc:["I can identify the forces acting in transport, sport and playground situations.","I can explain an everyday situation using scientific vocabulary."],
   prep:"Station cards printed for transport, sport and playgrounds. Optional: photos of local playgrounds or sports.",
+  reliefPrep:"Each student needs the Lesson 16 pages of the Week 4 force diagrams booklet (pages 7 and 8). No equipment.",
+  relief:[
+  {mode:"check", h:"Warm up: net force", timer:4,
+   html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="lead">Answer in <b>Section 1</b> of your worksheet, then we'll check.</p>`,
+   notes:"Relief: about 5 minutes. Students answer first, then click each card to show the answer. Net force = bigger force take away the smaller one."},
+  {mode:"learn", h:"Forces are everywhere",
+   html:tabs([
+     ["Transport",`<div class="grid3">${[["Braking","Friction between brake pads and wheels, and between tyres and road, slows the car."],["Seatbelts","When a car stops suddenly, your body keeps moving. The seatbelt applies a force to stop you."],["Streamlining","Cars and trains are shaped to reduce air resistance and save fuel."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Sport",`<div class="grid3">${[["Kicking a footy","A large push for a short time changes the ball's speed and direction."],["Swimming","Swimmers push water backwards. Streamlined bodies and caps cut water resistance."],["Cycling","Riders tuck down to reduce air resistance. Tyre grip (friction) stops skidding."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Playground",`<div class="grid3">${[["Slide","Gravity pulls you down. A smooth slide means less friction, so you go faster."],["Swing","Gravity pulls you back down. Pushing changes your speed. The chains pull you in a curve."],["See-saw","Gravity on each person turns the see-saw. A heavier person pushes their side down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`]]),
+   notes:"Relief: about 5 minutes. Click each tab and read the cards aloud. This table is also on the worksheet."},
+  {mode:"move", timer:15, h:"Stations: transport, sport, playground",
+   html:`<div class="grid2 fill"><div class="box">${steps(["Groups of 4.","Work through all six situations.","Name every force acting. Contact or non-contact?","Balanced or unbalanced?","Fill in the table in <b>Section 2</b> of your worksheet."])}</div>
+   <div class="grid3">${[["Transport","A bus pulling away from a stop. A bus braking hard."],["Sport","A netball shot. A surfer on a wave."],["Playground","A child at the top of a slide. Halfway down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p class="small">${c[1]}</p></div>`).join("")}</div></div>`,
+   notes:"Relief: 15 minutes. If station cards were left out, groups can move between them. Remind students gravity acts on everything."},
+  {mode:"check", h:"Check your table",
+   html:`<div class="grid3">${[["Bus pulling away","Driving force, friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Bus braking hard","Braking friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Netball shot","Air resistance (contact). Gravity (non-contact). Unbalanced: it curves."],["Surfer on a wave","Wave push, support from water, water resistance (contact). Gravity (non-contact). Mostly unbalanced."],["Top of the slide","Support (contact). Gravity (non-contact). Balanced."],["Halfway down","Support, friction, air resistance (contact). Gravity (non-contact). Unbalanced."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="small">Add anything you missed in a different colour.</p>`,
+   notes:"Relief: about 5 minutes. Ask a group first, then click to show the answer."},
+  {mode:"write", timer:12, h:"Application task",
+   html:`<div class="grid2 fill"><div class="box"><h3>Choose one</h3><ol><li>Explain how forces help a cyclist speed up, ride steadily and stop.</li><li>Explain the forces on a child going down a slide, from the top to the bottom.</li><li>Explain why a sprinter wears spiked shoes.</li></ol><p class="small">Write 5 to 8 sentences and include a force diagram in <b>Section 3</b>.</p></div>
+   <div class="box"><h3>Word bank</h3><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div><p class="small">Use at least 5 and underline each one.</p></div></div>`,
+   notes:"Relief: 12 minutes. Good answers name the forces, say which way they act and what happens to the motion."},
+  {mode:"check", h:"Exit: share one",
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner ticks <b>Section 4</b> if it:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div><div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet, then hand it in.</p></div></div>`,
+   notes:"Relief: about 5 minutes. Collect the worksheets for the class teacher."}
+  ],
   slides:[
   {mode:"check", h:"Retrieval: net force",
    html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
@@ -1722,7 +1750,9 @@ function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext
 const WEEKS=["Introduction to forces","Gravity, friction and air resistance","Practical 1: mass and stopping distance","Force diagrams and motion","Non-contact forces and changing motion","Practical 2: parachute investigation","Consolidation and assessment"];
 const wk=l=>Math.ceil(LESSONS[l].n/4);
 let L=-1,S=0;
-function deck(l){return [{title:true},...LESSONS[l].slides]}
+const RELIEF=/[?&]relief\b/.test(location.search);
+const useRelief=l=>RELIEF&&!!LESSONS[l].relief;
+function deck(l){return [{title:true},...(useRelief(l)?LESSONS[l].relief:LESSONS[l].slides)]}
 function drawNav(){
   const w=L<0?0:wk(L), nav=$("#lessonNav");
   nav.innerHTML=WEEKS.map((t,i)=>`<button class="wk" data-w="${i+1}" title="Week ${i+1}: ${t}" aria-current="${w===i+1}">Wk ${i+1}</button>`).join("")
@@ -1741,7 +1771,8 @@ function render(){
   $("#ctrl").style.visibility="visible";
   const x=LESSONS[L],d=deck(L),s=d[S];
   if(s.title){
-    stage.innerHTML=`<section class="slide title"><span class="num">LESSON ${x.n} OF 28 &middot; WEEK ${wk(L)}</span><h1>${x.title}</h1><div class="lisc"><div class="box"><h3>Learning intention</h3><p>${x.li}</p></div><div class="box"><h3>Success criteria</h3><ul>${x.sc.map(c=>`<li>${c}</li>`).join("")}</ul></div></div></section>`;
+    const rv2=useRelief(L), sw=x.relief?`<a class="reliefSw" href="${rv2?location.pathname:location.pathname+"?relief"}#l${x.n}-1">${rv2?"Switch to the full lesson":"Switch to the relief version"}</a>`:"";
+    stage.innerHTML=`<section class="slide title">${sw}<span class="num">LESSON ${x.n} OF 28 &middot; WEEK ${wk(L)}${rv2?' &middot; <span class="reliefTag">RELIEF VERSION</span>':""}</span><h1>${x.title}</h1><div class="lisc"><div class="box"><h3>Learning intention</h3><p>${x.li}</p></div><div class="box"><h3>Success criteria</h3><ul>${x.sc.map(c=>`<li>${c}</li>`).join("")}</ul></div></div></section>`;
   } else {
     const m=MODES[s.mode]||MODES.learn;
     stage.innerHTML=`<section class="slide${s.timer?" hasTimer":""}"><div class="eyebrow"><span class="mode" style="--mc:${m[1]}">${m[0]}</span><span>Lesson ${x.n}</span>${s.timer?`<span>&middot; ${s.timer} min</span>`:""}</div><h2>${s.h}</h2>${s.html}${s.timer?timerHTML(s.timer):""}</section>`;
@@ -1752,7 +1783,7 @@ function render(){
   bindTimer();
   $("#count").textContent=`${S+1} / ${d.length}`;$("#progBar").style.width=`${(S+1)/d.length*100}%`;
   $("#prev").disabled=S===0&&L===0;
-  $("#notes").innerHTML=`<h4>Teacher notes</h4><p>${s.title?`Lesson ${x.n}. Read the learning intention aloud and ask a student to rephrase a success criterion in their own words.${x.prep?`</p><p><b>Prepare:</b> ${x.prep}`:""}`:(s.notes||"")}</p>`;
+  $("#notes").innerHTML=`<h4>Teacher notes</h4><p>${s.title?`Lesson ${x.n}. Read the learning intention aloud and ask a student to rephrase a success criterion in their own words.${(useRelief(L)?x.reliefPrep:x.prep)?`</p><p><b>Prepare:</b> ${useRelief(L)?x.reliefPrep:x.prep}`:""}`:(s.notes||"")}</p>`;
   save();
 }
 function go(l,s){L=l;S=s;render();try{history.replaceState(null,"",L<0?"#home":`#l${LESSONS[L].n}-${S+1}`)}catch(e){}}
