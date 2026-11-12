@@ -15,3 +15,5 @@ Parachute simulator: a standalone student page (no access to the rest of the sli
 Lesson 19 (How forces change motion) has a student-only copy of its slides, with no other lessons and no teacher notes, at https://hayden740.github.io/Forces-Motion-Slides/lesson-19/
 
 Relief version: Lesson 16 (Forces in real life) has a shorter relief version that follows the printed Week 4 worksheet. Open it from the button on the Lesson 16 title slide, or go to https://hayden740.github.io/Forces-Motion-Slides/?relief#l16-1
+
+Lessons 14 to 16 have a student-only deck (no other lessons, no teacher notes) for students to follow with their Week 4 worksheet. Lesson 16 uses its worksheet version: https://hayden740.github.io/Forces-Motion-Slides/lessons-14-16/

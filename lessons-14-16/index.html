@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Forces and Motion: Lessons 14 to 16</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: projector-first 16:9 stage under a slim lesson bar; each force type keeps one colour everywhere */
+:root{
+  --bg:#e9efed; --surface:#fbfdfc; --ink:#13221e; --muted:#566862; --line:#cad7d2;
+  --air:#2f73bb; --push:#0f7f80; --fric:#b0512a; --grav:#6a4bb3; --mag:#b8326a; --elec:#9a6b00;
+  --accent:#b0512a; --accent-ink:#ffffff; --good:#2f7d3a; --bad:#b3372f;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3; --elec:#e8c25a;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0d1614; --surface:#15201e; --ink:#e4eeea; --muted:#9db1aa; --line:#2b3c38;
+  --air:#7db2ea; --push:#4fc4c1; --fric:#e9895a; --grav:#b8a2f2; --mag:#f08cb3; --elec:#e8c25a;
+  --accent:#e9895a; --accent-ink:#1a0e08; --good:#7fcf86; --bad:#f08a80; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.app{display:flex;flex-direction:column;height:100%;padding-inline:16px}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-block:10px}
+.brand{font-family:var(--f-display);font-weight:800;font-size:18px;letter-spacing:-.01em;background:none;border:0;padding:0;display:flex;align-items:center;gap:8px}
+.brand .dots{display:inline-flex;gap:3px}
+.brand .dots i{width:9px;height:9px;border-radius:50%;display:block}
+.lessons{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+.lessons button{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:14px}
+.lessons button[aria-current="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* stage */
+.stageWrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+.stage{width:min(100%, calc((100dvh - 130px) * 16 / 9));aspect-ratio:16/9;max-width:100%;container-type:inline-size;
+  background:var(--surface);border:1px solid var(--line);border-radius:14px;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;padding:3.2cqw 4cqw 3cqw;display:flex;flex-direction:column;gap:1.4cqw;overflow:auto;font-size:1.85cqw}
+.eyebrow{display:flex;align-items:center;gap:1cqw;font-size:1.25cqw;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.mode{display:inline-flex;align-items:center;gap:.6cqw;padding:.35cqw 1cqw;border-radius:999px;background:var(--ink);color:var(--bg);letter-spacing:.06em}
+.mode::before{content:"";width:.8cqw;height:.8cqw;border-radius:50%;background:var(--mc,var(--accent))}
+.slide h2{font-family:var(--f-display);font-weight:800;font-size:3.5cqw;line-height:1.05;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.slide h3{font-family:var(--f-display);font-weight:600;font-size:2.1cqw;margin:0;line-height:1.15}
+.slide p{margin:0;max-width:62ch}
+.slide ul,.slide ol{margin:0;padding-left:1.4em;display:grid;gap:.5cqw}
+.lead{font-size:2.3cqw;line-height:1.3}
+.small{font-size:1.4cqw;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:2cqw}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6cqw}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw}
+.grid2>*,.grid3>*,.grid4>*{min-width:0}
+.box{border:1px solid var(--line);border-radius:1cqw;padding:1.4cqw 1.6cqw;display:flex;flex-direction:column;gap:.7cqw}
+.steps{counter-reset:s;list-style:none;padding:0 !important}
+.steps li{counter-increment:s;display:grid;grid-template-columns:3cqw 1fr;gap:1cqw;align-items:start}
+.steps li::before{content:counter(s);font-family:var(--f-display);font-weight:800;width:2.6cqw;height:2.6cqw;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:1.5cqw}
+.key{font-weight:700;color:var(--accent)}
+.def{border-left:.5cqw solid var(--accent);padding:.6cqw 0 .6cqw 1.4cqw;font-size:2.2cqw;line-height:1.3;max-width:56ch}
+.chip{display:inline-block;padding:.2cqw .9cqw;border-radius:999px;font-weight:700;font-size:.9em}
+.air{--sc:var(--air)} .push{--sc:var(--push)} .fric{--sc:var(--fric)} .grav{--sc:var(--grav)} .mag{--sc:var(--mag)} .elec{--sc:var(--elec)}
+.tint{background:color-mix(in srgb,var(--sc) 13%,var(--surface));border-color:color-mix(in srgb,var(--sc) 45%,var(--line))}
+.ink{color:var(--sc)}
+.chip.air,.chip.push,.chip.fric,.chip.grav,.chip.mag,.chip.elec{background:var(--sc);color:var(--surface)}
+.fill{flex:1;min-height:0}
+.row{display:flex;gap:1cqw;flex-wrap:wrap;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:.8cqw;padding:.6cqw 1.3cqw;font-size:1.45cqw;font-weight:700}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+/* title slide */
+.title{justify-content:center;gap:2cqw;background:
+  radial-gradient(circle at 92% 18%, color-mix(in srgb,var(--air) 22%,transparent) 0 9cqw, transparent 9.1cqw),
+  radial-gradient(circle at 84% 70%, color-mix(in srgb,var(--push) 20%,transparent) 0 11cqw, transparent 11.1cqw),
+  radial-gradient(circle at 70% 32%, color-mix(in srgb,var(--grav) 18%,transparent) 0 7cqw, transparent 7.1cqw),
+  radial-gradient(circle at 98% 92%, color-mix(in srgb,var(--fric) 20%,transparent) 0 8cqw, transparent 8.1cqw)}
+.title .num{font-family:var(--f-mono);font-weight:700;font-size:1.5cqw;color:var(--accent);letter-spacing:.04em}
+.title h1{font-family:var(--f-display);font-weight:800;font-size:6cqw;line-height:.98;letter-spacing:-.03em;margin:0;max-width:16ch;text-wrap:balance}
+.reliefSw{position:absolute;top:2cqw;right:2.4cqw;font-size:1.3cqw;font-weight:700;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:.4cqw 1.2cqw;text-decoration:none;background:var(--surface)}
+.reliefTag{background:var(--accent);color:var(--surface);padding:.1cqw .7cqw;border-radius:.5cqw}
+.lisc{display:grid;grid-template-columns:1fr 1fr;gap:2cqw;max-width:72cqw}
+.lisc .box{background:var(--surface)}
+.lisc h3{font-size:1.4cqw;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-family:var(--f-body);font-weight:700}
+
+/* reveal cards */
+.reveal{border:1px dashed var(--line);border-radius:1cqw;padding:1.2cqw 1.4cqw;background:var(--surface);text-align:left;display:flex;flex-direction:column;gap:.5cqw;min-height:7cqw}
+.reveal .q{font-weight:700}
+.reveal .a{display:none;color:var(--ink)}
+.reveal .hint{font-size:1.2cqw;color:var(--muted)}
+.reveal.open{border-style:solid;border-color:var(--accent)}
+.reveal.open .a{display:block}
+.reveal.open .hint{display:none}
+
+/* tabs */
+.tabbar{display:flex;gap:.6cqw;flex-wrap:wrap}
+.tabbar button{border:1px solid var(--line);background:var(--surface);border-radius:.8cqw;padding:.5cqw 1.1cqw;font-size:1.45cqw;font-weight:700}
+.tabbar button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.panel{display:none}.panel.on{display:flex}
+
+/* video */
+.vid{aspect-ratio:16/9;width:100%;border-radius:1cqw;overflow:hidden;background:#000;border:1px solid var(--line)}
+.vid iframe{width:100%;height:100%;border:0;display:block}
+.vidlink{aspect-ratio:16/9;width:100%;border-radius:1cqw;border:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:1cqw;text-decoration:none;color:var(--ink);
+  background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--push) 10%,var(--surface)) 0 1.2cqw,var(--surface) 1.2cqw 2.4cqw)}
+.vidlink .play{width:7cqw;height:7cqw;border-radius:50%;background:var(--bad);display:grid;place-items:center}
+.vidlink .play::after{content:"";border-left:2.4cqw solid #fff;border-top:1.5cqw solid transparent;border-bottom:1.5cqw solid transparent;margin-left:.6cqw}
+.vidlink b{font-family:var(--f-display);font-size:2cqw;text-align:center;padding-inline:2cqw}
+.vidlink span{font-size:1.3cqw;color:var(--muted)}
+.vgrid{display:grid;grid-template-columns:1.55fr 1fr;gap:2cqw;align-items:start}
+.vgrid>*{min-width:0}
+
+/* timer */
+.timer{position:absolute;right:2.2cqw;bottom:2cqw;display:flex;align-items:center;gap:.6cqw;background:var(--ink);color:var(--bg);border-radius:1.2cqw;padding:.6cqw .8cqw .6cqw 1.3cqw;z-index:2}
+.timer .t{font-family:var(--f-mono);font-weight:700;font-size:2.6cqw;font-variant-numeric:tabular-nums;min-width:8.5ch;text-align:center}
+.timer button{background:transparent;border:1px solid color-mix(in srgb,var(--bg) 40%,transparent);color:var(--bg);border-radius:.6cqw;padding:.3cqw .8cqw;font-size:1.25cqw;font-weight:700}
+.timer.done{background:var(--bad)}
+.timer.done .t{animation:pulse 1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.hasTimer{padding-bottom:8cqw}
+
+/* sorter */
+.sortItems{display:flex;flex-wrap:wrap;gap:.7cqw;min-height:4cqw;padding:1cqw;border:1px dashed var(--line);border-radius:1cqw}
+.card{border:1px solid var(--line);background:var(--surface);border-radius:.7cqw;padding:.45cqw 1cqw;font-size:1.5cqw;font-weight:700;touch-action:none;user-select:none}
+.card.sel{outline:3px solid var(--accent)}
+.card.ok{border-color:var(--good);box-shadow:inset 0 0 0 2px var(--good)}
+.card.no{border-color:var(--bad);box-shadow:inset 0 0 0 2px var(--bad)}
+.zones{display:grid;grid-template-columns:repeat(4,1fr);gap:1cqw;flex:1;min-height:0}
+.zone{border:2px solid;border-radius:1cqw;padding:1cqw;display:flex;flex-direction:column;gap:.6cqw;align-content:flex-start;min-height:12cqw;text-align:left;background:color-mix(in srgb,var(--sc) 9%,var(--surface));border-color:color-mix(in srgb,var(--sc) 55%,var(--line))}
+.zone h3{color:var(--sc)}
+.zone .drop{display:flex;flex-wrap:wrap;gap:.5cqw}
+.zone.over{background:color-mix(in srgb,var(--sc) 22%,var(--surface))}
+
+/* big spotlight */
+.spot{font-family:var(--f-display);font-weight:800;font-size:6cqw;line-height:1;letter-spacing:-.02em;text-align:center;padding:2cqw}
+.corners{display:grid;grid-template-columns:1fr 1fr;gap:1cqw}
+.corner{border-radius:1cqw;padding:1cqw 1.4cqw;font-weight:700;color:var(--surface);background:var(--sc);font-size:1.7cqw}
+.corner.dim{opacity:.25}
+
+/* matrix */
+.matrix{display:grid;grid-template-columns:auto repeat(4,1fr);gap:.5cqw;font-size:1.4cqw}
+.matrix .h{font-weight:700;padding:.5cqw;display:flex;align-items:center;justify-content:center;text-align:center;border-radius:.6cqw;color:var(--surface);background:var(--sc)}
+.matrix button{border:1px solid var(--line);background:var(--surface);border-radius:.6cqw;padding:.7cqw;font-size:1.3cqw;min-height:4.4cqw}
+.matrix button.seen{background:color-mix(in srgb,var(--accent) 14%,var(--surface));border-color:var(--accent)}
+.matrix button.self{opacity:.55}
+.mout{border:1px solid var(--accent);border-radius:1cqw;padding:1.2cqw 1.4cqw;min-height:9cqw}
+
+/* timeline ordering */
+.ordered{display:flex;flex-direction:column;gap:.5cqw;counter-reset:o;list-style:none;padding:0 !important}
+.ordered li{counter-increment:o;display:flex;gap:1cqw;align-items:center;border:1px solid var(--line);border-radius:.7cqw;padding:.45cqw 1cqw;font-weight:700;font-size:1.5cqw}
+.ordered li::before{content:counter(o);font-family:var(--f-mono);color:var(--muted);width:2.4cqw}
+.ordered li small{font-weight:400;color:var(--muted);margin-left:auto;font-size:1.25cqw}
+.ordered li.ok{border-color:var(--good);box-shadow:inset 0 0 0 2px var(--good)}
+.ordered li.no{border-color:var(--bad);box-shadow:inset 0 0 0 2px var(--bad)}
+.scale{display:flex;justify-content:space-between;font-family:var(--f-mono);font-size:1.15cqw;color:var(--muted);border-top:2px solid var(--muted);padding-top:.4cqw}
+
+svg text{font-family:var(--f-body)}
+.cm-edge{transition:opacity .4s}
+@media (prefers-reduced-motion:reduce){.cm-edge{transition:none}.timer.done .t{animation:none}}
+
+/* footer controls */
+.ctrl{display:flex;align-items:center;gap:8px;padding-block:10px;flex-wrap:wrap}
+.ctrl button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 14px;font-weight:700;font-size:14px}
+.ctrl .count{font-family:var(--f-mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.prog{flex:1;min-width:80px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--accent);width:0}
+.hint{font-size:12px;color:var(--muted)}
+
+/* notes drawer */
+.notes{position:fixed;right:16px;bottom:64px;width:min(420px,calc(100% - 32px));max-height:55%;overflow:auto;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.18);z-index:10;font-size:15px}
+.notes h4{margin:0 0 6px;font-family:var(--f-display);font-size:16px}
+.notes p{margin:0 0 6px}
+
+/* home */
+.home{position:absolute;inset:0;overflow:auto;padding:3cqw 4cqw;display:flex;flex-direction:column;gap:1.6cqw;font-size:1.7cqw}
+.home h1{font-family:var(--f-display);font-weight:800;font-size:5cqw;margin:0;letter-spacing:-.03em;line-height:1}
+.lcards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4cqw}
+.lcard{border:1px solid var(--line);background:var(--surface);border-radius:1.2cqw;padding:1.6cqw;text-align:left;display:flex;flex-direction:column;gap:.8cqw;min-width:0}
+.lcard:hover{border-color:var(--accent)}
+.lcard .n{font-family:var(--f-mono);color:var(--accent);font-weight:700;font-size:1.3cqw}
+.lcard b{font-family:var(--f-display);font-size:2.2cqw;line-height:1.05}
+.lcard span{font-size:1.35cqw;color:var(--muted)}
+.weeks{display:flex;gap:.8cqw;flex-wrap:wrap}
+.weeks span{border:1px dashed var(--line);border-radius:999px;padding:.4cqw 1.2cqw;font-size:1.3cqw;color:var(--muted)}
+
+/* narrow screens: let slides grow tall instead of shrinking type */
+@media (max-width:760px){
+  .stage{aspect-ratio:auto;width:100%;height:auto;min-height:60vh}
+  .stageWrap{align-items:stretch}
+  .slide,.home{position:relative;inset:auto;font-size:16px;padding:20px 18px}
+  .slide h2{font-size:26px}.slide h3{font-size:19px}.title h1,.home h1{font-size:34px}
+  .lead,.def{font-size:18px}.small,.eyebrow,.hint,.reveal .hint{font-size:13px}
+  .grid2,.grid3,.grid4,.vgrid,.zones,.lisc,.lcards,.corners{grid-template-columns:1fr}
+  .btn,.tabbar button,.card,.ordered li,.matrix,.matrix button,.lcard span,.lcard .n{font-size:14px}
+  .lcard b{font-size:20px}.timer .t{font-size:22px}.timer button{font-size:13px}
+  .timer{position:sticky;bottom:8px;align-self:flex-end}
+  .spot{font-size:34px}.corner{font-size:15px}.mode::before{width:8px;height:8px}
+  .steps li{grid-template-columns:28px 1fr}.steps li::before{width:24px;height:24px;font-size:13px}
+  .vidlink .play{width:56px;height:56px}.vidlink b{font-size:17px}.vidlink span{font-size:13px}
+  .vidlink .play::after{border-left-width:18px;border-top-width:11px;border-bottom-width:11px}
+}
+
+/* ---- additions for weeks 2 to 7 ---- */
+.wkSep{width:1px;height:22px;background:var(--line);margin-inline:4px}
+.lessons button.wk{font-family:var(--f-mono);font-size:13px}
+.slot{cursor:pointer}
+.slot rect{fill:var(--surface);stroke:var(--accent);stroke-width:2;stroke-dasharray:5 4}
+.slot text{font-size:14px;font-weight:700;fill:var(--ink);font-family:var(--f-body)}
+.slot.ok rect{stroke:var(--good);stroke-dasharray:none;stroke-width:3}
+.slot.no rect{stroke:var(--bad);stroke-dasharray:none;stroke-width:3}
+.slot:focus-visible rect{stroke-width:4}
+.blank{display:inline-block;min-width:7em;border:0;border-bottom:3px dashed var(--accent);background:transparent;text-align:center;font-weight:700;padding:0 .3em;font-size:inherit}
+.blank.ok{border-bottom-style:solid;border-color:var(--good)}
+.blank.no{border-bottom-style:solid;border-color:var(--bad)}
+.bank{display:flex;flex-wrap:wrap;gap:.6cqw}
+.bank .card.used{opacity:.45}
+.eqn{font-size:2.3cqw;line-height:2.2;font-family:var(--f-display)}
+.ctable{border-collapse:collapse;width:100%;font-size:1.45cqw}
+.ctable th,.ctable td{border:1px solid var(--line);padding:.6cqw .8cqw;text-align:left;vertical-align:top}
+.ctable th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.ctable td.rcell{cursor:pointer;color:transparent;background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--accent) 8%,var(--surface)) 0 .6cqw,var(--surface) .6cqw 1.2cqw)}
+.ctable td.rcell.open{color:var(--ink);background:var(--surface)}
+.tablewrap{overflow-x:auto;max-width:100%}
+.die{width:9cqw;height:9cqw;border-radius:1.4cqw;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-family:var(--f-mono);font-size:5cqw;font-weight:700}
+.stations{display:grid;grid-template-columns:repeat(4,1fr);gap:.6cqw}
+.stations button{border:1px solid var(--line);background:var(--surface);border-radius:.7cqw;padding:.6cqw;font-weight:700;font-size:1.4cqw}
+.stations button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.journey{display:flex;flex-wrap:wrap;gap:.4cqw;align-items:center;font-size:1.3cqw}
+.journey span{border:1px solid var(--line);border-radius:999px;padding:.2cqw .8cqw}
+.teams{display:grid;grid-template-columns:repeat(4,1fr);gap:.8cqw}
+.team{border:1px solid var(--line);border-radius:1cqw;padding:.8cqw;display:flex;flex-direction:column;align-items:center;gap:.4cqw}
+.team b{font-family:var(--f-mono);font-size:3cqw;font-variant-numeric:tabular-nums}
+.team .row{justify-content:center}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:.8cqw}
+.opts div{border:1px solid var(--line);border-radius:.8cqw;padding:.8cqw 1.1cqw}
+.opts div.right{border-color:var(--good);box-shadow:inset 0 0 0 2px var(--good)}
+.chartbox svg{width:100%;height:auto;display:block}
+.chartbox text{font-size:12px;fill:var(--muted)}
+.wkList{display:grid;grid-template-columns:1fr;gap:.7cqw}
+.wkCol{display:grid;grid-template-columns:9cqw repeat(4,1fr);gap:.6cqw;align-items:stretch;min-width:0}
+.wkCol>div{min-width:0}
+.wkCol h3{font-family:var(--f-display);font-size:1.7cqw;margin:0}
+.wkCol .lc{border:1px solid var(--line);background:var(--surface);border-radius:.8cqw;padding:.5cqw .8cqw;text-align:left;font-size:1.2cqw;display:flex;gap:.7cqw;align-items:baseline;min-width:0}
+.wkCol .lc:hover{border-color:var(--accent)}
+.wkCol .lc i{font-style:normal;font-family:var(--f-mono);color:var(--accent);font-weight:700;min-width:2.2em}
+@media (max-width:760px){
+  .eqn{font-size:18px}.ctable{font-size:13px}.die{width:64px;height:64px;font-size:34px}
+  .stations,.teams,.opts{grid-template-columns:1fr 1fr}.wkCol{grid-template-columns:1fr}
+  .stations button,.journey,.wkCol .lc{font-size:14px}.team b{font-size:22px}.wkCol h3{font-size:17px}
+}
+
+/* ---- Forces and Motion additions ---- */
+.chip{color:var(--surface);background:var(--sc,var(--ink))}
+.fbadge{display:inline-flex;align-items:center;gap:.5cqw;font-weight:700;color:var(--sc)}
+.fbadge::before{content:"";width:1.1cqw;height:1.1cqw;border-radius:50%;background:var(--sc)}
+.fcard{border:2px solid color-mix(in srgb,var(--sc) 55%,var(--line));background:color-mix(in srgb,var(--sc) 9%,var(--surface));border-radius:1cqw;padding:1.2cqw 1.4cqw;display:flex;flex-direction:column;gap:.5cqw;min-width:0}
+.fcard h3{color:var(--sc)}
+.fcard .tag{font-size:1.15cqw;text-transform:uppercase;letter-spacing:.08em;font-weight:700;color:var(--muted)}
+.sim{display:grid;grid-template-columns:1.55fr 1fr;gap:1.6cqw;flex:1;min-height:0}
+.sim>*{min-width:0}
+.simview{border:1px solid var(--line);border-radius:1cqw;overflow:hidden;background:color-mix(in srgb,var(--air) 7%,var(--surface));display:flex;align-items:center;justify-content:center}
+.simview{min-height:0;height:100%}
+.simview svg{width:100%;height:100%;max-height:100%;display:block}
+.simctl{display:flex;flex-direction:column;gap:.9cqw;font-size:1.5cqw}
+.simctl label{display:flex;flex-direction:column;gap:.3cqw;font-weight:700}
+.simctl label span.v{font-family:var(--f-mono);color:var(--accent)}
+.simctl select{font:inherit;font-size:1.45cqw;padding:.4cqw .6cqw;border-radius:.6cqw;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.readout{font-family:var(--f-mono);font-weight:700;font-size:2.6cqw;font-variant-numeric:tabular-nums;color:var(--ink)}
+.readout small{font-size:1.2cqw;color:var(--muted);font-family:var(--f-body);font-weight:400;display:block}
+.mini{border-collapse:collapse;width:100%;font-size:1.3cqw;font-variant-numeric:tabular-nums}
+.mini th,.mini td{border:1px solid var(--line);padding:.35cqw .6cqw;text-align:center}
+.mini th{background:color-mix(in srgb,var(--ink) 6%,var(--surface))}
+.mini td:first-child,.mini th:first-child{text-align:left}
+.fpick{display:flex;flex-wrap:wrap;gap:.5cqw}
+.fpick button{border:1px solid var(--line);background:var(--surface);border-radius:.7cqw;padding:.45cqw .9cqw;font-size:1.35cqw;font-weight:700}
+.fpick button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.verdict{border:1px solid var(--accent);border-radius:1cqw;padding:1cqw 1.3cqw;min-height:6cqw}
+.verdict[hidden]{display:none}
+.arrowlab{font-size:14px;font-weight:700;font-family:var(--f-body);paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.compare{display:grid;grid-template-columns:1fr auto 1fr;gap:1.4cqw;align-items:center}
+.vs{font-family:var(--f-display);font-weight:800;font-size:3cqw;color:var(--muted)}
+.checklist{list-style:none;padding:0 !important;display:grid;gap:.6cqw}
+.checklist li{display:flex;gap:1cqw;align-items:flex-start}
+.checklist li::before{content:"";flex:none;width:1.8cqw;height:1.8cqw;border:2px solid var(--accent);border-radius:.4cqw;margin-top:.2cqw}
+.starter{font-style:italic;color:var(--muted)}
+.ph{border:1px dashed var(--line);border-radius:1cqw;display:grid;place-items:center;color:var(--muted);text-align:center;padding:2cqw}
+.vid.sim-embed{aspect-ratio:auto;height:100%;min-height:24cqw;background:var(--surface)}
+@media (max-width:760px){
+  .sim,.compare{grid-template-columns:1fr}
+  .simview{height:auto;min-height:240px}.simview svg{height:auto;max-height:70vh}
+  .simctl,.simctl select,.fpick button,.mini{font-size:14px}
+  .readout{font-size:22px}.readout small,.fcard .tag{font-size:12px}
+  .vs{font-size:22px}.checklist li::before{width:16px;height:16px}
+  .fbadge::before{width:10px;height:10px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="bar">
+    <button class="brand" id="homeBtn" aria-label="First lesson"><span class="dots"><i style="background:var(--push)"></i><i style="background:var(--fric)"></i><i style="background:var(--air)"></i><i style="background:var(--grav)"></i></span>Forces and Motion</button>
+    <nav class="lessons" id="lessonNav" aria-label="Lessons"></nav>
+  </header>
+  <main class="stageWrap"><div class="stage" id="stage" aria-live="polite"></div></main>
+  <footer class="ctrl" id="ctrl">
+    <button id="prev" aria-label="Previous slide">&larr; Back</button>
+    <button id="next" aria-label="Next slide">Next &rarr;</button>
+    <span class="count" id="count"></span>
+    <div class="prog" aria-hidden="true"><i id="progBar"></i></div>
+    <button id="notesBtn" aria-pressed="false" hidden>Teacher notes</button>
+    <button id="fsBtn">Full screen</button>
+    <span class="hint">Keys: &larr; &rarr; slides, T timer</span>
+  </footer>
+</div>
+<aside class="notes" id="notes" hidden></aside>
+<script>
+
+/* ---------- helpers ---------- */
+const CAN_EMBED = location.protocol === "file:" || /(^|\.)github\.io$/.test(location.hostname) || /^(localhost|127\.)/.test(location.hostname);
+const MODES = {
+  learn:["Learn","var(--air)"], watch:["Watch","var(--bad)"], talk:["Turn and talk","var(--grav)"],
+  group:["Group work","var(--push)"], move:["Get moving","var(--fric)"], research:["Research","var(--air)"],
+  write:["Quick write","var(--muted)"], check:["Check in","var(--accent)"], whole:["Whole class","var(--grav)"],
+  prac:["Practical","var(--push)"], assess:["Assessment","var(--bad)"]
+};
+const FORCE = {push:"Applied force", fric:"Friction", air:"Air resistance", grav:"Gravity", mag:"Magnetic force", elec:"Electrostatic force"};
+const LESSONS = [];
+function $(s){return document.querySelector(s)}
+function shuffle(a){return a.slice().sort(()=>Math.random()-.5)}
+
+function player(id, title, source){
+  return CAN_EMBED
+    ? `<div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0" title="${title}" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
+    : `<a class="vidlink" href="https://www.youtube.com/watch?v=${id}" target="_blank" rel="noopener"><span class="play" aria-hidden="true"></span><b>${title}</b><span>${source} &middot; opens on YouTube</span></a>`;
+}
+function vid(id, title, source, qs, tip){
+  return `<div class="vgrid">${player(id,title,source)}<div class="box"><h3>Watch for</h3><ol>${qs.map(q=>`<li>${q}</li>`).join("")}</ol><p class="small">${title} &middot; ${source}${tip?`<br>${tip}`:""}</p></div></div>`;
+}
+const rv = (q,a,hint="Click to reveal") => `<button class="reveal" data-reveal><span class="q">${q}</span><span class="a">${a}</span><span class="hint">${hint}</span></button>`;
+const steps = arr => `<ol class="steps">${arr.map(s=>`<li><span>${s}</span></li>`).join("")}</ol>`;
+const tabs = items => `<div class="tabbar" role="tablist">${items.map((t,i)=>`<button role="tab" data-tab="${i}" aria-selected="${i===0}">${t[0]}</button>`).join("")}</div>${items.map((t,i)=>`<div class="panel box ${i===0?"on":""}" data-panel="${i}">${t[1]}</div>`).join("")}`;
+const slot = (x,y,w,ans) => `<g class="slot" data-slot data-ans="${ans}" tabindex="0" role="button" aria-label="Label slot"><rect x="${x}" y="${y}" width="${w}" height="30" rx="7"/><text data-st x="${x+w/2}" y="${y+20}" text-anchor="middle">?</text></g>`;
+const blank = ans => `<button class="blank" data-slot data-ans="${ans}"><span data-st>?</span></button>`;
+const bankUI = `<div class="bank" id="bank"></div><div class="row"><button class="btn primary" id="slCheck">Check</button><button class="btn" id="slShow">Show answers</button><button class="btn" id="slReset">Reset</button><span class="small" id="slMsg">Click a word, then click where it goes.</span></div>`;
+const sortUI = `<div class="sortItems" id="pool"></div><div class="zones" id="zones"></div><div class="row"><button class="btn primary" id="sortCheck">Check</button><button class="btn" id="sortReset">Reset</button><span class="small" id="sortMsg"></span></div>`;
+const orderUI = (lo,hi) => `<div class="grid2 fill"><div style="display:flex;flex-direction:column;gap:1cqw"><div class="sortItems" id="oPool"></div><div class="row"><button class="btn primary" id="oCheck">Check</button><button class="btn" id="oShow">Show answer</button><button class="btn" id="oReset">Reset</button></div><p class="small" id="oMsg"></p></div><div style="display:flex;flex-direction:column;gap:.6cqw">${lo?`<div class="scale"><span>${lo}</span><span>${hi}</span></div>`:""}<ol class="ordered" id="oList"></ol></div></div>`;
+const voteUI = (btn="Reveal answer") => `<div class="box fill" style="justify-content:center;align-items:center"><div class="spot" id="voteItem"></div><p id="voteAns" class="lead" style="text-align:center;max-width:60ch" hidden></p></div><div class="row"><button class="btn primary" id="voteReveal">${btn}</button><button class="btn" id="voteNext">Next</button><span class="small" id="voteCount"></span></div>`;
+
+
+/* ---------- extra UI blocks ---------- */
+const quizUI = `<div class="grid2 fill" style="grid-template-columns:1.5fr 1fr"><div style="display:flex;flex-direction:column;gap:1cqw"><p class="lead" id="qText"></p><div class="opts" id="qOpts"></div><p id="qWhy" class="small" style="color:var(--ink)" hidden></p><div class="row"><button class="btn primary" id="qReveal">Reveal answer</button><button class="btn" id="qNext">Next question</button></div></div><div style="display:flex;flex-direction:column;gap:.8cqw"><h3>Scores</h3><div class="teams" id="teams" style="grid-template-columns:1fr 1fr"></div></div></div>`;
+const cornersUI = `<div class="grid2 fill" style="grid-template-columns:1fr 1.2fr"><div class="box"><h3>How it works</h3><div id="cornerHow"></div><div class="corners" id="cornerKey"></div></div><div class="box" style="justify-content:space-between"><div class="spot" id="cItem">Ready?</div><p id="cWhy" class="lead" style="text-align:center" hidden></p><div class="row" style="justify-content:center"><button class="btn primary" id="cNext">Next item</button><button class="btn" id="cShow">Show answer</button></div></div></div>`;
+const cmapUI = `<div class="grid2 fill" style="grid-template-columns:1.6fr 1fr"><div style="display:grid;place-items:center" id="cmSvg"></div><div style="display:flex;flex-direction:column;gap:1cqw"><p>Before each click, ask the class: <b>how are these two linked?</b></p><div class="box" id="cmLabel" style="min-height:8cqw"></div><div class="row"><button class="btn primary" id="cmNext">Next link</button><button class="btn" id="cmAll">Show all</button><button class="btn" id="cmReset">Reset</button></div><p class="small" id="cmCount"></p></div></div>`;
+const tugUI = `<div class="sim"><div class="simview" id="tugView"></div><div class="simctl"><label>Left force <span class="v" id="tugLv"></span><input type="range" id="tugL" min="0" max="100" step="10"></label><label>Right force <span class="v" id="tugRv"></span><input type="range" id="tugR" min="0" max="100" step="10"></label><div class="row"><button class="btn primary" id="tugGo">Let go</button><button class="btn" id="tugReset">Reset</button></div><div class="verdict" id="tugOut"></div></div></div>`;
+const scaleUI = `<div class="sim"><div class="simview" id="scView"></div><div class="simctl"><div id="scPlanets"></div><div class="row"><button class="btn primary" data-add="100">Hang 100 g</button><button class="btn" data-add="50">Hang 50 g</button><button class="btn" id="scClear">Remove all</button></div><div class="row"><button class="btn" id="scHide" aria-pressed="false">Cover the reading</button></div><div class="box"><div class="readout" id="scMass"></div><div class="readout" id="scRead"></div></div></div></div>`;
+const rampUI = `<div class="sim"><div style="display:flex;flex-direction:column;gap:1cqw;min-width:0"><div class="simview" id="rpView" style="flex:1;height:auto"></div><div class="tablewrap"><table class="mini" id="rpTable"></table></div></div><div class="simctl"><label>Washers added<select id="rpSurf"></select></label><label>Ramp height <span class="v" id="rpHv"></span><input type="range" id="rpH" min="10" max="30" step="5" value="15"></label><div class="row"><button class="btn primary" id="rpGo">Release car</button><button class="btn" id="rpClear">Clear results</button></div><div class="box"><div class="readout" id="rpOut">0 cm<small>stopping distance from the bottom of the ramp</small></div></div></div></div>`;
+const chuteUI = `<div class="sim" style="grid-template-columns:1fr 1.4fr"><div class="simview" id="chView"></div><div class="simctl"><label>Canopy size (square) <span class="v" id="chSv"></span><input type="range" id="chS" min="0" max="60" step="10" value="30"></label><label>Canopy material<select id="chM"></select></label><label>String length<select id="chL"><option value="15">15 cm</option><option value="30" selected>30 cm</option><option value="45">45 cm</option></select></label><label>Load <span class="v" id="chPv"></span><input type="range" id="chP" min="1" max="8" step="1" value="3"></label><div class="row"><button class="btn primary" id="chGo">Drop from 2 m</button><button class="btn" id="chClear">Clear</button></div><div class="readout" id="chOut">0.00 s<small>fall time</small></div><div class="tablewrap"><table class="mini" id="chTable"></table></div></div></div>`;
+const fdUI = `<div class="sim"><div class="simview" id="fdView"></div><div class="simctl"><div class="fpick" id="fdPick"></div><div class="row"><button class="btn primary" id="fdNext">Next arrow</button><button class="btn" id="fdAll">All arrows</button><button class="btn" id="fdAsk">Balanced or unbalanced?</button></div><div class="verdict" id="fdOut" hidden></div><p class="small" id="fdHint"></p></div></div>`;
+const magUI = `<div class="sim"><div class="simview" id="mgView"></div><div class="simctl"><div class="row"><button class="btn" id="mgFlipA">Flip left magnet</button><button class="btn" id="mgFlipB">Flip right magnet</button></div><div class="row"><button class="btn primary" id="mgGo">Let go</button><button class="btn" id="mgReset">Reset</button></div><div class="verdict" id="mgOut"><p class="small">Predict first: will they attract or repel?</p></div></div></div>`;
+const chargeUI = `<div class="sim"><div class="simview" id="cgView"></div><div class="simctl"><div class="row"><button class="btn primary" id="cgRub">Rub balloon on hair</button><button class="btn" id="cgNear">Bring balloon close</button><button class="btn" id="cgReset">Reset</button></div><div class="verdict" id="cgOut"></div></div></div>`;
+
+/* ---------- charts ---------- */
+function lineChart(series, o){
+  const W=600,H=o.h||230,P={l:48,r:16,t:16,b:30};
+  const xs=series.flatMap(s=>s.pts.map(p=>p[0])), ys=series.flatMap(s=>s.pts.map(p=>p[1]));
+  const x0=o.xmin??Math.min(...xs), x1=o.xmax??Math.max(...xs), y0=o.ymin??Math.min(...ys), y1=o.ymax??Math.max(...ys);
+  const X=v=>P.l+(v-x0)/(x1-x0)*(W-P.l-P.r), Y=v=>H-P.b-(v-y0)/(y1-y0)*(H-P.t-P.b);
+  let g=o.yticks.map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${P.l-6}" y="${Y(v)+4}" text-anchor="end">${v}</text>`).join("");
+  g+=o.xticks.map(v=>`<text x="${X(v)}" y="${H-10}" text-anchor="middle">${v}</text>`).join("");
+  const lines=series.map(s=>{
+    const d=s.pts.map((p,i)=>`${i?"L":"M"}${X(p[0]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join(" ");
+    return `<g ${s.hidden?'opacity="0"':""}>${s.line===false?"":`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.w||2.5}" ${s.dash?`stroke-dasharray="${s.dash}"`:""}/>`}
+      ${s.pts.map(p=>`<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="${s.r||4}" fill="${p[2]||s.color}"/>`).join("")}</g>`}).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label}">${g}${lines}<text x="${P.l}" y="11" font-weight="700" style="fill:var(--ink)">${o.ylabel}</text>${o.xlabel?`<text x="${W-P.r}" y="${H-10+0}" text-anchor="end" font-weight="700" style="fill:var(--ink)" dy="-14">${o.xlabel}</text>`:""}</svg>`;
+}
+function barChart(cats, vals, o){
+  const W=600,H=o.h||240,P={l:48,r:16,t:22,b:34},n=cats.length,bw=(W-P.l-P.r)/n;
+  const y1=o.ymax, Y=v=>H-P.b-v/y1*(H-P.t-P.b);
+  let g=o.yticks.map(v=>`<line x1="${P.l}" x2="${W-P.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--line)"/><text x="${P.l-6}" y="${Y(v)+4}" text-anchor="end">${v}</text>`).join("");
+  g+=cats.map((c,i)=>{const x=P.l+i*bw+bw*.18,w=bw*.64,v=vals[i];return `<rect x="${x}" y="${Y(v)}" width="${w}" height="${Y(0)-Y(v)}" rx="4" fill="${(o.colors&&o.colors[i])||"var(--accent)"}"/><text x="${x+w/2}" y="${Y(v)-6}" text-anchor="middle" style="fill:var(--ink);font-weight:700">${v}</text><text x="${x+w/2}" y="${H-12}" text-anchor="middle">${c}</text>`}).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${o.label}">${g}<line x1="${P.l}" x2="${W-P.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--ink)"/><text x="${P.l}" y="12" font-weight="700" style="fill:var(--ink)">${o.ylabel}</text></svg>`;
+}
+
+/* ---------- shared drawings ---------- */
+const AR = (id,col) => `<marker id="${id}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto"><path d="M0 0L10 5L0 10z" fill="${col}"/></marker>`;
+function arrowSVG(x1,y1,x2,y2,col,lab,id,w=7){
+  const horiz=y1===y2;
+  const lx=horiz?x2:x2+12, ly=horiz?y1-14:(y2<y1?y2+12:y2-2), anchor=horiz?(x2>x1?"end":"start"):"start";
+  return `<g><defs>${AR(id,col)}</defs><line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${col}" stroke-width="${w}" stroke-linecap="round" marker-end="url(#${id})"/>${lab?`<text class="arrowlab" x="${lx}" y="${ly}" text-anchor="${anchor}" fill="${col}">${lab}</text>`:""}</g>`;
+}
+
+function earthPullSVG(){
+  const ang=[0,60,120,180,240,300];
+  return `<svg viewBox="0 0 320 320" width="88%" role="img" aria-label="People standing all around Earth, each pulled towards the centre">
+  <circle cx="160" cy="160" r="100" fill="var(--push)" opacity=".85"/><path d="M100 120 q30 -40 70 -15 q15 25 -10 45 q-30 5 -40 30 q-25 -10 -20 -60z M175 180 q35 -10 50 20 q-10 30 -40 30 q-20 -20 -10 -50z" fill="var(--grav)" opacity=".5"/>
+  ${ang.map(a=>{const r=a*Math.PI/180,sx=Math.sin(r),cy=-Math.cos(r);
+    return `<g transform="translate(${160+sx*100} ${160+cy*100}) rotate(${a})"><rect x="-4" y="-22" width="8" height="22" rx="3" fill="var(--ink)"/><circle cx="0" cy="-29" r="7" fill="var(--ink)"/></g>${arrowSVG(160+sx*86,160+cy*86,160+sx*40,160+cy*40,"var(--surface)","","ep"+a,5)}`}).join("")}
+  <circle cx="160" cy="160" r="5" fill="var(--surface)"/></svg>`;
+}
+
+/* ---------- interactives (data-driven; each receives the slide) ---------- */
+let _sh=new Map(); function shuffleOnce(a){if(!_sh.has(a))_sh.set(a,shuffle(a));return _sh.get(a)}
+let RAF=null; function stopAnim(){if(RAF)cancelAnimationFrame(RAF);RAF=null}
+const rnd=(pct)=>1+(Math.random()*2-1)*pct;
+
+const INIT = {
+  vote(s){
+    const items=s.data; let i=0; const it=$("#voteItem"),an=$("#voteAns"),ct=$("#voteCount"),rb=$("#voteReveal");
+    const show=()=>{it.innerHTML=items[i][0];an.innerHTML=items[i][1]||"";an.hidden=true;rb.hidden=!items[i][1];ct.textContent=`${i+1} of ${items.length}`};
+    rb.onclick=()=>an.hidden=false; $("#voteNext").onclick=()=>{i=(i+1)%items.length;show()}; show();
+  },
+  cmap(s){
+    const n=s.data.nodes,E=s.data.edges;
+    const edges=E.map((e,i)=>{const a=n[e[0]],b=n[e[1]];const bend=(i%2?1:-1)*(e[3]??20);const mx=(a[0]+b[0])/2+bend,my=(a[1]+b[1])/2-bend;
+      return `<g class="cm-edge" data-e="${i}" opacity="0"><path d="M${a[0]} ${a[1]} Q${mx} ${my} ${b[0]} ${b[1]}" fill="none" stroke="var(--muted)" stroke-width="2.5" marker-end="url(#cmah)"/><circle cx="${mx}" cy="${my}" r="12" fill="var(--accent)"/><text x="${mx}" y="${my+4}" text-anchor="middle" font-size="12" font-weight="700" fill="var(--accent-ink)">${i+1}</text></g>`}).join("");
+    const nodes=Object.values(n).map(v=>`<g><rect x="${v[0]-66}" y="${v[1]-19}" width="132" height="38" rx="19" fill="var(--surface)" stroke="${v[3]}" stroke-width="3"/><text x="${v[0]}" y="${v[1]+5}" text-anchor="middle" font-size="14" font-weight="700" fill="${v[3]}">${v[2]}</text></g>`).join("");
+    $("#cmSvg").innerHTML=`<svg viewBox="0 0 600 380" width="100%" role="img" aria-label="Concept map"><defs><marker id="cmah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>${edges}${nodes}</svg>`;
+    let k=0; const g=[...document.querySelectorAll(".cm-edge")],lab=$("#cmLabel"),cnt=$("#cmCount");
+    const upd=()=>{g.forEach((e,i)=>e.setAttribute("opacity",i<k?1:0));cnt.textContent=`${k} of ${g.length} links`;
+      if(k){const e=E[k-1];lab.innerHTML=`<p class="small">Link ${k}</p><p class="lead"><b style="color:${n[e[0]][3]}">${n[e[0]][2]}</b> ${e[2]} <b style="color:${n[e[1]][3]}">${n[e[1]][2]}</b></p>`}else lab.innerHTML=`<p class="small">Click "Next link" to start.</p>`};
+    $("#cmNext").onclick=()=>{if(k<g.length)k++;upd()}; $("#cmAll").onclick=()=>{k=g.length;upd()}; $("#cmReset").onclick=()=>{k=0;upd()}; upd();
+  },
+  sort(s){
+    const {zones,items,note}=s.data; const pool=$("#pool"),zb=$("#zones"); let sel=null;
+    zb.style.gridTemplateColumns=`repeat(${zones.length},1fr)`;
+    zb.innerHTML=zones.map(z=>`<div class="zone ${z[2]||""}" data-zone="${z[0]}" tabindex="0" ${z[2]?"":'style="--sc:var(--muted)"'}><h3>${z[1]}</h3><div class="drop"></div></div>`).join("");
+    const mk=([t,a])=>{const c=document.createElement("button");c.className="card";c.innerHTML=t;c.dataset.ans=a;c.draggable=true;
+      c.onclick=e=>{e.stopPropagation();if(sel)sel.classList.remove("sel");sel=(sel===c?null:c);if(sel)sel.classList.add("sel")};
+      c.ondragstart=e=>{sel=c;e.dataTransfer.setData("text/plain","x")};return c};
+    const reset=()=>{pool.innerHTML="";zb.querySelectorAll(".drop").forEach(d=>d.innerHTML="");shuffle(items).forEach(x=>pool.appendChild(mk(x)));$("#sortMsg").textContent=""};
+    const place=z=>{if(!sel)return;z.querySelector(".drop").appendChild(sel);sel.classList.remove("sel","ok","no");sel=null};
+    zb.querySelectorAll(".zone").forEach(z=>{z.onclick=()=>place(z);z.onkeydown=e=>{if(e.key==="Enter")place(z)};
+      z.ondragover=e=>{e.preventDefault();z.classList.add("over")};z.ondragleave=()=>z.classList.remove("over");z.ondrop=e=>{e.preventDefault();z.classList.remove("over");place(z)}});
+    pool.onclick=()=>{if(sel){pool.appendChild(sel);sel.classList.remove("sel");sel=null}};
+    $("#sortCheck").onclick=()=>{let ok=0,tot=0;zb.querySelectorAll(".zone").forEach(z=>z.querySelectorAll(".card").forEach(c=>{tot++;const g=c.dataset.ans.split(" ").includes(z.dataset.zone);c.classList.toggle("ok",g);c.classList.toggle("no",!g);if(g)ok++}));
+      $("#sortMsg").textContent=`${ok} of ${tot} placed correctly.${pool.children.length?` ${pool.children.length} still to sort.`:""}${note?" "+note:""}`};
+    $("#sortReset").onclick=reset; reset();
+  },
+  corners(s){
+    const {corners,items,how}=s.data; const lab=Object.fromEntries(corners.map(c=>[c[0],c[1]]));
+    $("#cornerHow").innerHTML=steps(how||["Each side of the room is a choice.","Read the item. Walk to the side you think it belongs to.","If you think it is both, stand in the <b>middle</b>.","Be ready to defend your spot."]);
+    $("#cornerKey").innerHTML=corners.map(c=>`<div class="corner ${c[2]}" data-c="${c[0]}">${c[1]}</div>`).join("");
+    let order=shuffle(items),i=-1;const it=$("#cItem"),why=$("#cWhy"),key=[...document.querySelectorAll("#cornerKey .corner")];
+    const dim=a=>key.forEach(k=>k.classList.toggle("dim",a&&!a.includes(k.dataset.c)));
+    $("#cNext").onclick=()=>{i=(i+1)%order.length;it.innerHTML=order[i][0];why.hidden=true;dim(null)};
+    $("#cShow").onclick=()=>{if(i<0)return;const a=order[i][1];why.innerHTML=a.map(x=>lab[x]).join(" + ")+(order[i][2]?`<br><span class="small">${order[i][2]}</span>`:"");why.hidden=false;dim(a)};
+  },
+  order(s){
+    const ev=s.data; const pool=$("#oPool"),list=$("#oList");let picked=[];
+    const draw=()=>{pool.innerHTML="";shuffleOnce(ev).filter(e=>!picked.includes(e)).forEach(e=>{const c=document.createElement("button");c.className="card";c.innerHTML=e[0];c.onclick=()=>{picked.push(e);draw()};pool.appendChild(c)});
+      list.innerHTML=picked.map(e=>`<li>${e[0]}</li>`).join("");$("#oMsg").textContent=picked.length?"Click a placed item to send it back.":"Click the items in order.";
+      [...list.children].forEach((li,i)=>li.onclick=()=>{picked.splice(i,1);draw()})};
+    $("#oCheck").onclick=()=>{let ok=0;[...list.children].forEach((li,i)=>{const g=picked[i]===ev[i];li.classList.add(g?"ok":"no");if(g)ok++});$("#oMsg").textContent=`${ok} of ${ev.length} in the right position.`};
+    $("#oShow").onclick=()=>{picked=ev.slice();draw();[...list.children].forEach((li,i)=>{li.classList.add("ok");if(ev[i][1])li.insertAdjacentHTML("beforeend",`<small>${ev[i][1]}</small>`)})};
+    $("#oReset").onclick=()=>{picked=[];draw()}; draw();
+  },
+  slots(s){
+    const root=$("#stage"),slots=[...root.querySelectorAll("[data-slot]")],bank=$("#bank");let sel=null;
+    const words=shuffle([...new Set(slots.map(x=>x.dataset.ans).concat((s.data&&s.data.extra)||[]))]);
+    const paint=()=>{bank.innerHTML="";words.forEach(w=>{const b=document.createElement("button");b.className="card";b.textContent=w;
+      if(slots.some(x=>x.dataset.val===w))b.classList.add("used");if(sel===w)b.classList.add("sel");
+      b.onclick=()=>{sel=(sel===w?null:w);paint()};bank.appendChild(b)})};
+    const put=x=>{if(!sel){x.dataset.val="";x.querySelector("[data-st]").textContent="?";x.classList.remove("ok","no");paint();return}
+      slots.forEach(o=>{if(o.dataset.val===sel){o.dataset.val="";o.querySelector("[data-st]").textContent="?"}});
+      x.dataset.val=sel;x.querySelector("[data-st]").textContent=sel;x.classList.remove("ok","no");sel=null;paint()};
+    slots.forEach(x=>{x.onclick=()=>put(x);x.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();put(x)}}});
+    $("#slCheck").onclick=()=>{let ok=0;slots.forEach(x=>{const g=x.dataset.val===x.dataset.ans;x.classList.toggle("ok",g);x.classList.toggle("no",!g);if(g)ok++});$("#slMsg").textContent=`${ok} of ${slots.length} correct.`};
+    $("#slShow").onclick=()=>{slots.forEach(x=>{x.dataset.val=x.dataset.ans;x.querySelector("[data-st]").textContent=x.dataset.ans;x.classList.add("ok");x.classList.remove("no")});paint()};
+    $("#slReset").onclick=()=>{slots.forEach(x=>{x.dataset.val="";x.querySelector("[data-st]").textContent="?";x.classList.remove("ok","no")});sel=null;paint();$("#slMsg").textContent="Click a word, then click where it goes."};
+    paint();
+  },
+  cells(){ $("#stage").querySelectorAll(".rcell").forEach(c=>c.onclick=()=>c.classList.toggle("open")); const a=$("#cellsAll"); if(a)a.onclick=()=>$("#stage").querySelectorAll(".rcell").forEach(c=>c.classList.add("open")); },
+  quiz(s){
+    const Q=s.data; let i=0; const sc=[0,0,0,0];
+    const tm=$("#teams");tm.innerHTML=sc.map((v,k)=>`<div class="team"><span class="small">Team ${k+1}</span><b id="sc${k}">0</b><div class="row"><button class="btn" data-k="${k}" data-d="1">+1</button><button class="btn" data-k="${k}" data-d="-1">&minus;1</button></div></div>`).join("");
+    tm.querySelectorAll("button").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;sc[k]=Math.max(0,sc[k]+ +b.dataset.d);$("#sc"+k).textContent=sc[k]});
+    const show=()=>{const q=Q[i];$("#qText").innerHTML=`<span class="small">Question ${i+1} of ${Q.length}</span><br>${q[0]}`;$("#qOpts").innerHTML=q[1].map((o,k)=>`<div data-k="${k}"><b>${"ABCD"[k]}.</b> ${o}</div>`).join("");$("#qWhy").hidden=true;$("#qWhy").innerHTML=q[3]};
+    $("#qReveal").onclick=()=>{$("#qOpts").children[Q[i][2]].classList.add("right");$("#qWhy").hidden=false};
+    $("#qNext").onclick=()=>{i=(i+1)%Q.length;show()}; show();
+  },
+  chart(s){
+    const d=s.data,el=$("#chart");
+    const draw=(all)=>{ if(d.type==="bar"){el.innerHTML=barChart(d.cats,all||!d.hide?d.vals:d.vals.map(()=>0),d.o)} else {el.innerHTML=lineChart(d.series.map((x,i)=>({...x,hidden:x.hidden&&!all})),d.o)} };
+    draw(false); const b=$("#chartGo"); if(b)b.onclick=()=>{draw(true);$("#stage").querySelectorAll(".rcell").forEach(c=>c.classList.add("open"))};
+  },
+
+  /* tug of war: balanced and unbalanced forces */
+  tug(s){
+    const d=s.data||{}, L=$("#tugL"), R=$("#tugR"); L.value=d.l??40; R.value=d.r??40;
+    const view=$("#tugView"); let off=0;
+    const draw=()=>{const l=+L.value,r=+R.value,net=r-l,cx=300+off;
+      $("#tugLv").textContent=`${l} N`;$("#tugRv").textContent=`${r} N`;
+      view.innerHTML=`<svg viewBox="0 0 600 230" role="img" aria-label="Cart with a force arrow pulling each way">
+        <rect x="0" y="176" width="600" height="54" fill="color-mix(in srgb,var(--fric) 22%,var(--surface))"/><line x1="0" y1="176" x2="600" y2="176" stroke="var(--ink)" stroke-width="2"/>
+        <g id="tugCart" style="transition:transform 1.4s cubic-bezier(.55,0,1,.45);transform:translateX(${off}px)">
+          <rect x="250" y="112" width="100" height="52" rx="8" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+          <circle cx="272" cy="168" r="10" fill="var(--ink)"/><circle cx="328" cy="168" r="10" fill="var(--ink)"/>
+          ${l?arrowSVG(250,138,250-l*1.9,138,"var(--push)",`${l} N`,"tl"):""}${r?arrowSVG(350,138,350+r*1.9,138,"var(--fric)",`${r} N`,"tr"):""}
+        </g>
+        <text x="300" y="40" text-anchor="middle" font-size="18" font-weight="700" fill="${net?"var(--bad)":"var(--good)"}">${net?`Net force ${Math.abs(net)} N to the ${net>0?"right":"left"}`:"Net force 0 N"}</text>
+        ${net?arrowSVG(300,70,300+Math.sign(net)*Math.max(30,Math.abs(net)*1.9),70,"var(--bad)","","tn",5):""}</svg>`;
+      $("#tugOut").innerHTML=net?`<p class="lead"><b>Unbalanced.</b></p><p>The forces are different sizes, so the cart's motion <b>changes</b>: it speeds up towards the ${net>0?"right":"left"}.</p>`:`<p class="lead"><b>Balanced.</b></p><p>Equal forces in opposite directions cancel out. A still cart <b>stays still</b>. A moving cart would keep moving at the <b>same speed</b>.</p>`;
+    };
+    L.oninput=R.oninput=()=>{off=0;draw()};
+    $("#tugGo").onclick=()=>{const net=+R.value-+L.value;off=Math.max(-230,Math.min(230,Math.sign(net)*Math.min(230,Math.abs(net)*4)));const c=$("#tugCart");if(c)c.style.transform=`translateX(${off}px)`;if(!net){$("#tugOut").insertAdjacentHTML("beforeend",`<p class="small">Nothing happens. That is what balanced looks like.</p>`)}};
+    $("#tugReset").onclick=()=>{off=0;L.value=d.l??40;R.value=d.r??40;draw()}; draw();
+  },
+
+  /* spring balance: newtons, mass and weight */
+  scale(s){
+    const d=s.data||{}; const G={Earth:9.8,Moon:1.6,Mars:3.7,Jupiter:24.8}; let pl="Earth",m=0,hide=false;
+    const max=d.planets?30:10;
+    if(d.planets){$("#scPlanets").innerHTML=`<div class="fpick">${Object.keys(G).map(k=>`<button data-p="${k}" aria-pressed="${k==="Earth"}">${k} <span style="font-weight:400;opacity:.8">g = ${G[k]}</span></button>`).join("")}</div>`;
+      $("#scPlanets").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{pl=b.dataset.p;$("#scPlanets").querySelectorAll("[data-p]").forEach(x=>x.setAttribute("aria-pressed",x===b));draw()})}
+    const draw=()=>{const w=m/1000*G[pl],shown=Math.min(w,max),y=60+shown/max*200,stretch=40+shown/max*150;
+      const ticks=[];for(let v=0;v<=max;v+=(max>10?5:1))ticks.push(v);
+      const n=Math.ceil(m/100);
+      $("#scView").innerHTML=`<svg viewBox="0 0 360 480" role="img" aria-label="Spring balance with masses hanging">
+        <rect x="150" y="10" width="60" height="8" fill="var(--ink)"/><line x1="180" y1="18" x2="180" y2="40" stroke="var(--ink)" stroke-width="3"/>
+        <rect x="120" y="40" width="120" height="240" rx="12" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/>
+        ${ticks.map(v=>`<line x1="${v%(max>10?10:2)===0?190:200}" x2="230" y1="${60+v/max*200}" y2="${60+v/max*200}" stroke="var(--muted)" stroke-width="2"/>${v%(max>10?10:2)===0?`<text x="186" y="${64+v/max*200}" text-anchor="end" font-size="13" fill="var(--muted)">${v}</text>`:""}`).join("")}
+        <text x="215" y="300" font-size="12" fill="var(--muted)" text-anchor="middle">newtons</text>
+        <path d="M180 52 ${Array.from({length:10},(_,i)=>`L${i%2?190:170} ${52+(i+1)*(y-52)/10}`).join(" ")}" fill="none" stroke="var(--muted)" stroke-width="2.5"/>
+        <polygon points="${hide?"":`232,${y} 248,${y-7} 248,${y+7}`}" fill="var(--bad)"/><line x1="180" y1="${y}" x2="232" y2="${y}" stroke="var(--bad)" stroke-width="3" opacity="${hide?0:1}"/>
+        <line x1="180" y1="280" x2="180" y2="318" stroke="var(--ink)" stroke-width="3"/>
+        ${Array.from({length:n},(_,i)=>`<rect x="150" y="${318+i*13}" width="60" height="12" rx="2" fill="var(--fric)" stroke="var(--ink)"/>`).join("")}
+        ${m?`<text x="222" y="${330+(n-1)*6}" font-size="14" fill="var(--ink)" font-weight="700">${m} g</text>`:""}
+        ${w>max?`<text x="180" y="${330+n*13+16}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--bad)">Off the scale! Need a bigger force meter.</text>`:""}</svg>`;
+      $("#scMass").innerHTML=`${(m/1000).toFixed(2)} kg<small>mass (amount of matter${d.planets?", the same on every planet":""})</small>`;
+      $("#scRead").innerHTML=hide?`? N<small>weight (reading covered)</small>`:`${w.toFixed(1)} N<small>${d.planets?`weight on ${pl}`:"force reading on the spring balance"}</small>`;
+    };
+    $("#stage").querySelectorAll("[data-add]").forEach(b=>b.onclick=()=>{if(m<1000)m+=+b.dataset.add;draw()});
+    $("#scClear").onclick=()=>{m=0;draw()};
+    $("#scHide").onclick=()=>{hide=!hide;$("#scHide").setAttribute("aria-pressed",hide);$("#scHide").textContent=hide?"Show the reading":"Cover the reading";draw()};
+    draw();
+  },
+
+  /* toy car ramp simulator: mass and stopping distance */
+  ramp(s){
+    /* car 30 g, each washer about 5 g. Rolling friction grows with weight, but axle friction and air
+       resistance do not, so a heavier car slows a little less and rolls slightly further. */
+    const CAR=30,WASH=5,MASS=[0,1,2,3,4].map(n=>[n,CAR+n*WASH]);
+    const res={};const sel=$("#rpSurf"),H=$("#rpH");sel.innerHTML=MASS.map((x,i)=>`<option value="${i}">${x[0]} (total ${x[1]} g)</option>`).join("");
+    const px=1.15,x0=150,yF=200;
+    const scene=(dist,carX,carY,ang)=>{const n=MASS[+sel.value][0],h=+H.value,yT=yF-h*4.2;
+      $("#rpView").innerHTML=`<svg viewBox="0 0 640 260" role="img" aria-label="Toy car carrying ${n} washers on a ramp ${h} cm high">
+        <rect x="${x0}" y="${yF}" width="${640-x0}" height="16" fill="#c9d6de"/><rect x="0" y="${yF+16}" width="640" height="44" fill="color-mix(in srgb,var(--ink) 8%,var(--surface))"/>
+        <polygon points="10,${yF} ${x0},${yF} 10,${yT}" fill="color-mix(in srgb,var(--fric) 30%,var(--surface))" stroke="var(--ink)" stroke-width="2"/>
+        <text x="16" y="${yT-8}" font-size="13" fill="var(--muted)">${h} cm</text>
+        ${Array.from({length:9},(_,i)=>`<line x1="${x0+i*50*px}" x2="${x0+i*50*px}" y1="${yF+16}" y2="${yF+28}" stroke="var(--muted)"/><text x="${x0+i*50*px}" y="${yF+44}" text-anchor="middle" font-size="12" fill="var(--muted)">${i*50}</text>`).join("")}
+        <text x="${x0-12}" y="${yF+44}" text-anchor="end" font-size="12" fill="var(--muted)">cm</text>
+        ${dist!=null?`<line x1="${x0}" x2="${x0+dist*px}" y1="${yF-38}" y2="${yF-38}" stroke="var(--accent)" stroke-width="2" stroke-dasharray="5 4"/><text x="${x0+dist*px/2}" y="${yF-44}" text-anchor="middle" font-size="14" font-weight="700" fill="var(--accent)">${dist} cm</text>`:""}
+        <g transform="translate(${carX} ${carY}) rotate(${ang})"><g transform="translate(-22 0)"><rect x="-22" y="-18" width="44" height="13" rx="4" fill="var(--bad)"/><rect x="-11" y="-26" width="20" height="9" rx="3" fill="var(--bad)" opacity=".8"/>${Array.from({length:n},(_,k)=>`<rect x="-9" y="${-31-k*4}" width="16" height="3.4" rx="1.5" fill="var(--muted)" stroke="var(--ink)" stroke-width=".6"/>`).join("")}<circle cx="-12" cy="-4" r="5" fill="var(--ink)"/><circle cx="12" cy="-4" r="5" fill="var(--ink)"/></g></g></svg>`};
+    const top=()=>{const h=+H.value,yT=yF-h*4.2,ang=Math.atan2(yF-yT,x0-10)*180/Math.PI;return [10+44,yT+44*(yF-yT)/(x0-10),ang]};
+    const table=()=>{const any=MASS.some((x,i)=>res[i]);$("#rpTable").innerHTML=any?`<thead><tr><th>Washers</th><th>Mass (g)</th><th>Trial 1</th><th>Trial 2</th><th>Trial 3</th><th>Average</th></tr></thead><tbody>${MASS.map((x,i)=>{const r=res[i];if(!r)return"";const a=r.length?Math.round(r.reduce((p,q)=>p+q,0)/r.length):"";return `<tr><td>${x[0]}</td><td>${x[1]}</td>${[0,1,2].map(k=>`<td>${r[k]??""}</td>`).join("")}<td><b>${r.length===3?a:""}</b></td></tr>`}).join("")}</tbody>`:`<tbody><tr><td class="small">Results appear here (cm). Run 3 trials for each mass.</td></tr></tbody>`};
+    const idle=()=>{stopAnim();const [x,y,a]=top();scene(null,x,y,a);table()};
+    sel.onchange=idle; H.oninput=()=>{$("#rpHv").textContent=`${H.value} cm`;Object.keys(res).forEach(k=>delete res[k]);idle()};
+    $("#rpHv").textContent=`${H.value} cm`;
+    $("#rpGo").onclick=()=>{stopAnim();const i=+sel.value,m=MASS[i][1],h=+H.value;const d=Math.min(440,Math.round(0.8*h/(0.05+0.9/m)*rnd(.05)));
+      const [sx,sy,ang]=top();const T1=600,T2=500+d*7;let t0=null;$("#rpGo").disabled=true;
+      const step=ts=>{if(!t0)t0=ts;const t=ts-t0;
+        if(t<T1){const f=(t/T1)**2;scene(null,sx+(x0-sx)*f,sy+(yF-sy)*f,ang)}
+        else{const f=Math.min(1,(t-T1)/T2),e=1-(1-f)**2,cur=Math.round(d*e);scene(cur,x0+d*px*e,yF,0);$("#rpOut").innerHTML=`${cur} cm<small>stopping distance from the bottom of the ramp</small>`;
+          if(f>=1){(res[i]=res[i]||[]);if(res[i].length>=3)res[i]=[];res[i].push(d);table();$("#rpGo").disabled=false;RAF=null;return}}
+        RAF=requestAnimationFrame(step)};
+      RAF=requestAnimationFrame(step)};
+    $("#rpClear").onclick=()=>{Object.keys(res).forEach(k=>delete res[k]);$("#rpOut").innerHTML=`0 cm<small>stopping distance from the bottom of the ramp</small>`;idle()};
+    idle();
+  },
+
+  /* parachute drop simulator */
+  chute(s){
+    const MAT=[["Plastic bag",.018,1.4],["Tissue paper",.014,.95],["Printer paper",.08,1.3],["Cotton fabric",.13,1.3]];
+    const S=$("#chS"),M=$("#chM"),Lg=$("#chL"),P=$("#chP");M.innerHTML=MAT.map((m,i)=>`<option value="${i}">${m[0]}</option>`).join("");
+    const runs={};
+    const key=()=>`${S.value?`${S.value} cm, ${MAT[+M.value][0].toLowerCase()}, ${Lg.value} cm strings`:"No parachute"}, ${P.value} clip${P.value>1?"s":""}`;
+    const fall=()=>{const side=+S.value/100,mat=MAT[+M.value],sl=+Lg.value;const sf=sl===15?.8:sl===30?.92:.95;
+      const A=side?side*side*sf:0.0004,Cd=side?mat[2]:1,m=+P.value*0.001+(side?side*side*mat[1]:0)+(side?0.0004:0);
+      let v=0,y=0,t=0;const dt=.002,pts=[];while(y<2&&t<20){const a=9.8-0.5*1.2*Cd*A*v*v/m;v+=a*dt;y+=v*dt;t+=dt;if(pts.length<4000&&Math.round(t/dt)%10===0)pts.push([t,y])}
+      return {t,pts}};
+    const draw=(y)=>{const side=+S.value,w=side*2.2,mat=+M.value,col=["var(--air)","#d8d2c4","var(--surface)","var(--fric)"][mat],sl=+Lg.value*.9,top=40+y/2*(310-sl-(+P.value)*5);
+      $("#chView").innerHTML=`<svg viewBox="0 0 300 380" role="img" aria-label="Parachute falling 2 metres">
+        <line x1="40" y1="30" x2="40" y2="350" stroke="var(--muted)" stroke-width="2"/><text x="34" y="44" text-anchor="end" font-size="12" fill="var(--muted)">2 m</text><text x="34" y="350" text-anchor="end" font-size="12" fill="var(--muted)">0 m</text>
+        <rect x="0" y="350" width="300" height="30" fill="color-mix(in srgb,var(--grav) 18%,var(--surface))"/>
+        <g transform="translate(170 ${top})">${side?`<path d="M${-w/2} 0 Q0 ${-w*.45} ${w/2} 0 Z" fill="${col}" stroke="var(--ink)" stroke-width="2"/><line x1="${-w/2}" y1="0" x2="0" y2="${sl}" stroke="var(--ink)"/><line x1="${w/2}" y1="0" x2="0" y2="${sl}" stroke="var(--ink)"/><line x1="${-w/6}" y1="-2" x2="0" y2="${sl}" stroke="var(--ink)"/><line x1="${w/6}" y1="-2" x2="0" y2="${sl}" stroke="var(--ink)"/>`:""}
+          ${Array.from({length:+P.value},(_,i)=>`<rect x="-5" y="${sl+i*5}" width="10" height="4" rx="2" fill="var(--muted)" stroke="var(--ink)" stroke-width=".6"/>`).join("")}</g></svg>`};
+    const table=()=>{const k=Object.keys(runs);$("#chTable").innerHTML=k.length?`<thead><tr><th>Design</th><th>T1</th><th>T2</th><th>T3</th><th>Avg (s)</th></tr></thead><tbody>${k.map(x=>{const r=runs[x];return `<tr><td>${x}</td>${[0,1,2].map(i=>`<td>${r[i]!=null?r[i].toFixed(2):""}</td>`).join("")}<td><b>${r.length===3?(r.reduce((a,b)=>a+b,0)/3).toFixed(2):""}</b></td></tr>`}).join("")}</tbody>`:""};
+    const lab=()=>{$("#chSv").textContent=+S.value?`${S.value} cm x ${S.value} cm`:"no canopy";$("#chPv").textContent=`${P.value} paper clip${P.value>1?"s":""}`};
+    [S,M,Lg,P].forEach(e=>e.oninput=e.onchange=()=>{stopAnim();lab();draw(0)});
+    $("#chGo").onclick=()=>{stopAnim();const f=fall(),T=Math.max(.3,f.t*rnd(.04)+(Math.random()-.5)*.12);let t0=null;$("#chGo").disabled=true;
+      const step=ts=>{if(!t0)t0=ts;const t=(ts-t0)/1000*(f.t/T);const p=f.pts.find(q=>q[0]>=t)||[f.t,2];draw(Math.min(2,p[1]));$("#chOut").innerHTML=`${Math.min(T,(ts-t0)/1000).toFixed(2)} s<small>fall time</small>`;
+        if(t>=f.t){$("#chOut").innerHTML=`${T.toFixed(2)} s<small>fall time</small>`;const k=key();runs[k]=runs[k]||[];if(runs[k].length>=3)runs[k]=[];runs[k].push(T);table();$("#chGo").disabled=false;RAF=null;return}
+        RAF=requestAnimationFrame(step)};RAF=requestAnimationFrame(step)};
+    $("#chClear").onclick=()=>{Object.keys(runs).forEach(k=>delete runs[k]);table();$("#chOut").innerHTML=`0.00 s<small>fall time</small>`};
+    lab();draw(0);table();
+  },
+
+  /* force diagrams built arrow by arrow */
+  fdiag(s){
+    const sc=s.data;let cur=0,k=0;const pick=$("#fdPick");
+    pick.innerHTML=sc.map((x,i)=>`<button data-i="${i}" aria-pressed="${i===0}">${x.name}</button>`).join("");
+    const OBJ={
+      box:`<rect x="250" y="130" width="100" height="80" rx="4" fill="color-mix(in srgb,var(--fric) 35%,var(--surface))" stroke="var(--ink)" stroke-width="3"/>`,
+      book:`<rect x="120" y="210" width="360" height="14" fill="var(--muted)"/><rect x="150" y="224" width="12" height="70" fill="var(--muted)"/><rect x="438" y="224" width="12" height="70" fill="var(--muted)"/><rect x="250" y="180" width="100" height="30" rx="3" fill="var(--grav)" opacity=".75" stroke="var(--ink)" stroke-width="2"/>`,
+      ball:`<circle cx="300" cy="170" r="40" fill="var(--fric)" stroke="var(--ink)" stroke-width="3"/>`,
+      apple:`<circle cx="300" cy="170" r="34" fill="var(--bad)" stroke="var(--ink)" stroke-width="2"/><path d="M300 136 q2 -14 12 -18" stroke="var(--ink)" stroke-width="3" fill="none"/>`,
+      car:`<rect x="235" y="150" width="130" height="40" rx="10" fill="var(--air)" stroke="var(--ink)" stroke-width="3"/><path d="M262 150 l14 -24 h48 l14 24z" fill="var(--air)" opacity=".7" stroke="var(--ink)" stroke-width="2"/><circle cx="268" cy="196" r="14" fill="var(--ink)"/><circle cx="332" cy="196" r="14" fill="var(--ink)"/>`,
+      person:`<circle cx="300" cy="100" r="18" fill="var(--ink)"/><rect x="284" y="120" width="32" height="56" rx="8" fill="var(--push)"/><rect x="286" y="176" width="11" height="34" fill="var(--ink)"/><rect x="303" y="176" width="11" height="34" fill="var(--ink)"/>`,
+      chute:`<path d="M220 110 Q300 40 380 110 Z" fill="var(--air)" stroke="var(--ink)" stroke-width="3"/><line x1="220" y1="110" x2="300" y2="168" stroke="var(--ink)"/><line x1="380" y1="110" x2="300" y2="168" stroke="var(--ink)"/><circle cx="300" cy="176" r="10" fill="var(--ink)"/><rect x="292" y="186" width="16" height="30" rx="5" fill="var(--push)"/>`,
+      sky:`<g transform="rotate(90 300 170)"><circle cx="300" cy="125" r="15" fill="var(--ink)"/><rect x="286" y="142" width="28" height="50" rx="8" fill="var(--push)"/><rect x="287" y="192" width="10" height="34" fill="var(--ink)"/><rect x="303" y="192" width="10" height="34" fill="var(--ink)"/></g>`,
+      rocket:`<path d="M300 80 q30 30 30 80 v60 h-60 v-60 q0 -50 30 -80z" fill="var(--surface)" stroke="var(--ink)" stroke-width="3"/><circle cx="300" cy="140" r="10" fill="var(--air)"/><path d="M270 200 l-18 26 h18z M330 200 l18 26 h-18z" fill="var(--bad)"/><path d="M282 220 q18 50 36 0z" fill="var(--elec)"/>`,
+      lamp:`<line x1="300" y1="0" x2="300" y2="120" stroke="var(--ink)" stroke-width="3"/><path d="M260 170 q40 -60 80 0z" fill="var(--elec)" stroke="var(--ink)" stroke-width="3"/><circle cx="300" cy="176" r="10" fill="#fff6c8" stroke="var(--ink)"/>`,
+      boat:`<rect x="0" y="190" width="600" height="150" fill="var(--push)" opacity=".35"/><path d="M230 160 h140 l-24 40 h-92z" fill="var(--fric)" stroke="var(--ink)" stroke-width="3"/><line x1="300" y1="160" x2="300" y2="90" stroke="var(--ink)" stroke-width="3"/><path d="M302 92 l40 50 h-40z" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>`,
+      swimmer:`<rect x="0" y="180" width="600" height="160" fill="var(--push)" opacity=".3"/><g transform="rotate(90 300 170)"><circle cx="300" cy="125" r="14" fill="var(--ink)"/><rect x="287" y="140" width="26" height="48" rx="8" fill="var(--bad)"/><rect x="288" y="188" width="10" height="34" fill="var(--ink)"/><rect x="302" y="188" width="10" height="34" fill="var(--ink)"/></g>`
+    };
+    const GROUND={box:210,ball:210,car:210,person:210};
+    const ORIG={up:[300,120],down:[300,220],left:[230,170],right:[370,170]};
+    const ORIGO={sky:{up:[300,152],down:[300,188],left:[220,170],right:[380,170]},swimmer:{up:[300,154],down:[300,186],left:[214,170],right:[392,170]},boat:{up:[300,160],down:[300,200],left:[232,180],right:[368,180]},chute:{up:[300,74],down:[300,216],left:[220,140],right:[380,140]},book:{up:[300,180],down:[300,210],left:[250,195],right:[350,195]},person:{up:[300,82],down:[300,210],left:[280,148],right:[320,148]},lamp:{up:[300,130],down:[300,186],left:[260,165],right:[340,165]},rocket:{up:[300,80],down:[300,250],left:[270,160],right:[330,160]}};
+    const draw=()=>{const x=sc[cur],o=ORIGO[x.obj]||ORIG;
+      const arrows=x.forces.slice(0,k).map((f,i)=>{const [dir,size,label,cls]=f,[ox,oy]=o[dir],len=size*40,dx={left:-1,right:1}[dir]||0,dy={up:-1,down:1}[dir]||0;
+        return arrowSVG(ox,oy,ox+dx*len,oy+dy*len,`var(--${cls})`,label,"fa"+i)}).join("");
+      $("#fdView").innerHTML=`<svg viewBox="0 0 600 340" role="img" aria-label="Force diagram: ${x.name}">${GROUND[x.obj]?`<rect x="0" y="${GROUND[x.obj]}" width="600" height="130" fill="color-mix(in srgb,var(--ink) 7%,var(--surface))"/><line x1="0" x2="600" y1="${GROUND[x.obj]}" y2="${GROUND[x.obj]}" stroke="var(--ink)" stroke-width="2"/>`:""}${OBJ[x.obj]}${arrows}
+        ${x.motion?`<text x="16" y="28" font-size="15" font-weight="700" fill="var(--muted)">${x.motion}</text>`:""}</svg>`;
+      $("#fdHint").textContent=`${k} of ${x.forces.length} arrows shown. ${x.hint||"Predict the next arrow before you click."}`;
+    };
+    const sel=i=>{cur=i;k=0;$("#fdOut").hidden=true;pick.querySelectorAll("button").forEach((b,j)=>b.setAttribute("aria-pressed",j===i));draw()};
+    pick.querySelectorAll("button").forEach(b=>b.onclick=()=>sel(+b.dataset.i));
+    $("#fdNext").onclick=()=>{if(k<sc[cur].forces.length)k++;draw()};
+    $("#fdAll").onclick=()=>{k=sc[cur].forces.length;draw()};
+    $("#fdAsk").onclick=()=>{k=sc[cur].forces.length;draw();const x=sc[cur];$("#fdOut").innerHTML=`<p class="lead"><b>${x.state}.</b></p><p>${x.why}</p>`;$("#fdOut").hidden=false};
+    sel(0);
+  },
+
+  /* two bar magnets */
+  magnet(){
+    let a=1,b=1,gap=0;const draw=()=>{const half=(x,p)=>`<rect x="${x}" y="0" width="80" height="50" fill="${p==="N"?"var(--bad)":"var(--air)"}"/><text x="${x+40}" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">${p}</text>`;
+      const mag=(x,flip)=>`<g style="transition:transform .8s" transform="translate(${x} 110)">${half(0,flip?"S":"N")}${half(80,flip?"N":"S")}<rect width="160" height="50" fill="none" stroke="var(--ink)" stroke-width="3"/></g>`;
+      const xa=110-gap,xb=330+gap;
+      $("#mgView").innerHTML=`<svg viewBox="0 0 600 270" role="img" aria-label="Two bar magnets">${mag(xa,a<0)}${mag(xb,b<0)}<text x="300" y="220" text-anchor="middle" font-size="15" fill="var(--muted)">Facing poles: ${a>0?"S":"N"} and ${b>0?"N":"S"}</text></svg>`};
+    const facing=()=>[a>0?"S":"N",b>0?"N":"S"];
+    $("#mgFlipA").onclick=()=>{a=-a;gap=0;draw();$("#mgOut").innerHTML=`<p class="small">Predict: attract or repel?</p>`};
+    $("#mgFlipB").onclick=()=>{b=-b;gap=0;draw();$("#mgOut").innerHTML=`<p class="small">Predict: attract or repel?</p>`};
+    $("#mgGo").onclick=()=>{const [p,q]=facing(),att=p!==q;gap=att?-55:80;draw();
+      $("#mgOut").innerHTML=att?`<p class="lead"><b>Attract.</b></p><p>${p} faces ${q}. <b>Unlike poles attract</b>, so the magnets pull together without touching first. That is a non-contact force.</p>`:`<p class="lead"><b>Repel.</b></p><p>${p} faces ${q}. <b>Like poles repel</b>, so the magnets push apart.</p>`};
+    $("#mgReset").onclick=()=>{a=1;b=1;gap=0;draw();$("#mgOut").innerHTML=`<p class="small">Predict first: will they attract or repel?</p>`};
+    draw();
+  },
+
+  /* balloon and hair: electrostatic force */
+  charges(){
+    let rubs=0,near=false;
+    const draw=()=>{const moved=Math.min(rubs*3,12),bx=near?250:420;
+      const hairNeg=12-moved,balNeg=moved;
+      const plus=(x,y)=>`<text x="${x}" y="${y}" font-size="16" font-weight="800" fill="var(--bad)" text-anchor="middle">+</text>`,minus=(x,y)=>`<text x="${x}" y="${y}" font-size="18" font-weight="800" fill="var(--air)" text-anchor="middle">&minus;</text>`;
+      const head=[];for(let i=0;i<12;i++){const x=95+(i%4)*26,y=95+Math.floor(i/4)*24;head.push(plus(x,y));if(i<hairNeg)head.push(minus(x+12,y+8))}
+      const bal=[];for(let i=0;i<balNeg;i++){const ang=i/12*Math.PI*2;bal.push(minus(bx+Math.cos(ang)*38,175+Math.sin(ang)*48+5))}
+      const lean=near&&moved>0?Math.min(14,moved):0;
+      $("#cgView").innerHTML=`<svg viewBox="0 0 600 320" role="img" aria-label="Balloon and hair with charges">
+        <circle cx="134" cy="150" r="70" fill="color-mix(in srgb,var(--elec) 25%,var(--surface))" stroke="var(--ink)" stroke-width="2"/>
+        ${Array.from({length:9},(_,i)=>`<path d="M${84+i*12} 92 q${lean} ${-30} ${lean*2} ${-50}" stroke="var(--fric)" stroke-width="3" fill="none"/>`).join("")}
+        ${head.join("")}<text x="134" y="250" text-anchor="middle" font-size="14" fill="var(--muted)">hair: ${moved?`lost ${moved} electrons, now positive`:"neutral (equal + and &minus;)"}</text>
+        <ellipse cx="${bx}" cy="175" rx="48" ry="60" fill="color-mix(in srgb,var(--mag) 30%,var(--surface))" stroke="var(--ink)" stroke-width="2"/><path d="M${bx} 235 l-6 10 h12z" fill="var(--ink)"/><path d="M${bx} 245 q10 30 -4 60" stroke="var(--ink)" fill="none"/>
+        ${bal.join("")}<text x="${bx}" y="315" text-anchor="middle" font-size="14" fill="var(--muted)">balloon: ${moved?`gained ${moved} electrons, now negative`:"neutral"}</text></svg>`;
+      $("#cgOut").innerHTML=!moved?`<p class="small">Both objects start neutral. Rub to move electrons.</p>`:near?`<p class="lead"><b>Attract!</b></p><p>The negative balloon and the positive hair attract. <b>Unlike charges attract</b>, even across a gap. That is the electrostatic force.</p>`:`<p>Rubbing moved <b>${moved}</b> electrons (&minus;) from the hair to the balloon. Now bring the balloon close.</p>`};
+    $("#cgRub").onclick=()=>{rubs++;near=false;draw()};$("#cgNear").onclick=()=>{near=true;draw()};$("#cgReset").onclick=()=>{rubs=0;near=false;draw()};draw();
+  }
+};
+
+/* ---------- the class standard parachute (Practical 2) ----------
+   Fill in the sizes once the standard parachute is made. Blank values show as a line on the slides. */
+const STD={canopy:"", material:"Plastic bag", strings:"", load:"", height:"2 m"};
+const stdv=v=>v||"________";
+const STD_ROWS=[["Canopy size",stdv(STD.canopy)],["Canopy material",stdv(STD.material)],["String length (4 strings)",stdv(STD.strings)],["Load",stdv(STD.load)],["Drop height",stdv(STD.height)]];
+const CHUTE_SVG=`<svg viewBox="0 0 300 260" role="img" aria-label="Labelled parachute diagram"><path d="M60 80 Q150 10 240 80 Z" fill="var(--air)" stroke="var(--ink)" stroke-width="3"/><g stroke="var(--ink)"><line x1="60" y1="80" x2="150" y2="180"/><line x1="240" y1="80" x2="150" y2="180"/><line x1="110" y1="70" x2="150" y2="180"/><line x1="190" y1="70" x2="150" y2="180"/></g>${[0,1,2].map(i=>`<rect x="143" y="${182+i*7}" width="14" height="5" rx="2" fill="var(--muted)" stroke="var(--ink)"/>`).join("")}<text x="245" y="60" font-size="14" font-weight="700" fill="var(--air)">canopy</text><text x="205" y="140" font-size="14" font-weight="700" fill="var(--ink)">strings</text><text x="165" y="200" font-size="14" font-weight="700" fill="var(--muted)">load</text></svg>`;
+/* ---------- shared unit data ---------- */
+const CONCEPT_CHECK=[
+  ["A ball keeps rolling because there is a force inside it pushing it along.","False. Nothing pushes a rolling ball. It keeps going until a force (friction, air resistance) slows it down."],
+  ["Heavy objects always fall faster than light objects.","False. Without air, everything falls at the same rate. Air resistance is what slows light, spread-out objects."],
+  ["There is no gravity in space.","False. Gravity reaches far into space. It keeps the Moon in orbit. Astronauts float because they are falling around Earth."],
+  ["If an object is not moving, there are no forces acting on it.","False. A book on a desk has gravity pulling down and the desk pushing up. The forces are balanced."],
+  ["Friction is always a bad thing.","False. Without friction you could not walk, write or stop a bike."],
+  ["Magnets attract all metals.","False. Magnets attract iron, steel, nickel and cobalt, but not aluminium, copper or gold."],
+  ["Mass and weight are the same thing.","False. Mass is the amount of matter (kg). Weight is the force of gravity on that mass (N)."]
+];
+const FORCE_SIX=[["push","Applied force","Contact","A push or pull by a person or object.","Pushing a trolley"],["fric","Friction","Contact","Opposes motion when surfaces rub or slide.","Brakes on a bike"],["air","Air resistance","Contact","Opposes motion through air (drag).","A parachute"],["grav","Gravity","Non-contact","Pulls objects with mass towards each other.","An apple falling"],["mag","Magnetic force","Non-contact","Attracts or repels magnetic materials.","A fridge magnet"],["elec","Electrostatic force","Non-contact","Attracts or repels charged objects.","Balloon and hair"]];
+const fcards = (list=FORCE_SIX) => `<div class="grid3">${list.map(f=>`<div class="fcard ${f[0]}"><span class="tag">${f[2]}</span><h3>${f[1]}</h3><p>${f[3]}</p><p class="small">e.g. ${f[4]}</p></div>`).join("")}</div>`;
+const exitFist = sc => `<div class="box"><h3>Fist to five</h3><ul>${sc.map(c=>`<li>${c}</li>`).join("")}</ul><p class="small">Fist = not yet. Five = I could teach it.</p></div>`;
+
+/* ---------- Week 4: Force diagrams and motion ---------- */
+const W=(s=2)=>["down",s,"Weight","grav"], SUP=(s=2)=>["up",s,"Support force","push"];
+const FD_INTRO=[
+  {name:"Book on a table",obj:"book",motion:"Still",forces:[W(2),SUP(2)],state:"Balanced",why:"Gravity pulls the book down. The table pushes up with an equal support force. The arrows are the same length, so the book stays still.",hint:"Which force does EVERY object on Earth have?"},
+  {name:"Falling apple",obj:"apple",motion:"Falling, speeding up",forces:[W(2.5),["up",.6,"Air resistance","air"]],state:"Unbalanced",why:"Weight is much bigger than air resistance, so the apple speeds up as it falls."},
+  {name:"Rolling car, slowing",obj:"car",motion:"Moving right, slowing down",forces:[W(1.6),SUP(1.6),["left",1.6,"Friction","fric"]],state:"Unbalanced",why:"Up and down are balanced, but nothing pushes the car forward. Friction acts backwards, so the car slows down."},
+  {name:"Pushed box, speeding up",obj:"box",motion:"Moving right, speeding up",forces:[W(1.6),SUP(1.6),["right",2.5,"Push","push"],["left",1,"Friction","fric"]],state:"Unbalanced",why:"The push (right) is bigger than friction (left), so the box speeds up to the right. Up and down are balanced."}];
+const FD_BAL=[
+  {name:"Hanging lamp",obj:"lamp",motion:"Still",forces:[["up",2,"Tension","push"],W(2)],state:"Balanced",why:"The cord pulls up (tension) as hard as gravity pulls down. Equal arrows, so the lamp stays still."},
+  {name:"Car at steady speed",obj:"car",motion:"Moving right at a steady 60 km/h",forces:[W(1.6),SUP(1.6),["right",2.2,"Driving force","push"],["left",2.2,"Friction + air resistance","fric"]],state:"Balanced",why:"The driving force equals friction and air resistance together. Balanced forces, so the speed stays the same. It is moving, but its motion does not change."},
+  {name:"Skydiver at top speed",obj:"sky",motion:"Falling at a steady speed",forces:[W(2.6),["up",2.6,"Air resistance","air"]],state:"Balanced",why:"Air resistance has grown until it equals weight. Balanced, so the skydiver falls at a steady speed (terminal velocity)."},
+  {name:"Floating boat",obj:"boat",motion:"Still",forces:[W(2.2),["up",2.2,"Upthrust (water pushes up)","push"]],state:"Balanced",why:"The water pushes up (upthrust) with a force equal to the boat's weight, so it floats without rising or sinking."},
+  {name:"Person standing",obj:"person",motion:"Still",forces:[W(2.3),SUP(2.3)],state:"Balanced",why:"The ground pushes up with a support force equal to the person's weight."}];
+const FD_UNBAL=[
+  {name:"Rocket launch",obj:"rocket",motion:"Lifting off, speeding up",forces:[["up",1.9,"Thrust","push"],["down",1.1,"Weight","grav"]],state:"Unbalanced",why:"Thrust up is bigger than weight down. The net force is upwards, so the rocket speeds up."},
+  {name:"Skydiver just jumped",obj:"sky",motion:"Falling, speeding up",forces:[W(2.6),["up",.6,"Air resistance","air"]],state:"Unbalanced",why:"At first air resistance is tiny. Weight is much bigger, so the skydiver speeds up."},
+  {name:"Parachute opens",obj:"chute",motion:"Falling, slowing down",forces:[["up",1.8,"Air resistance","air"],["down",1,"Weight","grav"]],state:"Unbalanced",why:"The big canopy makes air resistance bigger than weight. The net force is up, so the parachutist slows down (still falling, just slower)."},
+  {name:"Car braking",obj:"car",motion:"Moving right, slowing down fast",forces:[W(1.6),SUP(1.6),["left",2.6,"Braking friction","fric"]],state:"Unbalanced",why:"Braking friction acts backwards and nothing pushes forward. The net force is backwards, so the car slows down."},
+  {name:"Swimmer pushing off",obj:"swimmer",motion:"Moving right, speeding up",forces:[["right",2.5,"Push off the wall","push"],["left",.8,"Water resistance","air"]],state:"Unbalanced",why:"The push off the wall is bigger than water resistance, so the swimmer speeds up. (Weight and upthrust also act, but they balance.)"}];
+
+LESSONS.push(
+{ n:14, title:"Balanced force diagrams",
+  li:"Draw force diagrams for balanced situations.",
+  sc:["I can draw balanced force diagrams with equal and opposite arrows.","I can explain why motion does or does not change."],
+  prep:"Mini whiteboards. Worksheet with 6 balanced scenarios.",
+  slides:[
+  {mode:"check", h:"Retrieval: arrow rules",
+   html:`<div class="grid4">${[["Where does an arrow start?","On the object."],["What does a longer arrow mean?","A bigger force."],["What must every arrow have?","A label."],["Is 'motion' a force?","No. Motion is what forces change."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   notes:""},
+  {mode:"learn", h:"What balanced looks like",
+   html:`<div class="grid2 fill"><div class="box"><p class="def">In a <b>balanced</b> diagram, every arrow has a partner that is the <b>same length</b> pointing the <b>opposite way</b>.</p><p class="lead">Net force = 0 N</p><p>So the motion does <b>not change</b>: still objects stay still, moving objects keep the same speed and direction.</p></div>
+   <div class="simview"><svg viewBox="0 0 400 300" role="img" aria-label="Box with four equal arrows"><rect x="150" y="110" width="100" height="80" rx="4" fill="color-mix(in srgb,var(--fric) 35%,var(--surface))" stroke="var(--ink)" stroke-width="3"/>${arrowSVG(200,110,200,40,"var(--push)","Support","b1")}${arrowSVG(200,190,200,260,"var(--grav)","Weight","b2")}${arrowSVG(250,150,320,150,"var(--push)","Push","b3")}${arrowSVG(150,150,80,150,"var(--fric)","Friction","b4")}</svg></div></div>`,
+   notes:"This box could be still, or being pushed at a steady speed. The diagram is the same!"},
+  {mode:"whole", h:"Balanced situations", init:"fdiag", data:FD_BAL,
+   html:fdUI,
+   notes:"The car at steady speed and the skydiver are the key misconception busters: moving but balanced."},
+  {mode:"group", timer:8, h:"Whiteboard challenge",
+   html:`<p>Groups of 3. Draw each one on a whiteboard. Hold up when the timer beeps for each.</p><div class="grid3">${[["A plane flying level at a steady speed","Lift up = weight down. Thrust forward = air resistance back."],["A spider hanging still on its thread","Tension up = weight down."],["A cyclist riding at a steady 20 km/h","Pedal force forward = friction + air resistance back. Weight = support."]].map(c=>`<div class="box"><p class="lead">${c[0]}</p>${rv("Check",c[1])}</div>`).join("")}</div>`,
+   notes:"The plane has four forces, a stretch for confident groups."},
+  {mode:"write", timer:6, h:"Why doesn't the motion change?",
+   html:`<div class="grid2 fill"><div class="box"><p class="lead">Explain why a car on cruise control keeps going at exactly 100 km/h.</p><p class="starter">The forces on the car are ___ because ___. This means the net force is ___, so the car's motion ___.</p></div>${rv("Model answer","The forces on the car are balanced because the driving force forwards is the same size as friction and air resistance backwards. This means the net force is zero, so the car's motion does not change: it keeps moving at the same speed in the same direction.")}</div>`,
+   notes:"Worksheet / written explanation evidence."},
+  {mode:"check", h:"Quick quiz", init:"quiz",
+   data:[["A book sits on a shelf. The forces are...",["Unbalanced","Balanced","Zero","Only gravity"],1,"Weight down and support up are equal."],["A skydiver falls at a steady speed. Air resistance is...",["Bigger than weight","Smaller than weight","Equal to weight","Zero"],2,"Steady speed means balanced."],["In a balanced diagram, the arrows are...",["All pointing down","Equal and opposite","Different lengths","Not labelled"],1,"Each arrow has an equal partner pointing the opposite way."],["Balanced forces mean an object...",["Must be still","Must be speeding up","Keeps the same motion","Changes direction"],2,"Still stays still; moving keeps moving steadily."]],
+   html:quizUI,
+   notes:""},
+  {mode:"check", h:"Exit",
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">True or false? Explain.</p><p class="def">"If a car is moving, the forces on it can't be balanced."</p>${rv("Answer","False. If the car moves at a steady speed in a straight line, the forces are balanced.")}</div>${exitFist(["I can draw balanced force diagrams with equal and opposite arrows.","I can explain why motion does or does not change."])}</div>`,
+   notes:""}
+  ]},
+
+{ n:15, title:"Unbalanced force diagrams",
+  li:"Draw force diagrams for situations where motion changes.",
+  sc:["I can draw force diagrams for objects that speed up, slow down or change direction.","I can work out the net force and its direction."],
+  prep:"Mini whiteboards. Scenario cards for group discussion.",
+  slides:[
+  {mode:"check", h:"Retrieval: balanced diagrams",
+   html:`<div class="grid3">${[["Balanced means the net force is...","Zero."],["Draw a lamp hanging still.","Tension up, weight down, equal arrows."],["Can a moving object have balanced forces?","Yes, if it moves at a steady speed in a straight line."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   notes:""},
+  {mode:"learn", h:"Unbalanced: the bigger arrow wins",
+   html:`<div class="grid3">${[["Speeds up","The bigger force points the same way as the motion.","push"],["Slows down","The bigger force points against the motion.","fric"],["Changes direction","A force acts from the side (like turning a corner or hitting a ball).","grav"]].map(c=>`<div class="fcard ${c[2]}"><h3 style="font-size:2.4cqw">${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>
+   <p class="def"><b>Net force</b> = bigger force &minus; smaller force, in the direction of the bigger force.</p><p class="small">e.g. 50 N right and 20 N left: net force = 30 N to the right.</p>`,
+   notes:""},
+  {mode:"whole", h:"Net force with the tug of war", init:"tug", data:{l:20,r:50},
+   html:tugUI,
+   notes:"Ask students to calculate the net force before each change. Try 70 left and 30 right."},
+  {mode:"whole", h:"Unbalanced situations", init:"fdiag", data:FD_UNBAL,
+   html:fdUI,
+   notes:"Parachute opening is the hardest: the net force is upwards but the parachutist is still falling, just slowing down."},
+  {mode:"check", h:"Mini whiteboard check", init:"vote",
+   data:[["A ball is kicked along the grass. Draw it just after the kick, rolling and slowing.","Weight and support balanced. Friction backwards. No forward force once the foot has left the ball."],["A lift starts to go up.","Tension up is bigger than weight down: unbalanced upwards."],["A tennis ball hits a racquet and bounces back.","The racquet's push is much bigger than air resistance: direction changes."],["A car speeds up away from traffic lights.","Driving force forward is bigger than friction and air resistance backwards."],["40 N left and 10 N right. What is the net force?","30 N to the left."]],
+   html:`<p>Draw the force diagram on your whiteboard. Show me on "3, 2, 1".</p>${voteUI("Show answer")}`,
+   notes:"Scan boards for: arrow sizes matching the motion, and no 'motion' arrows."},
+  {mode:"group", timer:8, h:"Small group discussion",
+   html:`<div class="grid2 fill"><div class="box"><h3>Discuss and agree</h3><p class="lead">A cyclist goes down a hill without pedalling, getting faster and faster. Then she reaches a steady top speed.</p>${steps(["Draw a force diagram at the start.","Draw one at top speed.","What changed, and why?"])}</div>${rv("Check","At the start, gravity pulling her down the hill is bigger than air resistance and friction: unbalanced, she speeds up. As she gets faster, air resistance grows until the forces balance, so she reaches a steady top speed.")}</div>`,
+   notes:"Mirrors the skydiver story. Good stretch task."},
+  {mode:"check", h:"Exit ticket",
+   html:`<div class="grid2 fill"><div class="box"><p class="lead">A boat's engine pushes with 300 N. Water resistance is 100 N.</p><ol><li>What is the net force?</li><li>What happens to the boat's motion?</li></ol>${rv("Answer","Net force = 200 N forwards. Unbalanced, so the boat speeds up.")}</div>${exitFist(["I can draw force diagrams for objects that speed up, slow down or change direction.","I can work out the net force and its direction."])}</div>`,
+   notes:""}
+  ]},
+
+{ n:16, title:"Forces in real life",
+  li:"Apply force concepts to everyday situations.",
+  sc:["I can identify the forces acting in transport, sport and playground situations.","I can explain an everyday situation using scientific vocabulary."],
+  prep:"Station cards printed for transport, sport and playgrounds. Optional: photos of local playgrounds or sports.",
+  reliefPrep:"Each student needs the Lesson 16 pages of the Week 4 force diagrams booklet (pages 7 and 8). No equipment.",
+  relief:[
+  {mode:"check", h:"Warm up: net force", timer:4,
+   html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="lead">Answer in <b>Section 1</b> of your worksheet, then we'll check.</p>`,
+   notes:"Relief: about 5 minutes. Students answer first, then click each card to show the answer. Net force = bigger force take away the smaller one."},
+  {mode:"learn", h:"Forces are everywhere",
+   html:tabs([
+     ["Transport",`<div class="grid3">${[["Braking","Friction between brake pads and wheels, and between tyres and road, slows the car."],["Seatbelts","When a car stops suddenly, your body keeps moving. The seatbelt applies a force to stop you."],["Streamlining","Cars and trains are shaped to reduce air resistance and save fuel."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Sport",`<div class="grid3">${[["Kicking a footy","A large push for a short time changes the ball's speed and direction."],["Swimming","Swimmers push water backwards. Streamlined bodies and caps cut water resistance."],["Cycling","Riders tuck down to reduce air resistance. Tyre grip (friction) stops skidding."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Playground",`<div class="grid3">${[["Slide","Gravity pulls you down. A smooth slide means less friction, so you go faster."],["Swing","Gravity pulls you back down. Pushing changes your speed. The chains pull you in a curve."],["See-saw","Gravity on each person turns the see-saw. A heavier person pushes their side down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`]]),
+   notes:"Relief: about 5 minutes. Click each tab and read the cards aloud. This table is also on the worksheet."},
+  {mode:"move", timer:15, h:"Stations: transport, sport, playground",
+   html:`<div class="grid2 fill"><div class="box">${steps(["Groups of 4.","Work through all six situations.","Name every force acting. Contact or non-contact?","Balanced or unbalanced?","Fill in the table in <b>Section 2</b> of your worksheet."])}</div>
+   <div class="grid3">${[["Transport","A bus pulling away from a stop. A bus braking hard."],["Sport","A netball shot. A surfer on a wave."],["Playground","A child at the top of a slide. Halfway down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p class="small">${c[1]}</p></div>`).join("")}</div></div>`,
+   notes:"Relief: 15 minutes. If station cards were left out, groups can move between them. Remind students gravity acts on everything."},
+  {mode:"check", h:"Check your table",
+   html:`<div class="grid3">${[["Bus pulling away","Driving force, friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Bus braking hard","Braking friction, air resistance, support (contact). Gravity (non-contact). Unbalanced."],["Netball shot","Air resistance (contact). Gravity (non-contact). Unbalanced: it curves."],["Surfer on a wave","Wave push, support from water, water resistance (contact). Gravity (non-contact). Mostly unbalanced."],["Top of the slide","Support (contact). Gravity (non-contact). Balanced."],["Halfway down","Support, friction, air resistance (contact). Gravity (non-contact). Unbalanced."]].map(c=>rv(c[0],c[1])).join("")}</div><p class="small">Add anything you missed in a different colour.</p>`,
+   notes:"Relief: about 5 minutes. Ask a group first, then click to show the answer."},
+  {mode:"write", timer:12, h:"Application task",
+   html:`<div class="grid2 fill"><div class="box"><h3>Choose one</h3><ol><li>Explain how forces help a cyclist speed up, ride steadily and stop.</li><li>Explain the forces on a child going down a slide, from the top to the bottom.</li><li>Explain why a sprinter wears spiked shoes.</li></ol><p class="small">Write 5 to 8 sentences and include a force diagram in <b>Section 3</b>.</p></div>
+   <div class="box"><h3>Word bank</h3><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div><p class="small">Use at least 5 and underline each one.</p></div></div>`,
+   notes:"Relief: 12 minutes. Good answers name the forces, say which way they act and what happens to the motion."},
+  {mode:"check", h:"Exit: share one",
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner ticks <b>Section 4</b> if it:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div><div class="box" style="justify-content:center"><h3>How did I go?</h3><p>Tick the boxes at the bottom of your worksheet, then hand it in.</p></div></div>`,
+   notes:"Relief: about 5 minutes. Collect the worksheets for the class teacher."}
+  ],
+  slides:[
+  {mode:"check", h:"Retrieval: net force",
+   html:`<div class="grid3">${[["60 N right, 60 N left.","Net 0 N. Balanced."],["80 N up, 30 N down.","Net 50 N up. Unbalanced."],["A car slows down. Which force is bigger?","The backward force (friction, braking)."]].map(c=>rv(c[0],c[1])).join("")}</div>`,
+   notes:""},
+  {mode:"learn", h:"Forces are everywhere",
+   html:tabs([
+     ["Transport",`<div class="grid3">${[["Braking","Friction between brake pads and wheels, and between tyres and road, slows the car."],["Seatbelts","When a car stops suddenly, your body keeps moving. The seatbelt applies a force to stop you."],["Streamlining","Cars and trains are shaped to reduce air resistance and save fuel."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Sport",`<div class="grid3">${[["Kicking a footy","A large push for a short time changes the ball's speed and direction."],["Swimming","Swimmers push water backwards. Streamlined bodies and caps cut water resistance."],["Cycling","Riders tuck down to reduce air resistance. Tyre grip (friction) stops skidding."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`],
+     ["Playground",`<div class="grid3">${[["Slide","Gravity pulls you down. A smooth slide means less friction, so you go faster."],["Swing","Gravity pulls you back down. Pushing changes your speed. The chains pull you in a curve."],["See-saw","Gravity on each person turns the see-saw. A heavier person pushes their side down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p>${c[1]}</p></div>`).join("")}</div>`]]),
+   notes:"Quick tour before the stations."},
+  {mode:"move", timer:15, h:"Stations: transport, sport, playground",
+   html:`<div class="grid2 fill"><div class="box">${steps(["Groups of 4. 5 minutes at each station.","Read the situation card.","Name every force acting. Contact or non-contact?","Draw a force diagram. Is it balanced or unbalanced?"])}</div>
+   <div class="grid3">${[["Transport","A bus pulling away from a stop. A bus braking hard."],["Sport","A netball shot. A surfer on a wave."],["Playground","A child at the top of a slide. Halfway down."]].map(c=>`<div class="box"><h3>${c[0]}</h3><p class="small">${c[1]}</p></div>`).join("")}</div></div>`,
+   notes:"Rotate when the timer beeps (reset to 5 minutes each time). Teacher observation."},
+  {mode:"write", timer:10, h:"Application task",
+   html:`<div class="grid2 fill"><div class="box"><h3>Choose one</h3><ol><li>Explain how forces help a cyclist speed up, ride steadily and stop.</li><li>Explain the forces on a child going down a slide, from the top to the bottom.</li><li>Explain why a sprinter wears spiked shoes.</li></ol><p class="small">Write 5 to 8 sentences and include a force diagram.</p></div>
+   <div class="box"><h3>Word bank</h3><div class="row">${["gravity","friction","air resistance","support force","balanced","unbalanced","net force","speed up","slow down","contact","non-contact","newtons"].map(w=>`<span class="chip" style="--sc:var(--muted)">${w}</span>`).join("")}</div><p class="small">Aim to use at least 5 words from the bank.</p></div></div>`,
+   notes:"Application task evidence. Students underline each scientific word they used."},
+  {mode:"check", h:"Exit: share one",
+   html:`<div class="grid2 fill"><div class="box" style="justify-content:center"><p class="lead">Read your best sentence to a partner. Partner checks:</p><ul class="checklist"><li>Names a specific force</li><li>Says which direction it acts</li><li>Says what it does to the motion</li></ul></div>${exitFist(["I can identify the forces acting in transport, sport and playground situations.","I can explain an everyday situation using scientific vocabulary."])}</div>`,
+   notes:""}
+  ]}
+);
+
+/* this deck: Lesson 16 uses its worksheet-based version */
+LESSONS.forEach(x=>{if(x.relief){x.slides=x.relief;x.prep=x.reliefPrep}});
+
+/* ---------- timer ---------- */
+let T={left:0,run:false,id:null,el:null};
+function timerHTML(min){return `<div class="timer" id="timer" data-min="${min}"><span class="t" id="tDisp">${fmt(min*60)}</span><button id="tGo">Start</button><button id="tAdd" aria-label="Add one minute">+1</button><button id="tReset">Reset</button></div>`}
+function fmt(s){return `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`}
+function bindTimer(){
+  clearInterval(T.id);T={left:0,run:false,id:null,el:$("#timer")};if(!T.el)return;
+  T.left=+T.el.dataset.min*60;
+  const paint=()=>{$("#tDisp").textContent=fmt(T.left);$("#tGo").textContent=T.run?"Pause":"Start";T.el.classList.toggle("done",T.left===0)};
+  const tick=()=>{if(T.left>0){T.left--;if(T.left===0){T.run=false;clearInterval(T.id);chime()}}paint()};
+  T.toggle=()=>{if(T.left===0)return;T.run=!T.run;clearInterval(T.id);if(T.run)T.id=setInterval(tick,1000);paint()};
+  $("#tGo").onclick=T.toggle;$("#tAdd").onclick=()=>{T.left+=60;paint()};
+  $("#tReset").onclick=()=>{clearInterval(T.id);T.run=false;T.left=+T.el.dataset.min*60;paint()};paint();
+}
+function chime(){try{const a=new (window.AudioContext||window.webkitAudioContext)();[0,.25,.5].forEach(d=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=880;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.18,a.currentTime+d);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d+.22);o.start(a.currentTime+d);o.stop(a.currentTime+d+.25)})}catch(e){}}
+
+/* ---------- rendering ---------- */
+const WEEKS=["Introduction to forces","Gravity, friction and air resistance","Practical 1: mass and stopping distance","Force diagrams and motion","Non-contact forces and changing motion","Practical 2: parachute investigation","Consolidation and assessment"];
+const wk=l=>Math.ceil(LESSONS[l].n/4);
+let L=-1,S=0;
+function deck(l){return [{title:true},...LESSONS[l].slides]}
+function drawNav(){
+  const nav=$("#lessonNav");
+  nav.innerHTML=LESSONS.map((x,i)=>`<button data-l="${i}" aria-current="${i===L}">Lesson ${x.n}</button>`).join("");
+  nav.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>go(+b.dataset.l,0));
+}
+function render(){
+  const stage=$("#stage"); clearInterval(T.id); stopAnim(); drawNav();
+  if(L<0){
+    stage.innerHTML=`<div class="home"><div><p class="small" style="font-family:var(--f-mono);color:var(--accent);font-weight:700">YEAR 7 SCIENCE &middot; PHYSICS &middot; 7 WEEKS &middot; 28 LESSONS</p><h1 style="font-size:4cqw">Forces and Motion</h1><p class="lead" style="font-size:1.6cqw;max-width:70ch;margin-top:.6cqw">Pushes, pulls, gravity, friction and air resistance, with two full practical investigations. Every lesson mixes talk, movement, demos, videos, simulations and short writing tasks.</p></div>
+    <div class="wkList">${WEEKS.map((t,w)=>`<div class="wkCol"><div title="${t}" style="display:flex;align-items:center"><h3>Week ${w+1}</h3></div>${LESSONS.map((x,i)=>wk(i)===w+1?`<button class="lc" data-go="${i}"><i>${x.n}</i><span>${x.title}</span></button>`:"").join("")}</div>`).join("")}</div></div>`;
+    stage.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(+b.dataset.go,0));
+    $("#count").textContent="";$("#progBar").style.width="0";$("#ctrl").style.visibility="hidden";$("#notes").hidden=true;$("#notesBtn").setAttribute("aria-pressed","false");save();return;
+  }
+  $("#ctrl").style.visibility="visible";
+  const x=LESSONS[L],d=deck(L),s=d[S];
+  if(s.title){
+        stage.innerHTML=`<section class="slide title"><span class="num">YEAR 7 SCIENCE &middot; FORCES AND MOTION &middot; LESSON ${x.n}</span><h1>${x.title}</h1><div class="lisc"><div class="box"><h3>Learning intention</h3><p>${x.li}</p></div><div class="box"><h3>Success criteria</h3><ul>${x.sc.map(c=>`<li>${c}</li>`).join("")}</ul></div></div></section>`;
+  } else {
+    const m=MODES[s.mode]||MODES.learn;
+    stage.innerHTML=`<section class="slide${s.timer?" hasTimer":""}"><div class="eyebrow"><span class="mode" style="--mc:${m[1]}">${m[0]}</span><span>Lesson ${x.n}</span>${s.timer?`<span>&middot; ${s.timer} min</span>`:""}</div><h2>${s.h}</h2>${s.html}${s.timer?timerHTML(s.timer):""}</section>`;
+  }
+  stage.querySelectorAll("[data-reveal]").forEach(b=>b.onclick=()=>b.classList.toggle("open"));
+  stage.querySelectorAll(".tabbar").forEach(bar=>{const box=bar.parentElement;bar.querySelectorAll("[data-tab]").forEach(t=>t.onclick=()=>{bar.querySelectorAll("[data-tab]").forEach(o=>o.setAttribute("aria-selected",o===t));box.querySelectorAll("[data-panel]").forEach(p=>p.classList.toggle("on",p.dataset.panel===t.dataset.tab))})});
+  if(s.init)s.init.split(" ").forEach(k=>INIT[k]&&INIT[k](s));
+  bindTimer();
+  $("#count").textContent=`${S+1} / ${d.length}`;$("#progBar").style.width=`${(S+1)/d.length*100}%`;
+  $("#prev").disabled=S===0&&L===0;
+  
+  save();
+}
+function go(l,s){if(l<0)l=0;L=l;S=s;render();try{history.replaceState(null,"",L<0?"#home":`#l${LESSONS[L].n}-${S+1}`)}catch(e){}}
+function next(){if(L<0)return go(0,0);const d=deck(L);if(S<d.length-1)go(L,S+1);else if(L<LESSONS.length-1)go(L+1,0)}
+function prev(){if(L<0)return;if(S>0)go(L,S-1);else if(L>0)go(L-1,deck(L-1).length-1)}
+function save(){try{localStorage.setItem("fm-l14-16-pos",JSON.stringify([L,S]))}catch(e){}}
+
+$("#homeBtn").onclick=()=>go(0,0);$("#next").onclick=next;$("#prev").onclick=prev;
+$("#notesBtn").onclick=()=>{const n=$("#notes");n.hidden=!n.hidden;$("#notesBtn").setAttribute("aria-pressed",!n.hidden)};
+$("#fsBtn").onclick=()=>{try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{})}catch(e){}};
+document.addEventListener("keydown",e=>{if(e.target.matches("input,textarea"))return;
+  if(e.key==="ArrowRight"||e.key==="PageDown"){e.preventDefault();next()}
+  else if(e.key==="ArrowLeft"||e.key==="PageUp"){e.preventDefault();prev()}
+  else if(e.key==="t"||e.key==="T"){if(T.toggle)T.toggle()}
+  else if(e.key==="f"||e.key==="F")$("#fsBtn").click()});
+
+(function start(){
+  const h=location.hash.match(/^#l(\d+)-(\d+)$/);
+  if(h){const l=LESSONS.findIndex(x=>x.n===+h[1]),s=+h[2]-1;if(l>=0&&s<deck(l).length)return go(l,s)}
+  let p=null;try{p=JSON.parse(localStorage.getItem("fm-l14-16-pos"))}catch(e){}
+  if(Array.isArray(p)&&p[0]>=0&&LESSONS[p[0]]&&p[1]<deck(p[0]).length)return go(p[0],p[1]);
+  go(0,0);
+})();
+
+</script>
+</body>
+</html>
